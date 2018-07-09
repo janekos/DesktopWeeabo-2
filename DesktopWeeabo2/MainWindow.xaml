@@ -5,8 +5,60 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopWeeabo2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="MainWindow" Height="800" Width="1024" MinWidth="1024" MinHeight="800">
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="menuBtn">
+            <Setter Property="Background" Value="Beige"/>
+            <Setter Property="FontSize" Value="24px"/>
+            <Setter Property="Padding" Value="8px, 4px, 8px, 4px"/>
+        </Style>
+    </Window.Resources>
+    <Grid x:Name="mainGrid">
+        <Button Content="Discover" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Style="{StaticResource menuBtn}" Click="ChangeView"/>
+        <Button Content="To watch" HorizontalAlignment="Left" Margin="123,10,0,0" VerticalAlignment="Top" Style="{StaticResource menuBtn}" Click="ChangeView"/>
+        <Button Content="Viewed" HorizontalAlignment="Left" Margin="239,10,0,0" VerticalAlignment="Top" Style="{StaticResource menuBtn}" Click="ChangeView"/>
+        <Button Content="Dropped" HorizontalAlignment="Left" Margin="339,10,0,0" VerticalAlignment="Top" Style="{StaticResource menuBtn}" Click="ChangeView"/>
+        <Button Content="Finished" HorizontalAlignment="Left" Margin="456,10,0,0" VerticalAlignment="Top" Style="{StaticResource menuBtn}" Click="ChangeView"/>
+        <Button Content="Settings" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Style="{StaticResource menuBtn}" Click="ChangeView"/>
+
+        <Separator HorizontalAlignment="Stretch" Height="1" Margin="10,62,10,0" VerticalAlignment="Top"/>
+
+        <TextBlock HorizontalAlignment="Left" Margin="10,74,0,0" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox HorizontalAlignment="Left" Height="30" Margin="74,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="377" FontSize="20"/>
+        <TextBlock HorizontalAlignment="Left" Margin="472,72,0,0" TextWrapping="Wrap" Text="Sort by" VerticalAlignment="Top" FontSize="20"/>
+        <ComboBox x:Name="sortTypeSelector" HorizontalAlignment="Left" Margin="540,73,0,0" VerticalAlignment="Top" Width="173" Height="30" FontSize="20">
+            <ComboBoxItem Content="Title" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="English" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="Synonyms" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="Episodes" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="Score" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="Type" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="Status" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="Start date" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="End date" HorizontalAlignment="Stretch" FontSize="20"/>
+            <ComboBoxItem Content="Add date" HorizontalAlignment="Stretch" FontSize="20"/>
+        </ComboBox>
+        <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="734,72,0,0" Height="32" FontSize="20" Width="139">
+            <TextBlock Text="Descending" VerticalAlignment="Center" />
+        </CheckBox>
+        <CheckBox x:Name="gridViewChanger" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="886,72,0,0" Height="32" FontSize="20" Width="72" Checked="GridView" Unchecked="GridView">
+            <TextBlock Text="Grid" VerticalAlignment="Center" />
+        </CheckBox>
+        <Grid HorizontalAlignment="Stretch" Margin="10,112,10,10" VerticalAlignment="Stretch">
+            <Grid x:Name="itemsContainerGrid" HorizontalAlignment="Stretch" Margin="0,0,300,0" VerticalAlignment="Stretch">
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <WrapPanel x:Name="itemsContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            
+
+                        </WrapPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+            <Grid x:Name="itemsDescription" HorizontalAlignment="Right" Width="290" VerticalAlignment="Stretch">
+                <Border BorderBrush="Black" BorderThickness="1">
+                </Border>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

@@ -24,5 +24,30 @@ namespace DesktopWeeabo2
         {
             InitializeComponent();
         }
+
+        private void ChangeView(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine((sender as Button).Content);
+        }
+
+        private void GridView(object sender, RoutedEventArgs e)
+        {
+            if ((bool) gridViewChanger.IsChecked)
+            {
+                itemsDescription.Visibility = Visibility.Hidden;
+                itemsContainerGrid.Margin = new Thickness(0);
+                itemsContainer.Children.OfType<Rectangle>().ToList().ForEach(r => {
+                    r.Width = itemsContainer.ActualWidth + 300;
+                });
+            }
+            else
+            {
+                itemsDescription.Visibility = Visibility.Visible;
+                itemsContainerGrid.Margin = new Thickness(0,0,300,0);
+                itemsContainer.Children.OfType<Rectangle>().ToList().ForEach(r => {
+                    r.Width = 100;
+                });
+            }
+        }
     }
 }
