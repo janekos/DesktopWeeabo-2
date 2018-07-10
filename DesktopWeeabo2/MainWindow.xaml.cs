@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DesktopWeeabo2.data;
+using DesktopWeeabo2.helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,14 @@ namespace DesktopWeeabo2
         public MainWindow()
         {
             InitializeComponent();
+            init();            
+        }
+
+        private async void init()
+        {
+            string a = await Queries.QueryAPI();
+            Console.WriteLine(a);
+            DataHandler.ParseAnimeObjects(a);
         }
 
         private void ChangeView(object sender, RoutedEventArgs e)
