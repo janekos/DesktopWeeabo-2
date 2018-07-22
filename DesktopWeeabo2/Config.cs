@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2
 {
-    class Config
+    public static class Config
     {
-        //to-do add vars
+        private static string appDir = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/DesktopWeeabo2";        
+        public static string getAppDir() { return appDir; }
     }
 }

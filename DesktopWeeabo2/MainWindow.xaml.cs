@@ -1,5 +1,4 @@
 ﻿using DesktopWeeabo2.data;
-using DesktopWeeabo2.helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,20 +16,18 @@ using System.Windows.Shapes;
 
 namespace DesktopWeeabo2
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            //load db and wait for user input
             init();            
         }
 
         private async void init()
         {
-            string a = await Queries.QueryAPI();
+            string a = await APIQueries.QueryAPI("oreimo", 1, true);
             Console.WriteLine(a);
             DataHandler.ParseAnimeObjects(a);
         }
