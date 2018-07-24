@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesktopWeeabo2.data.objects
-{
-    class MangaObject
-    {
-    
+namespace DesktopWeeabo2.data.objects {
+    class MangaObject {
+
         public int id { get; set; }
         public int volumes { get; set; }
         public int chapters { get; set; }
@@ -22,8 +20,7 @@ namespace DesktopWeeabo2.data.objects
         public TitleObject title { get; set; }
         public CoverImageObject coverImage { get; set; }
 
-        public string Print()
-        {
+        public string print() {
             return "Id: " + id +
                     ", \nScore: " + meanScore +
                     ", \nType: " + type +

@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesktopWeeabo2.data.db.entities
-{
-    [Table("anime_entity")]
-    public class AnimeEntity
-    {
+namespace DesktopWeeabo2.data.db.entities {
+
+    [Table("anime_entries")]
+    public class AnimeEntity {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("id")]
@@ -44,7 +44,7 @@ namespace DesktopWeeabo2.data.db.entities
         [Column("synonyms")]
         public string synonyms { get; set; }
 
-        [Column("title_English")]
+        [Column("title_english")]
         public string titleEnglish { get; set; }
 
         [Column("title_romaji")]
@@ -54,10 +54,10 @@ namespace DesktopWeeabo2.data.db.entities
         public string titleNative { get; set; }
 
         [Column("start_date")]
-        public string startDate { get; set; }
+        public DateTime startDate { get; set; }
 
         [Column("end_date")]
-        public string endDate { get; set; }
+        public DateTime endDate { get; set; }
 
         [Column("cover_image")]
         public string coverImage { get; set; }
@@ -80,5 +80,8 @@ namespace DesktopWeeabo2.data.db.entities
 
         [Column("current_episode")]
         public int currentEpisode { get; set; }
+
+        [Column("date_added")]
+        public DateTime date_added { get; set; }
     }
 }

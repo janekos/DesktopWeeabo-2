@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesktopWeeabo2.data.db.entities
-{
-    [Table("manga_entity")]
-    public class MangaEntity
-    {
+namespace DesktopWeeabo2.data.db.entities {
+
+    [Table("manga_entries")]
+    public class MangaEntity {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("id")]
@@ -74,5 +74,8 @@ namespace DesktopWeeabo2.data.db.entities
 
         [Column("current_chapter")]
         public int currentChapter { get; set; }
+
+        [Column("date_added")]
+        public DateTime date_added { get; set; }
     }
 }

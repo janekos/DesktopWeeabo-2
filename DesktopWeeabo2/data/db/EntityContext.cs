@@ -7,11 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesktopWeeabo2.data.db
-{
-    public class EntityContext : DbContext
-    {
-        public EntityContext() : base("name=EntriesDB") { Database.CreateIfNotExists(); }
+namespace DesktopWeeabo2.data.db {
+    public class EntityContext : DbContext {
+
+        public EntityContext() : base("name=EntriesDB") { Database.SetInitializer<EntityContext>(null); }
 
         public DbSet<AnimeEntity> AnimeEntities { get; set; }
         public DbSet<MangaEntity> MangaEntity { get; set; }

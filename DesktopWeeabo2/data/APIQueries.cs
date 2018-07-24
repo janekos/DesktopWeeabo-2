@@ -6,96 +6,28 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Diagnostics;
+using DesktopWeeabo2.Properties;
 
-namespace DesktopWeeabo2.data
-{
-    static class APIQueries
-    {
+namespace DesktopWeeabo2.data {
+    static class APIQueries {
 
         private static readonly HttpClient client = new HttpClient();
 
-        private static string searchAnimeQuery = @"query ($id: Int, $page: Int, $search: String) {
-                                                      Page(page: $page, perPage: 10000) {
-                                                        pageInfo { hasNextPage}
-                                                        media(id: $id, type: ANIME, search: $search) {
-                                                            id 
-                                                            title { 
-                                                                english 
-                                                                romaji
-                                                                native
-                                                            }
-                                                            synonyms 
-                                                            genres 
-                                                            meanScore
-                                                            format 
-                                                            status 
-                                                            description(asHtml: false) 
-                                                            startDate{
-                                                                year
-                                                                month
-                                                                day
-                                                            }
-                                                            endDate{
-                                                                year
-                                                                month
-                                                                day
-                                                            }
-                                                            episodes 
-                                                            duration 
-                                                            coverImage{ large }
-                                                        }
-                                                      }
-                                                    }";
+        private static string searchAnimeQuery = Resources.ResourceManager.GetString("SearchAnimeQuery");
+        private static string searchMangaQuery = Resources.ResourceManager.GetString("SearchMangaQuery");
 
-        private static string searchMangaQuery = @"query ($id: Int, $page: Int, $search: String) {
-                                                      Page(page: $page, perPage: 10000) {
-                                                        pageInfo { hasNextPage}
-                                                        media(id: $id, type: MANGA, search: $search) {
-                                                            id 
-                                                            title { 
-                                                                english 
-                                                                romaji
-                                                                native
-                                                            }
-                                                            synonyms 
-                                                            genres 
-                                                            meanScore
-                                                            type
-                                                            format 
-                                                            status 
-                                                            description(asHtml: false) 
-                                                            volumes
-                                                            chapters
-                                                            coverImage{ large }
-                                                        }
-                                                      }
-                                                    }";
+        static async public Task<string> search(string search, string sort = "", bool anime = true, int page = 1) => 
+            await executeRequest(
+                new Dictionary<string, string> {
+                    { "query", anime ? searchAnimeQuery : searchMangaQuery },
+                    { "variables", String.Format("{{\"search\": \"{0}\", \"page\": {1}, \"sort\": \"{2}\"}}", search, page, sort.Length > 0 ? sort : "TITLE_ENGLISH") }
+                }
+            );
 
-        static async public Task<string> QueryAPI(string search, int page, bool anime)
-        {
-
-            string variables = "{\"search\": \""+search+"\",\"page\": "+page+"}";
-            string query = "";
-
-            if (anime) { query = searchAnimeQuery; }
-            else { query = searchMangaQuery; }
-
-            Dictionary<string, string> values = new Dictionary<string, string>
-            {
-               { "query", query },
-               { "variables", variables }
-            };
-
-            FormUrlEncodedContent content = new FormUrlEncodedContent(values);
+        static async private Task<string> executeRequest(Dictionary<string, string> variables) {
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage response = await client.PostAsync("https://graphql.anilist.co", content);
-            
+            HttpResponseMessage response = await client.PostAsync("https://graphql.anilist.co", new FormUrlEncodedContent(variables));
             return await response.Content.ReadAsStringAsync();
-        }
-
-        static async public void QueryLocal()
-        {
-
         }
     }
 }
