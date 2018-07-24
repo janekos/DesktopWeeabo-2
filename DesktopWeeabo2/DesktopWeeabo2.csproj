@@ -88,6 +88,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="data\db\entities\AnimeEntity.cs" />
+    <Compile Include="data\db\entities\MangaEntity.cs" />
+    <Compile Include="data\GlobalConfig.cs" />
+    <Compile Include="data\InitAppData.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -97,15 +101,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="data\DataHandler.cs" />
-    <Compile Include="data\db\InitDB.cs" />
-    <Compile Include="data\db\ObjectContext.cs" />
+    <Compile Include="data\db\EntityContext.cs" />
     <Compile Include="data\objects\AnimeObject.cs" />
     <Compile Include="data\objects\CoverImageObject.cs" />
     <Compile Include="data\objects\DateObject.cs" />
     <Compile Include="data\objects\MangaObject.cs" />
     <Compile Include="data\objects\TitleObject.cs" />
     <Compile Include="data\APIQueries.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="data\SerializableConfig.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -139,7 +142,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="data\entities\" />
     <Folder Include="helpers\" />
     <Folder Include="views\" />
   </ItemGroup>

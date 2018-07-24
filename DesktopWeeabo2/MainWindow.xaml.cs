@@ -1,4 +1,6 @@
 ﻿using DesktopWeeabo2.data;
+using DesktopWeeabo2.data.db;
+using DesktopWeeabo2.data.db.entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,15 +24,48 @@ namespace DesktopWeeabo2
         {
             InitializeComponent();
             //load db and wait for user input
-            init();            
+            InitAppData.init();
+            test();            
         }
 
-        private async void init()
+        private async void test()
         {
-            string a = await APIQueries.QueryAPI("oreimo", 1, true);
+            /*string a = await APIQueries.QueryAPI("oreimo", 1, true);
             Console.WriteLine(a);
-            DataHandler.ParseAnimeObjects(a);
-        }
+            DataHandler.ParseAnimeObjects(a);*/
+
+            using (var db = new EntityContext())
+            {
+                var ae = db.Set<AnimeEntity>();
+                ae.Add(new AnimeEntity {
+                    id = 1,
+                    meanScore = 1,
+                    episodes = 1,
+                    duration = 1,
+                    personalScore = 1,
+                    watchPriority = 1,
+                    rewatchCount = 1,
+                    currentEpisode = 1,
+                    type = "foo",
+                    format = "foo",
+                    status = "foo",
+                    description = "foo",
+                    genres = "foo",
+                    synonyms = "foo",
+                    titleEnglish = "foo",
+                    titleRomaji = "foo",
+                    titleNative = "foo",
+                    startDate = "foo",
+                    endDate = "foo",
+                    coverImage = "foo",
+                    viewingStatus = "foo",
+                    personalReview = "foo",
+                });
+
+                db.SaveChanges();
+            };
+
+    }
 
         private void ChangeView(object sender, RoutedEventArgs e)
         {
