@@ -101,7 +101,10 @@ namespace DesktopWeeabo2.Properties {
         /// <summary>
         ///   Looks up a localized string similar to query ($id: Int, $page: Int, $search: String, $sort: [MediaSort]) {
         ///	Page(page: $page, perPage: 10000) {
-        ///		pageInfo { hasNextPage}
+        ///		pageInfo { 
+        ///			total
+        ///			hasNextPage
+        ///		}
         ///		media(id: $id, type: ANIME, search: $search, sort: $sort) {
         ///			id 
         ///			title { 
@@ -127,8 +130,7 @@ namespace DesktopWeeabo2.Properties {
         ///				day
         ///			}
         ///			episodes 
-        ///			duration 
-        ///			coverImage{ la [rest of string was truncated]&quot;;.
+        ///			duration  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SearchAnimeQuery {
             get {
@@ -139,7 +141,10 @@ namespace DesktopWeeabo2.Properties {
         /// <summary>
         ///   Looks up a localized string similar to query ($id: Int, $page: Int, $search: String, $sort: [MediaSort] ) {
         ///	Page(page: $page, perPage: 10000) {
-        ///		pageInfo { hasNextPage}
+        ///		pageInfo { 
+        ///			total
+        ///			hasNextPage
+        ///		}
         ///		media(id: $id, type: MANGA, search: $search, sort: $sort) {
         ///			id 
         ///			title { 

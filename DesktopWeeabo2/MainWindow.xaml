@@ -24,7 +24,7 @@
         <Separator HorizontalAlignment="Stretch" Height="1" Margin="10,62,10,0" VerticalAlignment="Top"/>
 
         <TextBlock HorizontalAlignment="Left" Margin="10,74,0,0" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top" FontSize="20"/>
-        <TextBox HorizontalAlignment="Left" Height="30" Margin="74,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="377" FontSize="20"/>
+        <TextBox x:Name="searchBox" HorizontalAlignment="Left" Height="30" Margin="74,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="377" FontSize="20" TextChanged="Search_TextChanged"/>
         <TextBlock HorizontalAlignment="Left" Margin="472,72,0,0" TextWrapping="Wrap" Text="Sort by" VerticalAlignment="Top" FontSize="20"/>
         <ComboBox x:Name="sortTypeSelector" HorizontalAlignment="Left" Margin="540,73,0,0" VerticalAlignment="Top" Width="173" Height="30" FontSize="20">
             <ComboBoxItem Content="Title" HorizontalAlignment="Stretch" FontSize="20"/>
@@ -48,15 +48,47 @@
             <Grid x:Name="itemsContainerGrid" HorizontalAlignment="Stretch" Margin="0,0,300,0" VerticalAlignment="Stretch">
                 <Border BorderBrush="Black" BorderThickness="1">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <WrapPanel x:Name="itemsContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                            
-
-                        </WrapPanel>
+                        <ItemsControl x:Name="itemsContainer" ItemsSource="{Binding objects}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="5,5,10,5" BorderBrush="Black" BorderThickness="1">
+                                        <Grid Height="350" Width="299" MouseEnter="Item_MouseEnter" MouseLeftButtonDown="Item_Selected">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="1" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="1" />
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <Image Source="{Binding coverImage}" Grid.Row="0" Grid.Column="0" />
+                                            <TextBlock Text="{Binding titleEnglish}" Grid.Row="1" Grid.Column="0" TextWrapping="Wrap"/>
+                                            <GridSplitter Background="Black" Grid.Row="2"/>
+                                            <TextBlock Text="{Binding titleRomaji}" Grid.Row="3" Grid.Column="0" TextWrapping="Wrap"/>
+                                            <GridSplitter Background="Black" Grid.Row="4"/>
+                                            <TextBlock Text="{Binding titleNative}" Grid.Row="5" Grid.Column="0" TextWrapping="Wrap"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
                     </ScrollViewer>
                 </Border>
             </Grid>
             <Grid x:Name="itemsDescription" HorizontalAlignment="Right" Width="290" VerticalAlignment="Stretch">
                 <Border BorderBrush="Black" BorderThickness="1">
+                    <Grid x:Name="itemsDescriptionInner">
+                        
+                    </Grid>
                 </Border>
             </Grid>
         </Grid>

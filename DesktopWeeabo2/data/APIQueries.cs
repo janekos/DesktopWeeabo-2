@@ -16,7 +16,7 @@ namespace DesktopWeeabo2.data {
         private static string searchAnimeQuery = Resources.ResourceManager.GetString("SearchAnimeQuery");
         private static string searchMangaQuery = Resources.ResourceManager.GetString("SearchMangaQuery");
 
-        static async public Task<string> search(string search, string sort = "", bool anime = true, int page = 1) => 
+        static async public Task<string> search(string search, int page = 1, string sort = "", bool anime = true) => 
             await executeRequest(
                 new Dictionary<string, string> {
                     { "query", anime ? searchAnimeQuery : searchMangaQuery },

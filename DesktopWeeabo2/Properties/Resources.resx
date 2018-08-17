@@ -170,7 +170,10 @@
   <data name="SearchAnimeQuery" xml:space="preserve">
     <value>query ($id: Int, $page: Int, $search: String, $sort: [MediaSort]) {
 	Page(page: $page, perPage: 10000) {
-		pageInfo { hasNextPage}
+		pageInfo { 
+			total
+			hasNextPage
+		}
 		media(id: $id, type: ANIME, search: $search, sort: $sort) {
 			id 
 			title { 
@@ -205,7 +208,10 @@
   <data name="SerachMangaQuery" xml:space="preserve">
     <value>query ($id: Int, $page: Int, $search: String, $sort: [MediaSort] ) {
 	Page(page: $page, perPage: 10000) {
-		pageInfo { hasNextPage}
+		pageInfo { 
+			total
+			hasNextPage
+		}
 		media(id: $id, type: MANGA, search: $search, sort: $sort) {
 			id 
 			title { 

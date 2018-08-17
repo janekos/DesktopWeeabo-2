@@ -88,8 +88,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="custom\AnimeAPIEnumerator.cs" />
+    <Compile Include="custom\shared\APIEnumerator.cs" />
     <Compile Include="data\db\entities\AnimeEntity.cs" />
     <Compile Include="data\db\entities\MangaEntity.cs" />
+    <Compile Include="data\db\entities\shared\BaseEntity.cs" />
     <Compile Include="data\GlobalConfig.cs" />
     <Compile Include="data\InitAppData.cs" />
     <Page Include="MainWindow.xaml">
@@ -100,16 +103,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="data\APIDataHandler.cs" />
     <Compile Include="data\db\EntityContext.cs" />
-    <Compile Include="data\objects\AnimeObject.cs" />
-    <Compile Include="data\objects\CoverImageObject.cs" />
-    <Compile Include="data\objects\DateObject.cs" />
-    <Compile Include="data\objects\MangaObject.cs" />
-    <Compile Include="data\objects\TitleObject.cs" />
     <Compile Include="data\APIQueries.cs" />
     <Compile Include="data\SerializableConfig.cs" />
-    <Compile Include="helpers\ConversionHelpers.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -145,6 +142,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="helpers\" />
     <Folder Include="views\" />
   </ItemGroup>
   <ItemGroup>
