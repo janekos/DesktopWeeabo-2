@@ -6,56 +6,56 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesktopWeeabo2.data.db.entities.shared {
-    public abstract class BaseEntity {
+namespace DesktopWeeabo2.Models.Shared {
+    public abstract class BaseModel {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Column("id")]
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Column("mean_score")]
-        public int meanScore { get; set; }
+        public int MeanScore { get; set; }
 
         [Column("type")]
-        public string type { get; set; }
+        public string Type { get; set; }
 
         [Column("format")]
-        public string format { get; set; }
+        public string Format { get; set; }
 
         [Column("status")]
-        public string status { get; set; }
+        public string Status { get; set; }
 
         [Column("description")]
-        public string description { get; set; }
+        public string Description { get; set; }
 
         /*problem kids*/
         [Column("genres")]
-        public string genres { get; set; }
+        public string Genres { get; set; }
 
         [Column("synonyms")]
-        public string synonyms { get; set; }
+        public string Synonyms { get; set; }
 
         [Column("title_English")]
-        public string titleEnglish { get; set; }
+        public string TitleEnglish { get; set; }
 
         [Column("title_romaji")]
-        public string titleRomaji { get; set; }
+        public string TitleRomaji { get; set; }
 
         [Column("title_native")]
-        public string titleNative { get; set; }
+        public string TitleNative { get; set; }
 
         [Column("cover_image")]
-        public string coverImage { get; set; }
+        public string CoverImage { get; set; }
 
         /*custom vars*/
         [Column("personal_score")]
-        public int personalScore { get; set; }
+        public int PersonalScore { get; set; }
 
         [Column("personal_review")]
-        public string personalReview { get; set; }
+        public string PersonalReview { get; set; }
 
         [Column("date_added")]
-        public DateTime dateAdded { get; set; }
+        public DateTime DateAdded { get; set; }
     }
 }

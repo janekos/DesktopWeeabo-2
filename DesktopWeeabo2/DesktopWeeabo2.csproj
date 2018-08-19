@@ -88,13 +88,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="custom\AnimeAPIEnumerator.cs" />
-    <Compile Include="custom\shared\APIEnumerator.cs" />
-    <Compile Include="data\db\entities\AnimeEntity.cs" />
-    <Compile Include="data\db\entities\MangaEntity.cs" />
-    <Compile Include="data\db\entities\shared\BaseEntity.cs" />
-    <Compile Include="data\GlobalConfig.cs" />
-    <Compile Include="data\InitAppData.cs" />
+    <Compile Include="API\AnimeAPIEnumerator.cs" />
+    <Compile Include="API\APIQueries.cs" />
+    <Compile Include="API\Shared\APIEnumerator.cs" />
+    <Compile Include="Data\EntriesContext.cs" />
+    <Compile Include="Data\GlobalConfig.cs" />
+    <Compile Include="Data\InitAppData.cs" />
+    <Compile Include="ViewModels\AnimeViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MangaViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\Shared\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Shared\Command.cs" />
+    <Compile Include="ViewModels\Shared\DelegateCommand.cs" />
+    <Compile Include="ViewModels\Shared\NotifyUIBase.cs" />
+    <Compile Include="Views\AnimeView.xaml.cs">
+      <DependentUpon>AnimeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MangaView.xaml.cs">
+      <DependentUpon>MangaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -103,16 +119,28 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="data\db\EntityContext.cs" />
-    <Compile Include="data\APIQueries.cs" />
-    <Compile Include="data\SerializableConfig.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Data\SerializableConfig.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AnimeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MangaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AnimeModel.cs" />
+    <Compile Include="Models\MangaModel.cs" />
+    <Compile Include="Models\Shared\BaseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -131,6 +159,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\DesktopWeeabo2.Models.AnimeModel.datasource" />
+    <None Include="Properties\DataSources\DesktopWeeabo2.Models.MangaModel.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -141,10 +171,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="helpers\" />
-    <Folder Include="views\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>

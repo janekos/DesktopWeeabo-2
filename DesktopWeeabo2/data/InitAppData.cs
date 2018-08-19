@@ -1,5 +1,4 @@
-﻿using DesktopWeeabo2.data.db;
-using DesktopWeeabo2.Properties;
+﻿using DesktopWeeabo2.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -8,21 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesktopWeeabo2.data {
+namespace DesktopWeeabo2.Data {
     public static class InitAppData {
 
-        public static void init() {
-            checkFiles();
-            setDataDir();
+        public static void Init() {
+            CheckFiles();
+            SetDataDir();
         }
 
-        private static void checkFiles() {
-            if (!Directory.Exists(GlobalConfig.getAppDir())) { Directory.CreateDirectory(GlobalConfig.getAppDir()); }
-            if (!File.Exists(GlobalConfig.getAppDir() + "\\entries.db")) { initDB(GlobalConfig.getAppDir() + "\\entries.db"); }
-            if (!File.Exists(GlobalConfig.getAppDir() + "\\config.json")) { GlobalConfig.serializeConfig(); }
+        private static void CheckFiles() {
+            if (!Directory.Exists(GlobalConfig.AppDir)) { Directory.CreateDirectory(GlobalConfig.AppDir); }
+            if (!File.Exists(GlobalConfig.AppDir + "\\entries.db")) { InitDB(GlobalConfig.AppDir + "\\entries.db"); }
+            if (!File.Exists(GlobalConfig.AppDir + "\\config.json")) { GlobalConfig.SerializeConfig(); }
         }
 
-        private static void initDB(string dbPath) {
+        private static void InitDB(string dbPath) {
 
             SQLiteConnection.CreateFile(dbPath);
 
@@ -35,6 +34,6 @@ namespace DesktopWeeabo2.data {
             }
         }
 
-        private static void setDataDir() => AppDomain.CurrentDomain.SetData("DataDirectory", GlobalConfig.getAppDir());
+        private static void SetDataDir() => AppDomain.CurrentDomain.SetData("DataDirectory", GlobalConfig.AppDir);
     }
 }
