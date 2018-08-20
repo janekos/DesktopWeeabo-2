@@ -18,6 +18,17 @@ namespace DesktopWeeabo2.ViewModels {
                 new SettingsViewModel()
             };
             ViewModelsView = CollectionViewSource.GetDefaultView(ViewModels);
+            PropertyChanged += MessageReceived;
+        }
+
+        private void MessageReceived(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case "Saved":
+                    //show message in view (change visibility and text)
+                    break;
+                case "Error":
+                    break;
+            }
         }
 
         private ICollectionView _ViewModelsView;
@@ -39,25 +50,25 @@ namespace DesktopWeeabo2.ViewModels {
         }
 
         public DelegateCommand ChangeView => new DelegateCommand(
-                 new Action<object>(
-                  (e) => {
-                      if (ViewModelsView != null) {
-                          switch (e) {
-                              case "AnimeView":
-                                  ViewModelsView.MoveCurrentToPosition(0);
-                                  break;
-                              case "MangaView":
-                                  ViewModelsView.MoveCurrentToPosition(1);
-                                  break;
-                              case "SettingsView":
-                                  ViewModelsView.MoveCurrentToPosition(2);
-                                  break;
-                              default:
-                                  ViewModelsView.MoveCurrentToPosition(0);
-                                  break;
-                          }
-                      }
-                  }),
-                 (e) => { return true; });
+        new Action<object>(
+        (e) => {
+            if (ViewModelsView != null) {
+                switch (e) {
+                    case "AnimeView":
+                        ViewModelsView.MoveCurrentToPosition(0);
+                        break;
+                    case "MangaView":
+                        ViewModelsView.MoveCurrentToPosition(1);
+                        break;
+                    case "SettingsView":
+                        ViewModelsView.MoveCurrentToPosition(2);
+                        break;
+                    default:
+                        ViewModelsView.MoveCurrentToPosition(0);
+                        break;
+                }
+            }
+        }),
+        (e) => { return true; });
     }
 }

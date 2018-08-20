@@ -90,6 +90,7 @@
     </ApplicationDefinition>
     <Compile Include="API\AnimeAPIEnumerator.cs" />
     <Compile Include="API\APIQueries.cs" />
+    <Compile Include="API\MangaAPIEnumerator.cs" />
     <Compile Include="API\Shared\APIEnumerator.cs" />
     <Compile Include="Data\EntriesContext.cs" />
     <Compile Include="Data\GlobalConfig.cs" />
@@ -98,10 +99,12 @@
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MangaViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\Shared\BaseItemViewModel.cs" />
     <Compile Include="ViewModels\Shared\BaseViewModel.cs" />
     <Compile Include="ViewModels\Shared\Command.cs" />
     <Compile Include="ViewModels\Shared\DelegateCommand.cs" />
     <Compile Include="ViewModels\Shared\NotifyUIBase.cs" />
+    <Compile Include="ViewModels\Shared\StatusView.cs" />
     <Compile Include="Views\AnimeView.xaml.cs">
       <DependentUpon>AnimeView.xaml</DependentUpon>
     </Compile>

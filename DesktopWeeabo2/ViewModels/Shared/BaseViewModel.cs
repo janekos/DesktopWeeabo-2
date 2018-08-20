@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.ViewModels.Shared {
-    class BaseViewModel : NotifyUIBase{
+    public class BaseViewModel : NotifyUIBase{
 
     }
 }

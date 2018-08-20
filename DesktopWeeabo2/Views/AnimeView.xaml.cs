@@ -15,9 +15,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace DesktopWeeabo2.Views {
-    /// <summary>
-    /// Interaction logic for AnimeView.xaml
-    /// </summary>
     public partial class AnimeView : UserControl {
         public AnimeView() {
             InitializeComponent();

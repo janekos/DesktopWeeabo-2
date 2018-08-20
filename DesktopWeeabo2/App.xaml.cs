@@ -6,9 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace DesktopWeeabo2
-{
-    public partial class App : Application
-    {
+namespace DesktopWeeabo2 {
+    public partial class App : Application {
     }
 }

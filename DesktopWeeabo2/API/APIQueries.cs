@@ -19,7 +19,7 @@ namespace DesktopWeeabo2.API {
             await ExecuteRequest(
                 new Dictionary<string, string> {
                     { "query", anime ? SearchAnimeQuery : SearchMangaQuery },
-                    { "variables", String.Format("{{\"search\": \"{0}\", \"page\": {1}, \"sort\": \"{2}\"}}", search, page, sort.Length > 0 ? sort : "TITLE_ENGLISH") }
+                    { "variables", String.Format("{{\"search\": \"{0}\", \"page\": {1}, \"sort\": \"{2}\"}}", search, page, sort.Length > 0 ? sort : "TITLE_ROMAJI") }
                 }
             );
 

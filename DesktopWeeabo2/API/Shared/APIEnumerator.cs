@@ -9,14 +9,12 @@ using System.Threading.Tasks;
 namespace DesktopWeeabo2.API.Shared {
     abstract class APIEnumerator<T> where T : BaseModel {
 
-        protected int CurrentPage = 1;
-        public bool HasNextPage { get; protected set; } = false;
-        public int TotalItems { get; protected set; } = 0;
+        protected int _CurrentPage = 1;
         protected string _SearchString;
         protected bool _Type;
         protected string _SortBy;
 
-
+        public bool HasNextPage { get; protected set; } = false;
         public string SearchString {
             get { return _SearchString; }
             set {
@@ -51,27 +49,25 @@ namespace DesktopWeeabo2.API.Shared {
 
             if (SearchString.Length == 0) { throw new ArgumentNullException("SearchString is empty."); }
 
-            JObject result = JObject.Parse(await APIQueries.Search(SearchString, CurrentPage, SortBy, Type));
+            JObject result = JObject.Parse(await APIQueries.Search(_SearchString, _CurrentPage, _SortBy, _Type));
+
+            if (result["data"].Type == JTokenType.Null) { throw new ArgumentException("Something went wrong with the Query."); }
+
             HasNextPage = (bool)result["data"]["Page"]["pageInfo"]["hasNextPage"];
-            TotalItems += (int)result["data"]["Page"]["pageInfo"]["total"];
 
             return ManageItems((JArray)result["data"]["Page"]["media"]);
         }
 
         public bool TryMoveToNextSet() {
             if (HasNextPage) {
-                CurrentPage += 1;
+                _CurrentPage += 1;
                 return true;
-            }
-            else {
-                return false;
-            }
+            } else { return false; }
         }
 
         protected void ResetQueryVars() {
-            CurrentPage = 1;
+            _CurrentPage = 1;
             HasNextPage = false;
-            TotalItems = 0;
         }
 
         protected virtual T[] ManageItems(JArray items) => new T[0];

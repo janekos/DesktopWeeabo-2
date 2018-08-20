@@ -100,7 +100,7 @@ namespace DesktopWeeabo2.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to query ($id: Int, $page: Int, $search: String, $sort: [MediaSort]) {
-        ///	Page(page: $page, perPage: 10000) {
+        ///	Page(page: $page, perPage: 50) {
         ///		pageInfo { 
         ///			total
         ///			hasNextPage
@@ -130,7 +130,8 @@ namespace DesktopWeeabo2.Properties {
         ///				day
         ///			}
         ///			episodes 
-        ///			duration  [rest of string was truncated]&quot;;.
+        ///			duration 
+        ///	 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SearchAnimeQuery {
             get {
@@ -140,7 +141,7 @@ namespace DesktopWeeabo2.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to query ($id: Int, $page: Int, $search: String, $sort: [MediaSort] ) {
-        ///	Page(page: $page, perPage: 10000) {
+        ///	Page(page: $page, perPage: 50) {
         ///		pageInfo { 
         ///			total
         ///			hasNextPage
@@ -166,9 +167,9 @@ namespace DesktopWeeabo2.Properties {
         ///	}
         ///}.
         /// </summary>
-        internal static string SerachMangaQuery {
+        internal static string SearchMangaQuery {
             get {
-                return ResourceManager.GetString("SerachMangaQuery", resourceCulture);
+                return ResourceManager.GetString("SearchMangaQuery", resourceCulture);
             }
         }
     }
