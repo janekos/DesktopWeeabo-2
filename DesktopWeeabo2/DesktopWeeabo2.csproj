@@ -58,6 +58,9 @@
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -95,6 +98,13 @@
     <Compile Include="Data\EntriesContext.cs" />
     <Compile Include="Data\GlobalConfig.cs" />
     <Compile Include="Data\InitAppData.cs" />
+    <Compile Include="Data\Repositories\AnimeRepo.cs" />
+    <Compile Include="Data\Repositories\MangaRepo.cs" />
+    <Compile Include="Data\Repositories\Shared\IRepo.cs" />
+    <Compile Include="Helpers\SelectedItemToVisibilityConverter.cs" />
+    <Compile Include="Helpers\StringLengthToVisibilityConverter.cs" />
+    <Compile Include="Helpers\ToastService.cs" />
+    <Compile Include="Helpers\ViewStatusToVisibilityConverter.cs" />
     <Compile Include="ViewModels\AnimeViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MangaViewModel.cs" />

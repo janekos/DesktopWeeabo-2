@@ -17,8 +17,8 @@ using System.Windows.Shapes;
 namespace DesktopWeeabo2.Views {
     public partial class AnimeView : UserControl {
         public AnimeView() {
-            InitializeComponent();
             DataContext = new AnimeViewModel();
+            InitializeComponent();
         }
     }
 }

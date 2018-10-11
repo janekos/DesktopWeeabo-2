@@ -5,6 +5,7 @@ using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,21 +14,53 @@ using System.Windows.Data;
 namespace DesktopWeeabo2.ViewModels {
     class MangaViewModel : BaseItemViewModel {
 
-        //private EntriesContext db;
         public ObservableCollection<MangaModel> MangaItems { get; set; } = new ObservableCollection<MangaModel>();
 
         private MangaAPIEnumerator mae = new MangaAPIEnumerator("", false, "");
+        private MangaModel _SelectedItem = null;
+
+        public MangaModel SelectedItem {
+            get { return _SelectedItem; }
+            set {
+                if (_SelectedItem != value) {
+                    _SelectedItem = value;
+                    RaisePropertyChanged("SelectedItem");
+                }
+            }
+        }
 
         public MangaViewModel() : base() {
             BindingOperations.EnableCollectionSynchronization(MangaItems, _CollectionLock);
         }
 
+        protected override void Property_Changed(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case "SearchText":
+
+                    RenewView();
+
+                    if (_CurrentView.Equals(StatusView.Online)) { AddOnlineItemsToView(); }
+                    else { AddLocalItemsToView(); }
+                    break;
+
+                case "SelectedItem":
+                    if (_SelectedItem != null) {
+                        System.Diagnostics.Debug.WriteLine(_SelectedItem.Chapters);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
         protected override void RenewView() {
             MangaItems.Clear();
+            _SelectedItem = null;
             TotalItems = 0;
         }
 
-        protected override void AddLocalItems() {
+        protected override void AddLocalItemsToView() {
 
             lock (_CollectionLock) {
                 Task.Run(() => {
@@ -47,7 +80,7 @@ namespace DesktopWeeabo2.ViewModels {
             };
         }
 
-        protected override async void AddOnlineItems() {
+        protected override async void AddOnlineItemsToView() {
 
             mae.SearchString = _SearchText;
 
