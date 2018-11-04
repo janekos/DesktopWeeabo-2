@@ -30,7 +30,6 @@ namespace DesktopWeeabo2 {
             //test();
         }
 
-
         private void test() {
             Task.Run(() => {
                 string[] animeStatus = { "Towatch", "Viewed", "Watching", "Dropped"};

@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="730" d:DesignWidth="1004">
     <UserControl.Resources>
-        <conv:ViewStatusToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <conv:CustomConverter x:Key="Converter" />
     </UserControl.Resources>
     <Grid Background="White">
         <TextBlock Foreground="Black" FontSize="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-3,0,0,0">Manga items</TextBlock>
@@ -33,7 +33,7 @@
                                 <TextBlock Text="{Binding TitleNative}"></TextBlock>
                                 <TextBlock Text="{Binding Type}"></TextBlock>
                                 <TextBlock Text="{Binding ReadingStatus}"></TextBlock>
-                                <Button Visibility="{Binding Path=DataContext.CurrentView, ElementName=MangaViewControl, Converter={StaticResource StringToVisibilityConverter}}">Add to db</Button>
+                                <Button Visibility="{Binding Path=DataContext.CurrentView, ElementName=MangaViewControl, Converter={StaticResource Converter}, ConverterParameter=isStringEmpty}">Add to db</Button>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

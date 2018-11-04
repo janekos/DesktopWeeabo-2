@@ -101,10 +101,9 @@
     <Compile Include="Data\Repositories\AnimeRepo.cs" />
     <Compile Include="Data\Repositories\MangaRepo.cs" />
     <Compile Include="Data\Repositories\Shared\IRepo.cs" />
-    <Compile Include="Helpers\SelectedItemToVisibilityConverter.cs" />
-    <Compile Include="Helpers\StringLengthToVisibilityConverter.cs" />
+    <Compile Include="Helpers\MultiValueCustomConverter.cs" />
+    <Compile Include="Helpers\CustomConverter.cs" />
     <Compile Include="Helpers\ToastService.cs" />
-    <Compile Include="Helpers\ViewStatusToVisibilityConverter.cs" />
     <Compile Include="ViewModels\AnimeViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MangaViewModel.cs" />

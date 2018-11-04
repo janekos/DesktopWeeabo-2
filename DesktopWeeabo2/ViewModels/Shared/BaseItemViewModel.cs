@@ -11,6 +11,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
     public abstract class BaseItemViewModel : BaseViewModel {
 
         protected int _TotalItems { get; set; } = 0;
+        protected bool _IsContentLoading { get; set; } = false;
         protected string _SearchText { get; set; } = "";
         protected string _CurrentView { get; set; } = StatusView.Online;
         protected readonly object _CollectionLock = new object();
@@ -25,7 +26,17 @@ namespace DesktopWeeabo2.ViewModels.Shared {
             }
         }
 
-        public string CurrentView{
+		public bool IsContentLoading {
+			get { return _IsContentLoading; }
+			set {
+				if (_IsContentLoading != value) {
+					_IsContentLoading = value;
+					RaisePropertyChanged("IsContentLoading");
+				}
+			}
+		}
+
+		public string CurrentView{
             get { return _CurrentView; }
             set {
                 if (_CurrentView != value) {
@@ -52,7 +63,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
         public DelegateCommand ChangeItemSource => new DelegateCommand(
             new Action<object>((e) => {
 
-                _CurrentView = e as string;
+                CurrentView = e as string;
                 RenewView();
 
                 if (e.Equals(StatusView.Online)) { AddOnlineItemsToView(); }
@@ -75,10 +86,6 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 
         protected virtual void AddOnlineItemsToView() {
             throw new NotImplementedException("AddOnlineItems has to be implemented in ViewModel.");
-        }
-
-        protected virtual void DeleteItemFromDb() {
-            throw new NotImplementedException("DeleteItemFromDb has to be implemented in ViewModel.");
         }
     }
 }

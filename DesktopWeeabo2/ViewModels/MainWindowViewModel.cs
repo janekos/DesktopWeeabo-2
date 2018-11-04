@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace DesktopWeeabo2.ViewModels {
 	class MainWindowViewModel : BaseViewModel {
@@ -23,7 +24,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		private string _ToastBorderColor = "";
+		private string _ToastBorderColor = Brushes.Transparent.ToString();
 		public string ToastBorderColor {
 			get { return _ToastBorderColor; }
 			set {
@@ -34,7 +35,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		private string _ToastBackgroundColor = "";
+		private string _ToastBackgroundColor = Brushes.Transparent.ToString();
 		public string ToastBackgroundColor {
 			get { return _ToastBackgroundColor; }
 			set {
@@ -45,7 +46,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		private string _ToastTextColor = "";
+		private string _ToastTextColor = Brushes.Transparent.ToString();
 		public string ToastTextColor {
 			get { return _ToastTextColor; }
 			set {

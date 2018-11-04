@@ -4,60 +4,101 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopWeeabo2"
-        xmlns:Views = "clr-namespace:DesktopWeeabo2.Views" 
-        xmlns:ViewModels = "clr-namespace:DesktopWeeabo2.ViewModels" 
+        xmlns:Views="clr-namespace:DesktopWeeabo2.Views"
+        xmlns:ViewModels="clr-namespace:DesktopWeeabo2.ViewModels"
+        xmlns:conv="clr-namespace:DesktopWeeabo2.Helpers"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1024" MinWidth="1024" MinHeight="800">
+        Title="MainWindow"
+        Height="800"
+        Width="1024"
+        MinWidth="1024"
+        MinHeight="800">
 
     <Window.Resources>
-        <DataTemplate DataType = "{x:Type ViewModels:AnimeViewModel}">
-            <Views:AnimeView/>
+        <DataTemplate DataType="{x:Type ViewModels:AnimeViewModel}">
+            <Views:AnimeView />
         </DataTemplate>
-        <DataTemplate DataType = "{x:Type ViewModels:MangaViewModel}">
-            <Views:MangaView/>
+        <DataTemplate DataType="{x:Type ViewModels:MangaViewModel}">
+            <Views:MangaView />
         </DataTemplate>
-        <DataTemplate DataType = "{x:Type ViewModels:SettingsViewModel}">
-            <Views:SettingsView/>
+        <DataTemplate DataType="{x:Type ViewModels:SettingsViewModel}">
+            <Views:SettingsView />
         </DataTemplate>
+        <conv:CustomConverter x:Key="CustomConverter" />
     </Window.Resources>
 
     <Grid>
-
-        <Label Content="LOGO" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="53" Width="107" FontSize="36" BorderBrush="Black" BorderThickness="2"/>
-        <Button Content="Anime" HorizontalAlignment="Left" Margin="122,10,0,0" VerticalAlignment="Top" Width="107" Height="53" FontSize="20" Command="{Binding ChangeView}" CommandParameter="AnimeView"/>
-        <Button Content="Manga" HorizontalAlignment="Left" Margin="234,10,0,0" VerticalAlignment="Top" Width="107" Height="53" FontSize="20" Command="{Binding ChangeView}" CommandParameter="MangaView"/>
-        <Button Content="Settings" HorizontalAlignment="Left" Margin="346,10,0,0" VerticalAlignment="Top" Width="107" Height="53" FontSize="20" Command="{Binding ChangeView}" CommandParameter="SettingsView"/>
-        <Border 
-            x:Name="Toast"
-            HorizontalAlignment="Right" 
-            VerticalAlignment="Top" 
-            BorderThickness="2" 
-            Margin="0,10,10,0" 
-            CornerRadius="6" 
-            MinHeight="53"
-            Opacity="0"
-            BorderBrush="{Binding Path=ToastBorderColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-            Background="{Binding Path=ToastBackgroundColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-            >
-            <TextBlock 
-                Text="{Binding Path=ToastMessage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}" 
-                HorizontalAlignment="Left" 
-                VerticalAlignment="Center"
-                Foreground="{Binding Path=ToastTextColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                Margin="20, 5"
-                FontSize="16"
-                />
+        <Label Content="LOGO"
+               HorizontalAlignment="Left"
+               Margin="10,10,0,0"
+               VerticalAlignment="Top"
+               Height="53"
+               Width="107"
+               FontSize="36"
+               BorderBrush="Black"
+               BorderThickness="2" />
+        <Button Content="Anime"
+                HorizontalAlignment="Left"
+                Margin="122,10,0,0"
+                VerticalAlignment="Top"
+                Width="107"
+                Height="53"
+                FontSize="20"
+                Command="{Binding ChangeView}"
+                CommandParameter="AnimeView" />
+        <Button Content="Manga"
+                HorizontalAlignment="Left"
+                Margin="234,10,0,0"
+                VerticalAlignment="Top"
+                Width="107"
+                Height="53"
+                FontSize="20"
+                Command="{Binding ChangeView}"
+                CommandParameter="MangaView" />
+        <Button Content="Settings"
+                HorizontalAlignment="Left"
+                Margin="346,10,0,0"
+                VerticalAlignment="Top"
+                Width="107"
+                Height="53"
+                FontSize="20"
+                Command="{Binding ChangeView}"
+                CommandParameter="SettingsView" />
+        <Border x:Name="Toast"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                BorderThickness="2"
+                Margin="0,10,10,0"
+                CornerRadius="6"
+                MinHeight="53"
+                Opacity="0"
+                BorderBrush="{Binding Path=ToastBorderColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                Background="{Binding Path=ToastBackgroundColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                IsHitTestVisible="False">
+            <TextBlock Text="{Binding Path=ToastMessage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnTargetUpdated=True}"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Foreground="{Binding Path=ToastTextColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                       Margin="20, 5"
+                       FontSize="16"
+                       Name="ToastBlock"/>
             <Border.Triggers>
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
                     <BeginStoryboard Name="ShowToast">
-                        <Storyboard FillBehavior="Stop" AutoReverse="True" Duration="0:0:2">
-                            <DoubleAnimation Storyboard.TargetName="Toast" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:.3" />
+                        <Storyboard FillBehavior="Stop"
+                                    AutoReverse="True"
+                                    Duration="0:0:2">
+                            <DoubleAnimation Storyboard.TargetName="Toast"
+                                             Storyboard.TargetProperty="Opacity"
+                                             To="1"
+                                             Duration="0:0:.3" />
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
             </Border.Triggers>
         </Border>
-        <ContentPresenter Content="{Binding ViewModelsView.CurrentItem}" Margin="10,70,10,10"/>
+        <ContentPresenter Content="{Binding ViewModelsView.CurrentItem}"
+                          Margin="10,70,10,10" />
     </Grid>
 
 </Window>

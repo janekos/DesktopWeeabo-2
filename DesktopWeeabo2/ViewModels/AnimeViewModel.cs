@@ -18,11 +18,10 @@ namespace DesktopWeeabo2.ViewModels {
 
         private AnimeAPIEnumerator aae = new AnimeAPIEnumerator("", true, "");
         private AnimeModel _SelectedItem = null;
-        //private AnimeRepo repo = new AnimeRepo(new EntriesContext());
 
         public ObservableCollection<AnimeModel> AnimeItems { get; set; } = new ObservableCollection<AnimeModel>();
 
-        public AnimeModel SelectedItem {
+		public AnimeModel SelectedItem {
             get { return _SelectedItem; }
             set {
                 if (_SelectedItem != value) {
@@ -37,7 +36,6 @@ namespace DesktopWeeabo2.ViewModels {
         }
 
         protected override void Property_Changed(object sender, PropertyChangedEventArgs e) {
-			ToastService.ShowToast("some property was changed in anime: " + e.PropertyName, "success");
             switch (e.PropertyName) {
                 case "SearchText":
 
@@ -62,24 +60,24 @@ namespace DesktopWeeabo2.ViewModels {
 			AnimeItems.Clear();
             _SelectedItem = null;
             TotalItems = 0;
+			IsContentLoading = false;
         }
 
         protected override void AddLocalItemsToView() {
 
             lock (_CollectionLock) {
                 Task.Run(() => {
-                    bool search = false;
-                    if (_SearchText.Length > 0) { search = true; }
-
+					IsContentLoading = true;
                     using (var db = new EntriesContext()) {
 
                         IQueryable entries;
 
-                        if (search) { entries = db.AnimeItems.Where(entry => entry.ViewingStatus.Equals(_CurrentView) && (entry.TitleEnglish.ToLower().Contains(_SearchText) || entry.TitleRomaji.ToLower().Contains(_SearchText) || entry.TitleNative.ToLower().Contains(_SearchText))); }
+                        if (_SearchText.Length > 0) { entries = db.AnimeItems.Where(entry => entry.ViewingStatus.Equals(_CurrentView) && (entry.TitleEnglish.ToLower().Contains(_SearchText) || entry.TitleRomaji.ToLower().Contains(_SearchText) || entry.TitleNative.ToLower().Contains(_SearchText))); }
                         else { entries = db.AnimeItems.Where(entry => entry.ViewingStatus.Equals(_CurrentView)); }
 
                         foreach (AnimeModel item in entries) { AnimeItems.Add(item); TotalItems += 1; }
                     }
+					IsContentLoading = false;
                 });
             };
         }
@@ -87,7 +85,7 @@ namespace DesktopWeeabo2.ViewModels {
         protected override async void AddOnlineItemsToView() {
 
             aae.SearchString = _SearchText;
-
+			IsContentLoading = true;
             try {
                 foreach (var item in await aae.GetCurrentSet()) {
                     AnimeItems.Add(item);
@@ -105,36 +103,85 @@ namespace DesktopWeeabo2.ViewModels {
             catch (ArgumentNullException ex) {
                 System.Diagnostics.Debug.WriteLine(ex.StackTrace);
             }
-
-        }
-        public DelegateCommand SaveAnimeItemToDb => new DelegateCommand(
+			IsContentLoading = false;
+		}
+        public DelegateCommand SaveItemToDb => new DelegateCommand(
             new Action<object>(async (e) => {
-
                 bool didUpdate = await Task.Run(() => {
                     var repo = new AnimeRepo(new EntriesContext());
-                    _SelectedItem.ViewingStatus = e.ToString();
+					try {
+						_SelectedItem.ViewingStatus = e.ToString();
+						if (repo.GetById(_SelectedItem.Id) == null) {
+							repo.Add(_SelectedItem);
+							ToastService.ShowToast("Succesfully saved \"" + (_SelectedItem.TitleEnglish?.Length > 0 ?
+																		   _SelectedItem.TitleEnglish :
+																		   _SelectedItem.TitleRomaji?.Length > 0 ?
+																		   _SelectedItem.TitleRomaji :
+																		   _SelectedItem.TitleNative) + "\" in \"" + _SelectedItem.ViewingStatus + "\" view!", "success");
+						} else {
+							repo.Update(_SelectedItem);
+							ToastService.ShowToast("Succesfully moved \"" + (_SelectedItem.TitleEnglish?.Length > 0 ?
+																			 _SelectedItem.TitleEnglish :
+																			 _SelectedItem.TitleRomaji?.Length > 0 ?
+																			 _SelectedItem.TitleRomaji :
+																			 _SelectedItem.TitleNative) + "\" to \"" + _SelectedItem.ViewingStatus + "\" view!", "success");
+						}
 
-                    if (repo.GetById(_SelectedItem.Id) == null) { repo.Add(_SelectedItem); }
-                    else { repo.Update(_SelectedItem); }
-
-                    return true;
+						return true;
+					} catch (Exception ex) {
+						ToastService.ShowToast("Something went wrong: " + ex.Message, "danger");
+						return false;
+					}
                 });
 
                 if (didUpdate) {
-                    RaisePropertyChanged("Msg_Saved");
                     if (_CurrentView != StatusView.Online) {
                         RenewView();
                         AddLocalItemsToView();
                     }
-
-                }
+				}
 
             }),
             (e) => { return true; }
         );
 
-        protected override void DeleteItemFromDb() {
-            throw new NotImplementedException("Not yet implemented");
-        }
-    }
+		public DelegateCommand DeleteItemFromDb => new DelegateCommand(
+			new Action<object>(async (e) => {
+				bool didUpdate = await Task.Run(() => {
+					var repo = new AnimeRepo(new EntriesContext());
+					try {
+
+					if (repo.GetById(_SelectedItem.Id) != null) {
+						repo.Delete(_SelectedItem.Id);
+						ToastService.ShowToast("Anime \"" + (_SelectedItem.TitleEnglish?.Length > 0 ?
+														   _SelectedItem.TitleEnglish :
+														   _SelectedItem.TitleRomaji?.Length > 0 ?
+														   _SelectedItem.TitleRomaji :
+														   _SelectedItem.TitleNative) + "\" in \"" + _SelectedItem.ViewingStatus + "\" was deleted succesfully!", "success");
+					} else {
+						ToastService.ShowToast("Anime \"" + (_SelectedItem.TitleEnglish?.Length > 0 ?
+														   _SelectedItem.TitleEnglish :
+														   _SelectedItem.TitleRomaji?.Length > 0 ?
+														   _SelectedItem.TitleRomaji :
+														   _SelectedItem.TitleNative) + "\" doesn't exist in \"" + _SelectedItem.ViewingStatus + "\" view.", "danger");
+					}
+
+					return true;
+					} catch (Exception ex) {
+						ToastService.ShowToast("Something went wrong: " + ex.Message, "danger");
+						return false;
+					}
+				});
+
+				if (didUpdate) {
+					if (_CurrentView != StatusView.Online) {
+						RenewView();
+						AddLocalItemsToView();
+					}
+				}
+
+			}),
+			(e) => { return true; }
+		);
+	}
 }
