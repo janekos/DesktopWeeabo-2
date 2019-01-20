@@ -17,16 +17,11 @@ namespace DesktopWeeabo2.ViewModels {
         public ObservableCollection<MangaModel> MangaItems { get; set; } = new ObservableCollection<MangaModel>();
 
         private MangaAPIEnumerator mae = new MangaAPIEnumerator("", false, "");
-        private MangaModel _SelectedItem = null;
 
+        private MangaModel _SelectedItem = null;
         public MangaModel SelectedItem {
             get { return _SelectedItem; }
-            set {
-                if (_SelectedItem != value) {
-                    _SelectedItem = value;
-                    RaisePropertyChanged("SelectedItem");
-                }
-            }
+            set { if (_SelectedItem != value) { _SelectedItem = value; RaisePropertyChanged("SelectedItem"); }}
         }
 
         public MangaViewModel() : base() {
@@ -39,7 +34,7 @@ namespace DesktopWeeabo2.ViewModels {
 
                     RenewView();
 
-                    if (_CurrentView.Equals(StatusView.Online)) { AddOnlineItemsToView(); }
+                    if (_CurrentView.Equals(StatusView.Online)) { AddOnlineItemsToView.Execute(null); }
                     else { AddLocalItemsToView(); }
                     break;
 
@@ -80,29 +75,37 @@ namespace DesktopWeeabo2.ViewModels {
             };
         }
 
-        protected override async void AddOnlineItemsToView() {
+		public DelegateCommand ChangeItemSource => new DelegateCommand(
+			new Action<object>((e) => {
 
-            mae.SearchString = _SearchText;
+				CurrentView = e as string;
+				RenewView();
 
-            try {
-                foreach (var item in await mae.GetCurrentSet()) {
-                    MangaItems.Add(item);
-                    TotalItems += 1;
-                }
+				if (e.Equals(StatusView.Online)) { AddOnlineItemsToView.Execute(null); }
+				else { AddLocalItemsToView(); }
+			}),
+			(e) => { return true; }
+		);
 
-                while (mae.TryMoveToNextSet()) {
-                    foreach (var item in await mae.GetCurrentSet()) {
-                        MangaItems.Add(item);
-                        TotalItems += 1;
-                    }
-                }
+		public DelegateCommand AddOnlineItemsToView => new DelegateCommand(
+			new Action(async () => {
+				mae.SearchString = SearchText;
+				IsContentLoading = true;
+				try {
+					foreach (var item in await mae.GetCurrentSet()) {
+						MangaItems.Add(item);
+						TotalItems += 1;
+					}
 
-            }
-            catch (ArgumentNullException ex) {
-                System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-            }
+					APIEnumeratorHasNextPage = mae.HasNextPage;
 
-        }
+				}
+				catch (ArgumentNullException ex) {
+					System.Diagnostics.Debug.WriteLine(ex.StackTrace);
+				}
+				IsContentLoading = false;
+			})
+		);
 
-    }
+	}
 }

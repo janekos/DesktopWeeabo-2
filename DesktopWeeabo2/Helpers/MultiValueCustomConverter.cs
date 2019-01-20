@@ -22,7 +22,7 @@ namespace DesktopWeeabo2.Helpers
 						}
 					    string currView = (((string)values[2]).Equals(StatusView.Towatch) ? "To watch" : ((string)values[2]).Equals(StatusView.Toread) ? "To read" : (string)values[2]);
 						if ((int) values[0] == 0 && ((string)values[1]).Length != 0) return "No result for " + values[1] + " in \""+ currView + "\" view"; ;
-						if((int) values[0] == 0) return "No items in \"" + currView + "\" view";					
+						if((int) values[0] == 0) return "No items in \"" + currView + "\" view";		
 					}
 					return null;
 				default:

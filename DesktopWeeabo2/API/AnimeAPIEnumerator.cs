@@ -1,4 +1,5 @@
 ﻿using DesktopWeeabo2.API.Shared;
+using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
 using Newtonsoft.Json.Linq;
 using System;
@@ -23,7 +24,7 @@ namespace DesktopWeeabo2.API {
                     Type = items[i]["type"].Type == JTokenType.Null ? "" : (string)items[i]["type"],
                     Format = items[i]["format"].Type == JTokenType.Null ? "" : (string)items[i]["format"],
                     Status = items[i]["status"].Type == JTokenType.Null ? "" : (string)items[i]["status"],
-                    Description = items[i]["description"].Type == JTokenType.Null ? "" : (string)items[i]["description"],
+                    Description = items[i]["description"].Type == JTokenType.Null ? "" : StringHelpers.CleanDescription((string)items[i]["description"]),
                     Episodes = items[i]["episodes"].Type == JTokenType.Null ? 0 : (int)items[i]["episodes"],
                     Duration = items[i]["duration"].Type == JTokenType.Null ? 0 : (int)items[i]["duration"],
                     Genres = items[i]["genres"].Type == JTokenType.Null ? "" : String.Join(", ", (items[1]["genres"] as JArray).ToObject<string[]>()),

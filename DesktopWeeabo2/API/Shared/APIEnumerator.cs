@@ -7,33 +7,39 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.API.Shared {
-    abstract class APIEnumerator<T> where T : BaseModel {
+	abstract class APIEnumerator<T> where T : BaseModel {
 
-        protected int _CurrentPage = 1;
+		protected int _CurrentPage = 1;
         protected string _SearchString;
         protected bool _Type;
         protected string _SortBy;
 
-        public bool HasNextPage { get; protected set; } = false;
+		public bool HasNextPage { get; protected set; } = false;
         public string SearchString {
             get { return _SearchString; }
             set {
-                _SearchString = value;
-                ResetQueryVars();
+				if (_SearchString != value) {
+					_SearchString = value;
+					ResetQueryVars();
+				}
             }
         }
         public bool Type {
             get { return _Type; }
             set {
-                _Type = value;
-                ResetQueryVars();
+				if (_Type != value) {
+					_Type = value;
+					ResetQueryVars();
+				}
             }
         }
         public string SortBy {
             get { return _SortBy; }
             set {
-                _SortBy = value;
-                ResetQueryVars();
+				if (_SortBy != value) {
+					_SortBy = value;
+					ResetQueryVars();
+				}
             }
         }
 
@@ -56,14 +62,9 @@ namespace DesktopWeeabo2.API.Shared {
 
             HasNextPage = (bool)result["data"]["Page"]["pageInfo"]["hasNextPage"];
 
-            return ManageItems((JArray)result["data"]["Page"]["media"]);
-        }
+			if (HasNextPage) _CurrentPage = _CurrentPage + 1;
 
-        public bool TryMoveToNextSet() {
-            if (HasNextPage) {
-                _CurrentPage += 1;
-                return true;
-            } else { return false; }
+            return ManageItems((JArray)result["data"]["Page"]["media"]);
         }
 
         protected void ResetQueryVars() {

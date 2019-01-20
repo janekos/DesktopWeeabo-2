@@ -14,6 +14,9 @@ namespace DesktopWeeabo2.Helpers
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			string[] parameters = ((string)parameter).Split('|');
 			switch (parameters[0]) {
+				case "isValueTrue":
+					if (value != null && (bool) value == true) return Visibility.Visible;
+					return Visibility.Collapsed;
 				case "isStringEmpty":
 					if (value == null || value.ToString().Length == 0) return Visibility.Collapsed;
 					return Visibility.Visible;

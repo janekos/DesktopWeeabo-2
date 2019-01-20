@@ -23,8 +23,10 @@
         <Style x:Key="SelectableButton"
                TargetType="Button">
             <Style.Triggers>
-                <Trigger Property="IsCancel" Value="true">
-                    <Setter Property="Background"                  Value="LightCyan"/>
+                <Trigger Property="IsCancel"
+                         Value="true">
+                    <Setter Property="Background"
+                            Value="LightCyan" />
                 </Trigger>
                 <Trigger Property="IsCancel"
                          Value="false">
@@ -33,6 +35,20 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <DataTemplate x:Key="WatchedOrDroppedConfirmer">
+            <Grid>
+                <TextBlock Text="To watch" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="ChangeConfirmer">
+            <TextBlock Text="Viewed" />
+        </DataTemplate>
+        <DataTemplate x:Key="DeleteConfirmer">
+            <TextBlock>
+                <Run Text="Are you sure you want to remove " FontWeight="Bold"></Run>
+                <Run Text="{Binding SelectedItem.TitleRomaji}"></Run>
+            </TextBlock>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid Background="White">
         <TextBlock Foreground="Black"
@@ -80,7 +96,7 @@
                 Command="{Binding ChangeItemSource}"
                 CommandParameter="{x:Static enum:StatusView.Watching}"
                 Style="{StaticResource SelectableButton}"
-                IsCancel="{Binding Path=CurrentView, Converter={StaticResource CustomConverter}, ConverterParameter=isButtonSelected|Watching}"/>
+                IsCancel="{Binding Path=CurrentView, Converter={StaticResource CustomConverter}, ConverterParameter=isButtonSelected|Watching}" />
         <Button Content="Dropped"
                 HorizontalAlignment="Left"
                 Margin="411,10,0,0"
@@ -90,7 +106,7 @@
                 Command="{Binding ChangeItemSource}"
                 CommandParameter="{x:Static enum:StatusView.Dropped}"
                 Style="{StaticResource SelectableButton}"
-                IsCancel="{Binding Path=CurrentView, Converter={StaticResource CustomConverter}, ConverterParameter=isButtonSelected|Dropped}"/>
+                IsCancel="{Binding Path=CurrentView, Converter={StaticResource CustomConverter}, ConverterParameter=isButtonSelected|Dropped}" />
         <TextBox HorizontalAlignment="Left"
                  Height="28"
                  Margin="476,9,0,0"
@@ -117,9 +133,16 @@
             <Border Grid.Column="0"
                     BorderBrush="Black"
                     BorderThickness="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                 <ListView SelectionMode="Single"
                           ItemsSource="{Binding AnimeItems}"
                           SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          VerticalAlignment="Stretch"
+                          Height="Auto"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <ListView.ItemTemplate>
@@ -154,6 +177,16 @@
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
                 </ListView>
+                <Button
+                    Grid.Row="1"
+                    Content="Load more"
+                    HorizontalAlignment="Stretch"
+                    Visibility="{Binding APIEnumeratorHasNextPage, Converter={StaticResource CustomConverter}, ConverterParameter=isValueTrue}"
+                    VerticalAlignment="Bottom"
+                    FontSize="20"
+                    Command="{Binding AddOnlineItemsToView}"
+                />
+                </Grid>
             </Border>
             <Border Grid.Column="0"
                     BorderBrush="Black"
@@ -183,7 +216,8 @@
                     BorderThickness="1">
                 <Grid>
                     <Grid Height="30"
-                          VerticalAlignment="Top">
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1*" />
@@ -232,7 +266,8 @@
                         <StackPanel DataContext="{Binding Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <Image Source="{Binding CoverImage}"
                                    Margin="-3,-3,-3,3"
-                                   Height="450" />
+                                   Height="450"
+                                   HorizontalAlignment="Left" />
                             <TextBlock Style="{StaticResource InfoBoxTextBlock}"
                                        Visibility="{Binding Path=TitleEnglish, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty}">
                             <Run Text="English: "
@@ -313,32 +348,65 @@
                             </TextBlock>
                         </StackPanel>
                     </ScrollViewer>
-                    <!--<StackPanel Visibility="Visible"
-                          VerticalAlignment="Top"
-                          Margin="0,30,0,0"
-                                Background="White">
-                        <Grid Margin="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Column="0" Content="hero" />
-                            <TextBox Grid.Column="1"
-                                     HorizontalAlignment="Stretch"
-                                     VerticalAlignment="Center" />
-                        </Grid>
-                        <Grid Margin="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"/>
-                                <ColumnDefinition Width="1*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0">Submit</Button>
-                            <Button Grid.Column="1">Cancel</Button>
-                        </Grid>
-                    </StackPanel>-->
+                    <Border BorderBrush="black"
+                            BorderThickness="1,0,1,1"
+                            VerticalAlignment="Top"
+                            Margin="0,30,0,0"
+                            Visibility="Visible"
+                            HorizontalAlignment="Stretch"
+                            Padding="5">
+                        <StackPanel Background="White">
+                            <ContentPresenter Margin="10">
+                                <ContentPresenter.Style>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="ContentTemplate"
+                                                Value="{StaticResource WatchedOrDroppedConfirmer}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=PressedTransferButton}"
+                                                         Value="Towatch">
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource ChangeConfirmer}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=PressedTransferButton}"
+                                                         Value="Watching">
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource ChangeConfirmer}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=PressedTransferButton}"
+                                                         Value="Viewed">
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource WatchedOrDroppedConfirmer}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=PressedTransferButton}"
+                                                         Value="Dropped">
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource WatchedOrDroppedConfirmer}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=PressedTransferButton}"
+                                                         Value="Delete">
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource DeleteConfirmer}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentPresenter.Style>
+                            </ContentPresenter>
+                            <Grid Margin="0,5,0,0"
+                                  Width="200"
+                                  HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="1*" />
+                                </Grid.ColumnDefinitions>
+                                <Button Margin="0,0,10,0"
+                                        Grid.Column="0">Submit</Button>
+                                <Button Grid.Column="1">Cancel</Button>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                 </Grid>
             </Border>
-            <Border Grid.Column="2"
+            <!--<Border Grid.Column="2"
                     VerticalAlignment="Stretch"
                     Background="White"
                     BorderBrush="Black"
@@ -352,7 +420,7 @@
                         Try clicking on an item
                     </TextBlock>
                 </Label>
-            </Border>
+            </Border>-->
         </Grid>
     </Grid>
 </UserControl>

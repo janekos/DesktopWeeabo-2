@@ -8,6 +8,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
     public class DelegateCommand : Command {
         private readonly Predicate<object> _canExecute;
         private readonly Action<object> _execute;
+        private readonly Action _executeNoVar;
 
         /// <summary>
         /// Constructs an instance of <c>DelegateCommand</c>.
@@ -38,20 +39,24 @@ namespace DesktopWeeabo2.ViewModels.Shared {
             _canExecute = canExecute;
         }
 
-        /// <summary>
-        /// Determines whether this command can execute.
-        /// </summary>
-        /// <remarks>
-        /// If there is no delegate to determine whether the command can execute, this method will return <see langword="true"/>. If a delegate was provided, this
-        /// method will invoke that delegate.
-        /// </remarks>
-        /// <param name="parameter">
-        /// The command parameter.
-        /// </param>
-        /// <returns>
-        /// <see langword="true"/> if the command can execute, otherwise <see langword="false"/>.
-        /// </returns>
-        public override bool CanExecute(object parameter) {
+		public DelegateCommand(Action executeNoVar) {
+			_executeNoVar = executeNoVar;
+		}
+
+		/// <summary>
+		/// Determines whether this command can execute.
+		/// </summary>
+		/// <remarks>
+		/// If there is no delegate to determine whether the command can execute, this method will return <see langword="true"/>. If a delegate was provided, this
+		/// method will invoke that delegate.
+		/// </remarks>
+		/// <param name="parameter">
+		/// The command parameter.
+		/// </param>
+		/// <returns>
+		/// <see langword="true"/> if the command can execute, otherwise <see langword="false"/>.
+		/// </returns>
+		public override bool CanExecute(object parameter) {
             if (_canExecute == null) {
                 return true;
             }
@@ -69,7 +74,8 @@ namespace DesktopWeeabo2.ViewModels.Shared {
         /// The command parameter.
         /// </param>
         public override void Execute(object parameter) {
-            _execute(parameter);
+			if (parameter == null) _executeNoVar();
+			else _execute(parameter);
         }
-    }
+	}
 }

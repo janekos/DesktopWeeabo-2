@@ -10,67 +10,45 @@ using System.Threading.Tasks;
 namespace DesktopWeeabo2.ViewModels.Shared {
     public abstract class BaseItemViewModel : BaseViewModel {
 
-        protected int _TotalItems { get; set; } = 0;
-        protected bool _IsContentLoading { get; set; } = false;
-        protected string _SearchText { get; set; } = "";
-        protected string _CurrentView { get; set; } = StatusView.Online;
         protected readonly object _CollectionLock = new object();
 
-        public int TotalItems {
-            get { return _TotalItems; }
-            set {
-                if (_TotalItems != value) {
-                    _TotalItems = value;
-                    RaisePropertyChanged("TotalItems");
-                }
-            }
-        }
-
-		public bool IsContentLoading {
-			get { return _IsContentLoading; }
-			set {
-				if (_IsContentLoading != value) {
-					_IsContentLoading = value;
-					RaisePropertyChanged("IsContentLoading");
-				}
-			}
+		protected bool _APIEnumeratorHasNextPage { get; set; } = false;
+		public bool APIEnumeratorHasNextPage {
+			get { return _APIEnumeratorHasNextPage; }
+			set { if (_APIEnumeratorHasNextPage != value) { _APIEnumeratorHasNextPage = value; RaisePropertyChanged("APIEnumeratorHasNextPage"); } }
 		}
 
+		protected int _TotalItems { get; set; } = 0;
+        public int TotalItems {
+            get { return _TotalItems; }
+            set { if (_TotalItems != value) { _TotalItems = value; RaisePropertyChanged("TotalItems"); }}
+        }
+
+        protected bool _IsContentLoading { get; set; } = false;
+		public bool IsContentLoading {
+			get { return _IsContentLoading; }
+			set { if (_IsContentLoading != value) { _IsContentLoading = value; RaisePropertyChanged("IsContentLoading"); }}
+		}
+
+        protected string _CurrentView { get; set; } = StatusView.Online;
 		public string CurrentView{
             get { return _CurrentView; }
-            set {
-                if (_CurrentView != value) {
-                    _CurrentView = value;
-                    RaisePropertyChanged("CurrentView");
-                }
-            }
+            set { if (_CurrentView != value) { _CurrentView = value; RaisePropertyChanged("CurrentView"); }}
         }
 
+        protected string _SearchText { get; set; } = "";
         public string SearchText {
             get { return _SearchText; }
-            set {
-                if (_SearchText != value) {
-                    _SearchText = (value as string).ToLower();
-                    RaisePropertyChanged("SearchText");
-                }
-            }
+            set { if (_SearchText != value) { _SearchText = (value as string).ToLower(); RaisePropertyChanged("SearchText"); }}
         }
 
-        public BaseItemViewModel() {
-            PropertyChanged += Property_Changed;
+        protected string _PressedTransferButton { get; set; } = "";
+		public string PressedTransferButton {
+            get { return _PressedTransferButton; }
+            set { if (_PressedTransferButton != value) { _PressedTransferButton = value as string; RaisePropertyChanged("PressedTransferButton"); }}
         }
 
-        public DelegateCommand ChangeItemSource => new DelegateCommand(
-            new Action<object>((e) => {
-
-                CurrentView = e as string;
-                RenewView();
-
-                if (e.Equals(StatusView.Online)) { AddOnlineItemsToView(); }
-                else { AddLocalItemsToView(); }
-            }),
-            (e) => { return true; }
-        );
+		public BaseItemViewModel() { PropertyChanged += Property_Changed; }
 
         protected virtual void Property_Changed(object sender, PropertyChangedEventArgs e) {
             throw new NotImplementedException("Property_Changed has to be implemented in ViewModel.");
@@ -82,10 +60,6 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 
         protected virtual void AddLocalItemsToView() {
             throw new NotImplementedException("AddLocalItems has to be implemented in ViewModel.");
-        }
-
-        protected virtual void AddOnlineItemsToView() {
-            throw new NotImplementedException("AddOnlineItems has to be implemented in ViewModel.");
         }
     }
 }

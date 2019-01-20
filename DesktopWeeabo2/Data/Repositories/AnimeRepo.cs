@@ -8,35 +8,33 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Data.Repositories {
-    class AnimeRepo : IRepo<AnimeModel> {
+    class AnimeRepo : IRepo<AnimeModel>, IDisposable {
 
-        private readonly EntriesContext _db;
+        private readonly EntriesContext _db = new EntriesContext();
 
-        public AnimeRepo(EntriesContext db) {
-            _db = db;
-        }
-
-        public void Add(AnimeModel item) {
+        public async void Add(AnimeModel item) {
             _db.AnimeItems.Add(item);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
         }
 
-        public void Delete(int id) {
-            _db.AnimeItems.Remove(GetById(id));
-            _db.SaveChanges();
-        }
+        public async void Delete(int id) {
+            _db.AnimeItems.Remove(await Get(id));
+			await _db.SaveChangesAsync();
+		}
 
         public void Update(AnimeModel item) {
             Delete(item.Id);
             Add(item);
         }
 
-        public AnimeModel[] GetAll() {
-            throw new NotImplementedException();
-        }
+        public async Task<AnimeModel> Get(int id) => await _db.AnimeItems.FindAsync((int)id);
 
-        public AnimeModel GetById(int id) {
-            return _db.AnimeItems.Find((int)id);
-        }
-    }
+		public Task<AnimeModel> Get(AnimeModel entity) {
+			throw new NotImplementedException();
+		}
+
+		public IEnumerable<AnimeModel> FindEnumerable(Func<AnimeModel, bool> expression) => _db.AnimeItems.Where(expression);
+
+		public void Dispose() => _db.Dispose();
+	}
 }

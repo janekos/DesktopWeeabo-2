@@ -10,7 +10,8 @@ namespace DesktopWeeabo2.Data.Repositories.Shared {
         void Add(T item);
         void Delete(int id);
         void Update(T item);
-        T GetById(int id);
-        T[] GetAll();
+        Task<T> Get(int id);
+		Task<T> Get(T entity);
+		IEnumerable<T> FindEnumerable(Func<T, bool> expression);
     }
 }

@@ -8,32 +8,36 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Data.Repositories
 {
-    class MangaRepo: IRepo<MangaModel> {
+    class MangaRepo: IRepo<MangaModel>, IDisposable {
 
-        private readonly EntriesContext _db;
+		private readonly EntriesContext _db = new EntriesContext();
 
-        public MangaRepo(EntriesContext db) {
-            _db = db;
-        }
+		public void Add(MangaModel item) {
+			throw new NotImplementedException();
+		}
 
-        public void Add(MangaModel item) {
-            throw new NotImplementedException();
-        }
+		public void Delete(int id) {
+			throw new NotImplementedException();
+		}
 
-        public void Delete(int id) {
-            throw new NotImplementedException();
-        }
+		public void Dispose() {
+			throw new NotImplementedException();
+		}
 
-        public void Update(MangaModel item) {
-            throw new NotImplementedException();
-        }
+		public IEnumerable<MangaModel> FindEnumerable(Func<MangaModel, bool> expression) {
+			throw new NotImplementedException();
+		}
 
-        public MangaModel[] GetAll() {
-            throw new NotImplementedException();
-        }
+		public Task<MangaModel> Get(int id) {
+			throw new NotImplementedException();
+		}
 
-        public MangaModel GetById(int id) {
-            throw new NotImplementedException();
-        }
-    }
+		public Task<MangaModel> Get(MangaModel entity) {
+			throw new NotImplementedException();
+		}
+
+		public void Update(MangaModel item) {
+			throw new NotImplementedException();
+		}
+	}
 }
