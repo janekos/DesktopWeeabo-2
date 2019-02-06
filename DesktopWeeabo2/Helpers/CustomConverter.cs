@@ -15,20 +15,22 @@ namespace DesktopWeeabo2.Helpers
 			string[] parameters = ((string)parameter).Split('|');
 			switch (parameters[0]) {
 				case "isValueTrue":
-					if (value != null && (bool) value == true) return Visibility.Visible;
-					return Visibility.Collapsed;
+					return (value != null && (bool) value) ? Visibility.Visible : Visibility.Collapsed;
 				case "isStringEmpty":
-					if (value == null || value.ToString().Length == 0) return Visibility.Collapsed;
-					return Visibility.Visible;
+					return (value == null || value.ToString().Length == 0) ? Visibility.Collapsed : Visibility.Visible;
 				case "isButtonSelected":
-					if (value != null && parameters[1] != null && (string) value == parameters[1]) return true;
-					return false;
+					return (value != null && parameters[1] != null && (string) value == parameters[1]);
 				case "isValueNull":
-					if (value == null) return Visibility.Visible;
-					return Visibility.Hidden;
+					return (value == null) ? Visibility.Visible : Visibility.Hidden;
 				case "isWhatViewingStatus":
-					if (value == null || ((AnimeModel)value).ViewingStatus == null || !((AnimeModel)value).ViewingStatus.Equals(parameters[1])) return false;
-					return true;
+					return !(value == null || ((AnimeModel)value).ViewingStatus == null || !((AnimeModel)value).ViewingStatus.Equals(parameters[1]));
+				case "reverseBoolean":
+					return !(value != null && (bool)value);
+				case "formatInfoBoxTextBlock":
+					if (value != null) {
+						if (value.GetType() == typeof(DateTime)) return ((DateTime)value).ToString("dd/MM/yyyy");
+					}
+					return value;
 				default:
 					return null;
 			}

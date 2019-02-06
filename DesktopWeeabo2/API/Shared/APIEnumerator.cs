@@ -45,20 +45,12 @@ namespace DesktopWeeabo2.API.Shared {
 
         public APIEnumerator() { }
 
-        public APIEnumerator(string _searchString, bool _type, string _sortBy) {
-            SearchString = _searchString;
-            Type = _type;
-            SortBy = _sortBy;
-        }
-
         public async Task<T[]> GetCurrentSet() {
-
-            if (SearchString.Length == 0) { return new T[0]; }
 
             JObject result = JObject.Parse(await APIQueries.Search(_SearchString, _CurrentPage, _SortBy, _Type));
 
             // raiseproperty faulty query
-            if (result["data"].Type == JTokenType.Null) { throw new ArgumentException("Something went wrong with the Query."); }
+            if (result["data"].Type == JTokenType.Null) { throw new ArgumentException("Server returned nothing."); }
 
             HasNextPage = (bool)result["data"]["Page"]["pageInfo"]["hasNextPage"];
 

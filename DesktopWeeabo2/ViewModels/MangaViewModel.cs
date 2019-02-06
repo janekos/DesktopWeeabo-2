@@ -16,7 +16,7 @@ namespace DesktopWeeabo2.ViewModels {
 
         public ObservableCollection<MangaModel> MangaItems { get; set; } = new ObservableCollection<MangaModel>();
 
-        private MangaAPIEnumerator mae = new MangaAPIEnumerator("", false, "");
+        private MangaAPIEnumerator mae = new MangaAPIEnumerator();
 
         private MangaModel _SelectedItem = null;
         public MangaModel SelectedItem {
@@ -24,9 +24,7 @@ namespace DesktopWeeabo2.ViewModels {
             set { if (_SelectedItem != value) { _SelectedItem = value; RaisePropertyChanged("SelectedItem"); }}
         }
 
-        public MangaViewModel() : base() {
-            BindingOperations.EnableCollectionSynchronization(MangaItems, _CollectionLock);
-        }
+        public MangaViewModel() : base() { BindingOperations.EnableCollectionSynchronization(MangaItems, _CollectionLock);}
 
         protected override void Property_Changed(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
@@ -34,7 +32,7 @@ namespace DesktopWeeabo2.ViewModels {
 
                     RenewView();
 
-                    if (_CurrentView.Equals(StatusView.Online)) { AddOnlineItemsToView.Execute(null); }
+                    if (_CurrentView.Equals(StatusView.ONLINE)) { AddOnlineItemsToView.Execute(null); }
                     else { AddLocalItemsToView(); }
                     break;
 
@@ -49,7 +47,7 @@ namespace DesktopWeeabo2.ViewModels {
             }
         }
 
-        protected override void RenewView() {
+        protected override void RenewView(bool isOnline = false) {
             MangaItems.Clear();
             _SelectedItem = null;
             TotalItems = 0;
@@ -81,7 +79,7 @@ namespace DesktopWeeabo2.ViewModels {
 				CurrentView = e as string;
 				RenewView();
 
-				if (e.Equals(StatusView.Online)) { AddOnlineItemsToView.Execute(null); }
+				if (e.Equals(StatusView.ONLINE)) { AddOnlineItemsToView.Execute(null); }
 				else { AddLocalItemsToView(); }
 			}),
 			(e) => { return true; }

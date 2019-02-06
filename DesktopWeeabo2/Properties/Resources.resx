@@ -120,6 +120,7 @@
   <data name="CreateAnimeTable" xml:space="preserve">
     <value>CREATE TABLE 'anime_entries' (
                     'id' integer not null primary key,
+                    'id_mal' integer default 0,
                     'mean_score' integer default 0,
                     'episodes' integer default 0,
                     'duration' integer default 0,
@@ -146,6 +147,7 @@
   <data name="CreateMangaTable" xml:space="preserve">
     <value>CREATE TABLE 'manga_entries' (
                     'id' integer not null primary key,
+                    'id_mal' integer default 0,
                     'mean_score' integer default 0,
                     'volumes' integer default 0,
                     'chapters' integer default 0,

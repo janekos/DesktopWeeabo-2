@@ -1,4 +1,5 @@
 ﻿using DesktopWeeabo2.Helpers;
+using DesktopWeeabo2.Helpers.Enums;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,17 @@ namespace DesktopWeeabo2.ViewModels {
 					_ToastMessage = value;
 				}
 				RaisePropertyChanged("ToastMessage");
+			}
+		}
+
+		private string _CurrentGlobalView = GlobalView.ANIMEVIEW;
+		public string CurrentGlobalView {
+			get { return _CurrentGlobalView; }
+			set {
+				if (_CurrentGlobalView != value) {
+					_CurrentGlobalView = value;
+				}
+				RaisePropertyChanged("CurrentGlobalView");
 			}
 		}
 
@@ -116,14 +128,15 @@ namespace DesktopWeeabo2.ViewModels {
 		new Action<object>(
 		(e) => {
 			if (ViewModelsView != null) {
+				CurrentGlobalView = e as string;
 				switch (e) {
-					case "AnimeView":
+					case GlobalView.ANIMEVIEW:
 						ViewModelsView.MoveCurrentToPosition(0);
 						break;
-					case "MangaView":
+					case GlobalView.MANGAVIEW:
 						ViewModelsView.MoveCurrentToPosition(1);
 						break;
-					case "SettingsView":
+					case GlobalView.SETTINGSVIEW:
 						ViewModelsView.MoveCurrentToPosition(2);
 						break;
 					default:

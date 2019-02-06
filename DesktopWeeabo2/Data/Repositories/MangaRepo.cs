@@ -1,4 +1,5 @@
 ﻿using DesktopWeeabo2.Data.Repositories.Shared;
+using DesktopWeeabo2.Helpers.Enums;
 using DesktopWeeabo2.Models;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,11 @@ namespace DesktopWeeabo2.Data.Repositories
 
 		private readonly EntriesContext _db = new EntriesContext();
 
-		public void Add(MangaModel item) {
+		public Task<RepoResponse> AddOrUpdate(MangaModel item) {
 			throw new NotImplementedException();
 		}
 
-		public void Delete(int id) {
+		public Task<RepoResponse> Delete(int id) {
 			throw new NotImplementedException();
 		}
 
@@ -33,10 +34,6 @@ namespace DesktopWeeabo2.Data.Repositories
 		}
 
 		public Task<MangaModel> Get(MangaModel entity) {
-			throw new NotImplementedException();
-		}
-
-		public void Update(MangaModel item) {
 			throw new NotImplementedException();
 		}
 	}

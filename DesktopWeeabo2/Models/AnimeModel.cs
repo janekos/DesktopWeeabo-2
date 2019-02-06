@@ -35,5 +35,5 @@ namespace DesktopWeeabo2.Models {
 
         [Column("current_episode")]
         public int CurrentEpisode { get; set; }
-    }
+	}
 }

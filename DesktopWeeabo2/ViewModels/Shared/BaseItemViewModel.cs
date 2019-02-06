@@ -18,6 +18,12 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 			set { if (_APIEnumeratorHasNextPage != value) { _APIEnumeratorHasNextPage = value; RaisePropertyChanged("APIEnumeratorHasNextPage"); } }
 		}
 
+		protected bool _IsAdvancedVisible { get; set; } = false;
+		public bool IsAdvancedVisible {
+			get { return _IsAdvancedVisible; }
+			set { if (_IsAdvancedVisible != value) { _IsAdvancedVisible = value; RaisePropertyChanged("IsAdvancedVisible"); } }
+		}
+
 		protected int _TotalItems { get; set; } = 0;
         public int TotalItems {
             get { return _TotalItems; }
@@ -30,7 +36,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 			set { if (_IsContentLoading != value) { _IsContentLoading = value; RaisePropertyChanged("IsContentLoading"); }}
 		}
 
-        protected string _CurrentView { get; set; } = StatusView.Online;
+		protected string _CurrentView { get; set; } = StatusView.ONLINE;
 		public string CurrentView{
             get { return _CurrentView; }
             set { if (_CurrentView != value) { _CurrentView = value; RaisePropertyChanged("CurrentView"); }}
@@ -54,7 +60,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
             throw new NotImplementedException("Property_Changed has to be implemented in ViewModel.");
         }
 
-        protected virtual void RenewView() {
+        protected virtual void RenewView(bool isOnline = false) {
             throw new NotImplementedException("RenewView has to be implemented in ViewModel.");
         }
 

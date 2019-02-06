@@ -3,13 +3,16 @@ using DesktopWeeabo2.Data;
 using DesktopWeeabo2.Data.Repositories;
 using DesktopWeeabo2.Data.Repositories.Shared;
 using DesktopWeeabo2.Helpers;
+using DesktopWeeabo2.Helpers.Enums;
 using DesktopWeeabo2.Models;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -17,16 +20,46 @@ using System.Windows.Data;
 namespace DesktopWeeabo2.ViewModels {
 	class AnimeViewModel : BaseItemViewModel {
 
-		private AnimeAPIEnumerator aae = new AnimeAPIEnumerator("", true, "");
+		//private string _testval { get; set; } = "All";
+		//public string testval {
+		//	get { return _testval; }
+		//	set {
+		//		if ((value as string).Length < 1) _testval = "All";
+		//		else _testval = value;
+		//		RaisePropertyChanged("testval");
+		//	}
+		//}
+		//public DelegateCommand SetChecked => new DelegateCommand(new Action(() => {testval = string.Join(", ", testsrc.Where(g => g.IsChecked).Select(g => g.Name).ToArray())}));
+
+		private AnimeAPIEnumerator aae = new AnimeAPIEnumerator();
 		public ObservableCollection<AnimeModel> AnimeItems { get; set; } = new ObservableCollection<AnimeModel>();
 
 		private AnimeModel _SelectedItem = null;
 		public AnimeModel SelectedItem {
 			get { return _SelectedItem; }
-			set { if (_SelectedItem != value) { _SelectedItem = value; RaisePropertyChanged("SelectedItem"); } }
+			set {
+				if (_SelectedItem != value) {
+					_SelectedItem = value;
+					RaisePropertyChanged("SelectedItem");
+					if (_SelectedItem != null) {
+						SelectedItemPersonalReview = _SelectedItem.PersonalReview;
+						SelectedItemPersonalScore = _SelectedItem.PersonalScore;
+					}
+				}
+			}
 		}
 
-		// stick personal review etc in selected item
+		public string SelectedItemTitle { get { return _SelectedItem == null ? null : StringHelpers.GetFirstNotNullItemTitle(_SelectedItem); } }
+
+		public string SelectedItemPersonalReview {
+			get { return _SelectedItem?.PersonalReview; }
+			set { if (_SelectedItem.PersonalReview != value) { _SelectedItem.PersonalReview = value; RaisePropertyChanged("SelectedItem"); } }
+		}
+
+		public int SelectedItemPersonalScore {
+			get { return _SelectedItem == null ? 0 : _SelectedItem.PersonalScore; }
+			set { if (_SelectedItem.PersonalScore != value) { _SelectedItem.PersonalScore = value; RaisePropertyChanged("SelectedItem"); } }
+		}
 
 		public AnimeViewModel() : base() { BindingOperations.EnableCollectionSynchronization(AnimeItems, _CollectionLock); }
 
@@ -34,7 +67,7 @@ namespace DesktopWeeabo2.ViewModels {
 			switch (e.PropertyName) {
 				case "SearchText":
 					RenewView();
-					if (_CurrentView.Equals(StatusView.Online)) AddOnlineItemsToView.Execute(null);
+					if (_CurrentView.Equals(StatusView.ONLINE)) AddOnlineItemsToView.Execute(null);
 					else AddLocalItemsToView();
 					break;
 				default:
@@ -42,10 +75,13 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		protected override void RenewView() {
-			AnimeItems.Clear();
-			SelectedItem = null;
-			TotalItems = 0;
+		protected override void RenewView(bool isOnline = false) {
+			if (!isOnline) {
+				AnimeItems.Clear();
+				SelectedItem = null;
+				TotalItems = 0;
+			}
+			APIEnumeratorHasNextPage = false;
 			IsContentLoading = false;
 			PressedTransferButton = "";
 		}
@@ -65,13 +101,16 @@ namespace DesktopWeeabo2.ViewModels {
 			};
 		}
 
+		public DelegateCommand TriggerViewStatusWasChanged => new DelegateCommand(new Action<object>(e => PressedTransferButton = e as string));
+		public DelegateCommand TriggerAdvancedWasClicked => new DelegateCommand(new Action(() => IsAdvancedVisible = !IsAdvancedVisible));
+
 		public DelegateCommand ChangeItemSource => new DelegateCommand(
 			new Action<object>((e) => {
 
 				CurrentView = e as string;
 				RenewView();
 
-				if (e.Equals(StatusView.Online)) { AddOnlineItemsToView.Execute(null); }
+				if (e.Equals(StatusView.ONLINE)) { AddOnlineItemsToView.Execute(null); }
 				else { AddLocalItemsToView(); }
 			})
 		);
@@ -81,57 +120,74 @@ namespace DesktopWeeabo2.ViewModels {
 				aae.SearchString = SearchText;
 				IsContentLoading = true;
 				try {
-					foreach (var item in await aae.GetCurrentSet()) {
-						AnimeItems.Add(item);
-						TotalItems += 1;
+					using (var repo = new AnimeRepo()) {
+						var onlineItems = await aae.GetCurrentSet();
+						var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
+
+						var localItems = repo.FindEnumerable(localItem => onlineItemsIds.Contains(localItem.Id)).ToArray();
+
+						for (int i = 0; i < localItems.Length; i++) {
+							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItems[i].Id);
+							currentItem.DateAdded = localItems[i].DateAdded;
+							currentItem.RewatchCount = localItems[i].RewatchCount;
+							currentItem.PersonalScore = localItems[i].PersonalScore;
+							currentItem.ViewingStatus = localItems[i].ViewingStatus;
+							currentItem.WatchPriority = localItems[i].WatchPriority;
+							currentItem.PersonalReview = localItems[i].PersonalReview;
+							currentItem.CurrentEpisode = localItems[i].CurrentEpisode;
+						}
+
+						for (int i = 0; i < onlineItems.Length; i++) {
+							AnimeItems.Add(onlineItems[i]);
+							TotalItems += 1;
+						}
+
+						APIEnumeratorHasNextPage = aae.HasNextPage;
 					}
+				} catch (ArgumentNullException ex) { ToastService.ShowToast(ex.Message, "danger");}
+				catch (HttpRequestException) { ToastService.ShowToast("The server isn't responding.", "danger");}
 
-					APIEnumeratorHasNextPage = aae.HasNextPage;
-
-				} catch (ArgumentNullException ex) {
-					System.Diagnostics.Debug.WriteLine(ex.StackTrace);
-				}
 				IsContentLoading = false;
 			})
 		);
 
 		public DelegateCommand SaveItemToDb => new DelegateCommand(
-			new Action<object>(async (e) => {
+			new Action(async () => {
 				try {
 					using (var repo = new AnimeRepo()) {
-						SelectedItem.ViewingStatus = e.ToString();
-						if (await repo.Get(_SelectedItem.Id) == null) {
-							repo.Add(_SelectedItem);
-							ToastService.ShowToast($"Succesfully saved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view!", "success");
-						} else {
-							repo.Update(_SelectedItem);
-							ToastService.ShowToast($"Succesfully moved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view!", "success");
-						}
+						SelectedItem.ViewingStatus = PressedTransferButton;
+						_SelectedItem.DateAdded = DateTime.Now;
+						var itemWorkResponse = await repo.AddOrUpdate(_SelectedItem);
 
-						if (CurrentView != StatusView.Online) {
+						if (itemWorkResponse == RepoResponse.ADDED) ToastService.ShowToast($"Succesfully saved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view!", "success");
+						else if (itemWorkResponse == RepoResponse.UPDATED) ToastService.ShowToast($"Succesfully moved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view!", "success");
+						else throw new Exception("Repo returned ERROR");
+
+						if (CurrentView == StatusView.ONLINE) {
+							RenewView(true);
+						} else {
 							RenewView();
 							AddLocalItemsToView();
 						}
-					}						
-				} catch (Exception ex) {
+					}
+				}
+				catch (Exception ex) {
 					ToastService.ShowToast($"Something went wrong: {ex.Message}.", "danger");
 				}
-			}),
-			(e) => { return true; }
+			})
 		);
 
 		public DelegateCommand DeleteItemFromDb => new DelegateCommand(
-			new Action<object>(async (e) => {
+			new Action(async () => {
 				try {
 					using (var repo = new AnimeRepo()) {
-						if (await repo.Get(_SelectedItem.Id) != null) {
-							repo.Delete(_SelectedItem.Id);
-							ToastService.ShowToast($"Anime '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", "success");
-						} else {
-							ToastService.ShowToast($"Anime '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.", "danger");
-						}
+						var itemDeleteResponse = await repo.Delete(_SelectedItem.Id);
+						if (itemDeleteResponse == RepoResponse.DELETED) ToastService.ShowToast($"Anime '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", "success");
+						else throw new Exception($"Anime '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
 
-						if (CurrentView != StatusView.Online) {
+						if (CurrentView == StatusView.ONLINE) {
+							RenewView(true);
+						} else {
 							RenewView();
 							AddLocalItemsToView();
 						}
@@ -139,8 +195,7 @@ namespace DesktopWeeabo2.ViewModels {
 				} catch (Exception ex) {
 					ToastService.ShowToast($"Something went wrong: {ex.Message}.", "danger");
 				}
-			}),
-			(e) => { return true; }
+			})
 		);
 	}
 }

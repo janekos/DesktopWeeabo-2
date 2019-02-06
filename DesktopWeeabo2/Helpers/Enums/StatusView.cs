@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.ViewModels.Shared {
     public static class StatusView {
-        public static string Online = "Online";
-        public static string Towatch = "Towatch";
-        public static string Toread = "Toread";
-        public static string Red = "Red";
-        public static string Reading = "Reading";
-        public static string Viewed = "Viewed";
-        public static string Watching = "Watching";
-        public static string Dropped = "Dropped";
+        public const string ONLINE = "Online";
+        public const string TOWATCH = "Towatch";
+        public const string TOREAD = "Toread";
+        public const string RED = "Red";
+        public const string READING = "Reading";
+        public const string VIEWED = "Viewed";
+        public const string WATCHING = "Watching";
+        public const string DROPPED = "Dropped";
+        public const string DELETE = "Delete";
     }
 }

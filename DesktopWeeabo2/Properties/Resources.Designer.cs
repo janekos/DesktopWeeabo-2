@@ -63,6 +63,7 @@ namespace DesktopWeeabo2.Properties {
         /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE &apos;anime_entries&apos; (
         ///                    &apos;id&apos; integer not null primary key,
+        ///                    &apos;id_mal&apos; integer default 0,
         ///                    &apos;mean_score&apos; integer default 0,
         ///                    &apos;episodes&apos; integer default 0,
         ///                    &apos;duration&apos; integer default 0,
@@ -70,7 +71,6 @@ namespace DesktopWeeabo2.Properties {
         ///                    &apos;format&apos; string default &apos;&apos;,
         ///                    &apos;status&apos; string default &apos;&apos;,
         ///                    &apos;description&apos; string default &apos;&apos;,
-        ///                    &apos;genres&apos; string default &apos;&apos;,
         ///                    &apos; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateAnimeTable {
@@ -82,6 +82,7 @@ namespace DesktopWeeabo2.Properties {
         /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE &apos;manga_entries&apos; (
         ///                    &apos;id&apos; integer not null primary key,
+        ///                    &apos;id_mal&apos; integer default 0,
         ///                    &apos;mean_score&apos; integer default 0,
         ///                    &apos;volumes&apos; integer default 0,
         ///                    &apos;chapters&apos; integer default 0,
@@ -89,8 +90,7 @@ namespace DesktopWeeabo2.Properties {
         ///                    &apos;format&apos; string default &apos;&apos;,
         ///                    &apos;status&apos; string default &apos;&apos;,
         ///                    &apos;description&apos; string default &apos;&apos;,
-        ///                    &apos;genres&apos; string default &apos;&apos;,
-        ///                    &apos;s [rest of string was truncated]&quot;;.
+        ///                    &apos;g [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string CreateMangaTable {
             get {

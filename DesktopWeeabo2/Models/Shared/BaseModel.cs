@@ -14,7 +14,10 @@ namespace DesktopWeeabo2.Models.Shared {
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("mean_score")]
+		[Column("id_mal")]
+		public int IdMal { get; set; }
+
+		[Column("mean_score")]
         public int MeanScore { get; set; }
 
         [Column("type")]
@@ -57,5 +60,5 @@ namespace DesktopWeeabo2.Models.Shared {
 
         [Column("date_added")]
         public DateTime DateAdded { get; set; }
-    }
+	}
 }

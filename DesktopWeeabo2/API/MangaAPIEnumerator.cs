@@ -10,8 +10,9 @@ using System.Threading.Tasks;
 namespace DesktopWeeabo2.API {
     class MangaAPIEnumerator : APIEnumerator<MangaModel> {
 
-        public MangaAPIEnumerator() : base() { }
-        public MangaAPIEnumerator(string _searchString, bool _type, string _sortBy) : base(_searchString, _type, _sortBy) { }
+        public MangaAPIEnumerator() {
+			Type = false;
+		}
 
         protected override MangaModel[] ManageItems(JArray items) {
 

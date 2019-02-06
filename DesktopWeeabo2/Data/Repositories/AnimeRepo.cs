@@ -1,4 +1,5 @@
 ﻿using DesktopWeeabo2.Data.Repositories.Shared;
+using DesktopWeeabo2.Helpers.Enums;
 using DesktopWeeabo2.Models;
 using System;
 using System.Collections.Generic;
@@ -12,20 +13,29 @@ namespace DesktopWeeabo2.Data.Repositories {
 
         private readonly EntriesContext _db = new EntriesContext();
 
-        public async void Add(AnimeModel item) {
-            _db.AnimeItems.Add(item);
-            await _db.SaveChangesAsync();
-        }
-
-        public async void Delete(int id) {
-            _db.AnimeItems.Remove(await Get(id));
-			await _db.SaveChangesAsync();
+        public async Task<RepoResponse> AddOrUpdate(AnimeModel item) {
+			if(await Get(item.Id) == null) {
+				_db.AnimeItems.Add(item);
+	            await _db.SaveChangesAsync();
+				return RepoResponse.ADDED;
+			} else if (await Delete(item.Id) == RepoResponse.DELETED) {
+				_db.AnimeItems.Add(item);
+				await _db.SaveChangesAsync();
+				return RepoResponse.UPDATED;
+			}
+			return RepoResponse.ERROR;
 		}
 
-        public void Update(AnimeModel item) {
-            Delete(item.Id);
-            Add(item);
-        }
+        public async Task<RepoResponse> Delete(int id) {
+			var item = await Get(id);
+
+			if (item != null) {
+				_db.AnimeItems.Remove(item);
+				await _db.SaveChangesAsync();
+				return RepoResponse.DELETED;
+			}
+			return RepoResponse.NOTEXISTS;
+		}
 
         public async Task<AnimeModel> Get(int id) => await _db.AnimeItems.FindAsync((int)id);
 

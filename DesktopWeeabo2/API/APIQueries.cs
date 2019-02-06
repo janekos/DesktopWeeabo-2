@@ -1,4 +1,5 @@
 ﻿using DesktopWeeabo2.Properties;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,15 @@ namespace DesktopWeeabo2.API {
         private static string SearchAnimeQuery = Resources.ResourceManager.GetString("SearchAnimeQuery");
         private static string SearchMangaQuery = Resources.ResourceManager.GetString("SearchMangaQuery");
 
-        static async public Task<string> Search(string search, int page = 1, string sort = "", bool anime = true) =>
+        static async public Task<string> Search(string search = "", int page = 1, string sort = "TITLE_ROMAJI", bool anime = true) =>
             await ExecuteRequest(
                 new Dictionary<string, string> {
                     { "query", anime ? SearchAnimeQuery : SearchMangaQuery },
-                    { "variables", String.Format("{{\"search\": \"{0}\", \"page\": {1}, \"sort\": \"{2}\"}}", search, page, sort.Length > 0 ? sort : "TITLE_ROMAJI") }
+                    { "variables", ($"{{" +
+						$"{(search.Length > 0 ? $"'search': '{search}', " : "")}" +
+						$"'page': {page}," +
+						$"'sort': '{(sort != null && sort.Length > 0 ? sort : "TITLE_ROMAJI")}'" +
+						$"}}").Replace("'", "\"") }
                 }
             );
 
