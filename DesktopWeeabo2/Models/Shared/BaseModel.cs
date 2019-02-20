@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DesktopWeeabo2.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -32,8 +33,11 @@ namespace DesktopWeeabo2.Models.Shared {
         [Column("description")]
         public string Description { get; set; }
 
-        /*problem kids*/
-        [Column("genres")]
+		[Column("is_adult")]
+		public bool IsAdult { get; set; }
+
+		/*problem kids*/
+		[Column("genres")]
         public string Genres { get; set; }
 
         [Column("synonyms")]
@@ -60,5 +64,17 @@ namespace DesktopWeeabo2.Models.Shared {
 
         [Column("date_added")]
         public DateTime DateAdded { get; set; }
+
+		public string FirstWorkingTitle {
+			get {
+				string title = StringHelpers.GetFirstNotNullItemTitle(this);
+				if (title.Length > 40) {
+					title = title.Substring(0, 40);
+					if (char.IsWhiteSpace(title[39])) title = title.Substring(0, 39);
+					return $"{title}...";
+				}
+				return title;
+			}
+		}
 	}
 }

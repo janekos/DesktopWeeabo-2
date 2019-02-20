@@ -20,5 +20,5 @@ namespace DesktopWeeabo2.Views {
             DataContext = new AnimeViewModel();
             InitializeComponent();
         }
-    }
+	}
 }

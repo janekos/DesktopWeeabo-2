@@ -39,6 +39,11 @@ namespace DesktopWeeabo2.ViewModels.Shared {
             _canExecute = canExecute;
         }
 
+		public DelegateCommand(Action executeNoVar, Predicate<object> canExecute) {
+			_executeNoVar = executeNoVar;
+			_canExecute = canExecute;
+		}
+
 		public DelegateCommand(Action executeNoVar) {
 			_executeNoVar = executeNoVar;
 		}

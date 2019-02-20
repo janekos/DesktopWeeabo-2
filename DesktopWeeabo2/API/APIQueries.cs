@@ -9,29 +9,23 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.API {
-    static class APIQueries {
+	static class APIQueries {
+		private static readonly HttpClient client = new HttpClient();
+		private static string AnilistSearchQuery = Resources.ResourceManager.GetString("AnilistSearchQuery");
 
-        private static readonly HttpClient client = new HttpClient();
+		static async public Task<string> Search(string variableString, bool anime = true) =>
+			await ExecuteRequest(
+				new Dictionary<string, string> {
+					{ "query", anime ? AnilistSearchQuery.Replace("{mediaTypeToReplace}", "ANIME") : AnilistSearchQuery.Replace("{mediaTypeToReplace}", "MANGA")},
+					{ "variables", variableString }
+				}
+			);
 
-        private static string SearchAnimeQuery = Resources.ResourceManager.GetString("SearchAnimeQuery");
-        private static string SearchMangaQuery = Resources.ResourceManager.GetString("SearchMangaQuery");
-
-        static async public Task<string> Search(string search = "", int page = 1, string sort = "TITLE_ROMAJI", bool anime = true) =>
-            await ExecuteRequest(
-                new Dictionary<string, string> {
-                    { "query", anime ? SearchAnimeQuery : SearchMangaQuery },
-                    { "variables", ($"{{" +
-						$"{(search.Length > 0 ? $"'search': '{search}', " : "")}" +
-						$"'page': {page}," +
-						$"'sort': '{(sort != null && sort.Length > 0 ? sort : "TITLE_ROMAJI")}'" +
-						$"}}").Replace("'", "\"") }
-                }
-            );
-
-        static async private Task<string> ExecuteRequest(Dictionary<string, string> variables) {
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage response = await client.PostAsync("https://graphql.anilist.co", new FormUrlEncodedContent(variables));
-            return await response.Content.ReadAsStringAsync();
-        }
-    }
+		static async private Task<string> ExecuteRequest(Dictionary<string, string> variables) {
+			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+			var a = new FormUrlEncodedContent(variables);
+			HttpResponseMessage response = await client.PostAsync("https://graphql.anilist.co", new FormUrlEncodedContent(variables));
+			return await response.Content.ReadAsStringAsync();
+		}
+	}
 }

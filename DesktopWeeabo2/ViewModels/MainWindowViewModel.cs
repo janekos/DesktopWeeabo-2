@@ -1,5 +1,4 @@
 ﻿using DesktopWeeabo2.Helpers;
-using DesktopWeeabo2.Helpers.Enums;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.Generic;

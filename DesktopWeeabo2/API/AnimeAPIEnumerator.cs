@@ -34,6 +34,7 @@ namespace DesktopWeeabo2.API {
 					TitleRomaji = items[i]["title"]["romaji"].Type == JTokenType.Null ? "" : (string)items[i]["title"]["romaji"],
 					TitleNative = items[i]["title"]["native"].Type == JTokenType.Null ? "" : (string)items[i]["title"]["native"],
 					CoverImage = items[i]["coverImage"]["large"].Type == JTokenType.Null ? "" : (string)items[i]["coverImage"]["large"],
+					IsAdult = items[i]["isAdult"].Type == JTokenType.Null ? false : (bool)items[i]["isAdult"],
 					StartDate = DateTime.Parse(
 						(items[i]["startDate"]["year"].Type == JTokenType.Null ? "0001" : (string)items[i]["startDate"]["year"]) + "-" +
 						(items[i]["startDate"]["month"].Type == JTokenType.Null ? "01" : (string)items[i]["startDate"]["month"]) + "-" +

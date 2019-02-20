@@ -1,4 +1,5 @@
-﻿using DesktopWeeabo2.Models;
+﻿using DesktopWeeabo2.Helpers;
+using DesktopWeeabo2.Models;
 using DesktopWeeabo2.Models.Shared;
 using System;
 using System.Collections.Generic;
@@ -6,16 +7,87 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static DesktopWeeabo2.Models.SearchModel;
 
 namespace DesktopWeeabo2.ViewModels.Shared {
     public abstract class BaseItemViewModel : BaseViewModel {
 
+		protected bool DontTriggerSearchChanged = false;
         protected readonly object _CollectionLock = new object();
 
-		protected bool _APIEnumeratorHasNextPage { get; set; } = false;
-		public bool APIEnumeratorHasNextPage {
-			get { return _APIEnumeratorHasNextPage; }
-			set { if (_APIEnumeratorHasNextPage != value) { _APIEnumeratorHasNextPage = value; RaisePropertyChanged("APIEnumeratorHasNextPage"); } }
+		public SearchModel SearchModel { get; set; } = new SearchModel();
+
+		public SortObject SelectedSort {
+			get { return SearchModel.SelectedSort; }
+			set { if (SearchModel.SelectedSort != value) {
+					SearchModel.SelectedSort = value;
+					RaisePropertyChanged("SelectedSort");
+					RaisePropertyChanged("SearchChanged");
+				}
+			}
+		}
+
+		public bool IsDescending {
+			get { return SearchModel.IsDescending; }
+			set { if (SearchModel.IsDescending != value) {
+					SearchModel.IsDescending = value;
+					RaisePropertyChanged("IsDescending");
+					RaisePropertyChanged("SearchChanged");
+				}
+			}
+		}
+
+		public bool IsAdult {
+			get { return SearchModel.IsAdult; }
+			set { if (SearchModel.IsAdult != value) {
+					SearchModel.IsAdult = value;
+					RaisePropertyChanged("IsAdult");
+					RaisePropertyChanged("SearchChanged");
+				}
+			}
+		}
+
+		public string SearchText {
+			get { return SearchModel.SearchText; }
+			set { if (SearchModel.SearchText != value) {
+					SearchModel.SearchText = (value as string).ToLower();
+					RaisePropertyChanged("SearchText");
+					RaisePropertyChanged("SearchChanged");
+				}
+			}
+		}
+
+		public GenreObject[] SearchGenres {
+			get { return SearchModel.GenresList; }
+			set {
+				if (SearchModel.GenresList != value) {
+					SearchModel.GenresList = value;
+					RaisePropertyChanged("SearchGenres");
+				}
+			}
+		}
+
+		private string _SelectedGenres { get; set; }
+		public string SelectedGenres {
+			get { return _SelectedGenres; }
+			set {
+				if (_SelectedGenres != value) {
+					_SelectedGenres = value;
+					RaisePropertyChanged("SelectedGenres");
+				}
+			}
+		}
+
+		protected bool _APIHasNextPage { get; set; } = false;
+		public bool APIHasNextPage {
+			get { return _APIHasNextPage; }
+			set { if (_APIHasNextPage != value) { _APIHasNextPage = value; RaisePropertyChanged("APIHasNextPage"); } }
+		}
+
+		protected int _APICurrentPage { get; set; } = 1;
+		public int APICurrentPage {
+			get { return _APICurrentPage; }
+			set { if (_APICurrentPage != value) { _APICurrentPage = value; RaisePropertyChanged("APICurrentPage"); } }
 		}
 
 		protected bool _IsAdvancedVisible { get; set; } = false;
@@ -30,7 +102,19 @@ namespace DesktopWeeabo2.ViewModels.Shared {
             set { if (_TotalItems != value) { _TotalItems = value; RaisePropertyChanged("TotalItems"); }}
         }
 
-        protected bool _IsContentLoading { get; set; } = false;
+		protected string _TotalAPIItems { get; set; } = "";
+		public string TotalAPIItems {
+			get { return _TotalAPIItems; }
+			set { if (_TotalAPIItems != value) { _TotalAPIItems = value; RaisePropertyChanged("TotalAPIItems"); } }
+		}
+
+		protected int _TotalAPIPages { get; set; } = 1;
+		public int TotalAPIPages {
+			get { return _TotalAPIPages; }
+			set { if (_TotalAPIPages != value) { _TotalAPIPages = value; RaisePropertyChanged("TotalAPIPages"); } }
+		}
+
+		protected bool _IsContentLoading { get; set; } = false;
 		public bool IsContentLoading {
 			get { return _IsContentLoading; }
 			set { if (_IsContentLoading != value) { _IsContentLoading = value; RaisePropertyChanged("IsContentLoading"); }}
@@ -40,12 +124,6 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 		public string CurrentView{
             get { return _CurrentView; }
             set { if (_CurrentView != value) { _CurrentView = value; RaisePropertyChanged("CurrentView"); }}
-        }
-
-        protected string _SearchText { get; set; } = "";
-        public string SearchText {
-            get { return _SearchText; }
-            set { if (_SearchText != value) { _SearchText = (value as string).ToLower(); RaisePropertyChanged("SearchText"); }}
         }
 
         protected string _PressedTransferButton { get; set; } = "";
@@ -67,5 +145,10 @@ namespace DesktopWeeabo2.ViewModels.Shared {
         protected virtual void AddLocalItemsToView() {
             throw new NotImplementedException("AddLocalItems has to be implemented in ViewModel.");
         }
-    }
+
+		public DelegateCommand SetChecked => new DelegateCommand(new Action(() => {
+			SelectedGenres = StringHelpers.GenreHelper(SearchModel.GenresList);
+			RaisePropertyChanged("SearchChanged");
+		}));
+	}
 }

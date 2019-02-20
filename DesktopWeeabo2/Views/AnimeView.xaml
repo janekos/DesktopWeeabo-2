@@ -4,16 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DesktopWeeabo2.Views"
-             xmlns:enum="clr-namespace:DesktopWeeabo2.ViewModels.Shared"
-             xmlns:conv="clr-namespace:DesktopWeeabo2.Helpers"
+             xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
              xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
              x:Name="AnimeViewControl"
              mc:Ignorable="d"
              d:DesignHeight="730"
              d:DesignWidth="1004">
     <UserControl.Resources>
-        <conv:CustomConverter x:Key="CustomConverter" />
-        <conv:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
+        <help:CustomConverter x:Key="CustomConverter" />
+        <help:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
     </UserControl.Resources>
     <Grid Background="White">
         <cc:SelectableButton SBContent="Online"
@@ -22,7 +21,7 @@
                              Width="60"
                              Height="28"
                              SBCommand="{Binding ChangeItemSource}"
-                             SBCommandParameter="{x:Static enum:StatusView.ONLINE}"
+                             SBCommandParameter="{x:Static help:StatusView.ONLINE}"
                              SBCurrentView="{Binding CurrentView}"
                              SBIsSelectedParameter="isButtonSelected|Online" />
         <cc:SelectableButton SBContent="To watch"
@@ -32,7 +31,7 @@
                              Width="60"
                              Height="28"
                              SBCommand="{Binding ChangeItemSource}"
-                             SBCommandParameter="{x:Static enum:StatusView.TOWATCH}"
+                             SBCommandParameter="{x:Static help:StatusView.TOWATCH}"
                              SBCurrentView="{Binding CurrentView}"
                              SBIsSelectedParameter="isButtonSelected|Towatch" />
         <cc:SelectableButton SBContent="Viewed"
@@ -42,7 +41,7 @@
                              Width="60"
                              Height="28"
                              SBCommand="{Binding ChangeItemSource}"
-                             SBCommandParameter="{x:Static enum:StatusView.VIEWED}"
+                             SBCommandParameter="{x:Static help:StatusView.VIEWED}"
                              SBCurrentView="{Binding CurrentView}"
                              SBIsSelectedParameter="isButtonSelected|Viewed" />
         <cc:SelectableButton SBContent="Watching"
@@ -52,7 +51,7 @@
                              Width="60"
                              Height="28"
                              SBCommand="{Binding ChangeItemSource}"
-                             SBCommandParameter="{x:Static enum:StatusView.WATCHING}"
+                             SBCommandParameter="{x:Static help:StatusView.WATCHING}"
                              SBCurrentView="{Binding CurrentView}"
                              SBIsSelectedParameter="isButtonSelected|Watching" />
         <cc:SelectableButton SBContent="Dropped"
@@ -62,12 +61,20 @@
                              Width="60"
                              Height="28"
                              SBCommand="{Binding ChangeItemSource}"
-                             SBCommandParameter="{x:Static enum:StatusView.DROPPED}"
+                             SBCommandParameter="{x:Static help:StatusView.DROPPEDANIME}"
                              SBCurrentView="{Binding CurrentView}"
-                             SBIsSelectedParameter="isButtonSelected|Dropped" />
+                             SBIsSelectedParameter="isButtonSelected|Droppedanime" />
+        <Button  Content="Search"
+                 HorizontalAlignment="Left"
+                 Padding="5,0,5,0"
+                 Height="28"
+                 Margin="316,0,0,0"
+                 Command="{Binding TriggerSearch, Delay=3000}"
+                 FontSize="14"
+                 VerticalAlignment="Top" />
         <TextBox HorizontalAlignment="Left"
                  Height="28"
-                 Margin="305,0,0,0"
+                 Margin="369,0,0,0"
                  TextWrapping="Wrap"
                  Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"
                  VerticalAlignment="Top"
@@ -77,7 +84,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 FontSize="16"
-                Margin="543,2,0,0"
+                Margin="607,2,0,0"
                 Foreground="#FF0066CC"
                 Cursor="Hand"
                 Command="{Binding TriggerAdvancedWasClicked}">
@@ -111,16 +118,18 @@
         </Button>
         <TextBlock HorizontalAlignment="Right"
                    TextWrapping="Wrap"
-                   Text="{Binding Path=TotalItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                    VerticalAlignment="Top"
                    MinWidth="10"
-                   FontSize="20" />
+                   FontSize="20">
+            <Run Text="{Binding Path=TotalItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Run Text="{Binding Path=TotalAPIItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" /></TextBlock>
         <Grid Margin="0,36,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition MinWidth="330"
+                <ColumnDefinition MinWidth="300"
                                   Width="4*" />
                 <ColumnDefinition Width="10" />
-                <ColumnDefinition MinWidth="330"
+                <ColumnDefinition MaxWidth="500"
+                                  MinWidth="300"
                                   Width="2*" />
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0"
@@ -141,11 +150,38 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <cc:WrapPanelItem WPIImage="{Binding CoverImage}"
-                                                  WPITitleRomaji="{Binding TitleRomaji}"
-                                                  WPITitleEnglish="{Binding TitleEnglish}"
-                                                  WPITitleNative="{Binding TitleNative}" />
+                                                  WPITitle="{Binding FirstWorkingTitle}" />
                             </DataTemplate>
                         </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected"
+                                             Value="True">
+                                        <Setter Property="BorderBrush"
+                                                Value="Black" />
+                                    </Trigger>
+                                </Style.Triggers>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                            <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    Background="{TemplateBinding Background}">
+                                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                  Content="{TemplateBinding Content}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Margin"
+                                        Value="2" />
+                                <Setter Property="BorderBrush"
+                                        Value="Transparent" />
+                                <Setter Property="BorderThickness"
+                                        Value="4" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel />
@@ -153,13 +189,21 @@
                         </ListView.ItemsPanel>
                     </ListView>
                     <Button Grid.Row="1"
-                            Content="Load more"
                             HorizontalAlignment="Stretch"
-                            Visibility="{Binding APIEnumeratorHasNextPage, Converter={StaticResource CustomConverter}, ConverterParameter=isValueTrue}"
+                            Visibility="{Binding APIHasNextPage, Converter={StaticResource CustomConverter}, ConverterParameter=isValueTrue}"
                             IsEnabled="{Binding IsContentLoading, Converter={StaticResource CustomConverter}, ConverterParameter=reverseBoolean}"
                             VerticalAlignment="Bottom"
                             FontSize="20"
-                            Command="{Binding AddOnlineItemsToView}" />
+                            Command="{Binding AddOnlineItemsToView}">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Load more: " />
+                                <TextBlock Text="{Binding APICurrentPage, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Text=" / " />
+                                <TextBlock Text="{Binding TotalAPIPages, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
                 </Grid>
             </Border>
             <Border Grid.Column="0"
@@ -184,12 +228,83 @@
             </Border>
             <GridSplitter Grid.Column="1"
                           HorizontalAlignment="Stretch" />
-            <Border Grid.Column="2"
-                    BorderBrush="Black"
-                    BorderThickness="1">
-                <Grid>
-                    <Grid Height="30"
-                          VerticalAlignment="Top"
+            <Grid Grid.Column="2">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              VerticalAlignment="Bottom">
+                    <StackPanel Background="GhostWhite"
+                                DataContext="{Binding Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <Image Source="{Binding CoverImage}"
+                               Height="Auto"
+                               Stretch="UniformToFill"
+                               MaxWidth="340"
+                               Margin="10,40,10,10"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Top" />
+                        <StackPanel Name="Titles"
+                                    Margin="5,0,15,0">
+                            <WrapPanel>
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding TitleEnglish}"
+                                                     StaticText="English: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding TitleRomaji}"
+                                                     StaticText="Romaji: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding TitleNative}"
+                                                     StaticText="Native: " />
+                            </WrapPanel>
+                            <Separator Margin="10,10,0,10" />
+                            <WrapPanel>
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding DateAdded}"
+                                                     StaticText="Date added: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding RewatchCount}"
+                                                     StaticText="Rewatch count: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding PersonalScore}"
+                                                     StaticText="Personal score: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding WatchPriority}"
+                                                     StaticText="Watch priority: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding CurrentEpisode}"
+                                                     StaticText="Current episode: " />
+                            </WrapPanel>
+                            <Separator Margin="10,10,0,10" />
+                            <cc:InfoBoxTextBlock DynamicItem="{Binding PersonalReview}"
+                                                 FirstItemLocation="Top"
+                                                 StaticText="Personal review: " />
+                            <Separator Margin="10,10,0,10" Visibility="{Binding PersonalReview, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty}" />
+                            <WrapPanel>
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding MeanScore}"
+                                                     StaticText="Mean score: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding Format}"
+                                                     StaticText="Format: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding Status}"
+                                                     StaticText="Status: " />
+                            </WrapPanel>
+                            <Separator Margin="10,10,0,10" />
+                            <WrapPanel>
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding Episodes}"
+                                                     StaticText="Number of episodes: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding Duration}"
+                                                     StaticText="Episode duration: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding StartDate}"
+                                                     StaticText="Start date: " />
+                                <cc:InfoBoxTextBlock DynamicItem="{Binding EndDate}"
+                                                     StaticText="End date: " />
+                            </WrapPanel>
+                            <Separator Margin="10,10,0,10" />
+                            <cc:InfoBoxTextBlock DynamicItem="{Binding Genres}"
+                                                 StaticText="Genres: " />
+                            <cc:InfoBoxTextBlock DynamicItem="{Binding Synonyms}"
+                                                 StaticText="Synonyms: " />
+                            <Separator Margin="10,10,0,10" />
+                            <cc:InfoBoxTextBlock DynamicItem="{Binding Description}"
+                                                 FirstItemLocation="Top"
+                                                 Margin="0,0,0,10"
+                                                 StaticText="Description: " />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+                <Grid Background="LightGray"
+                      Height="30"
+                      Margin="0,0,15,0"
+                      VerticalAlignment="Top">
+                    <Grid MaxWidth="340"
                           HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
@@ -202,7 +317,7 @@
                                              Grid.Column="0"
                                              BorderThickness="1,1,1,2"
                                              SBCommand="{Binding TriggerViewStatusWasChanged}"
-                                             SBCommandParameter="{x:Static enum:StatusView.TOWATCH}"
+                                             SBCommandParameter="{x:Static help:StatusView.TOWATCH}"
                                              SBSelectedItem="{Binding SelectedItem}"
                                              SBPressedTransferButton="{Binding PressedTransferButton}"
                                              SBIsEnabledParameter="isSwitcherButtonEnabled|Towatch" />
@@ -210,7 +325,7 @@
                                              Grid.Column="1"
                                              BorderThickness="1,1,1,2"
                                              SBCommand="{Binding TriggerViewStatusWasChanged}"
-                                             SBCommandParameter="{x:Static enum:StatusView.VIEWED}"
+                                             SBCommandParameter="{x:Static help:StatusView.VIEWED}"
                                              SBSelectedItem="{Binding SelectedItem}"
                                              SBPressedTransferButton="{Binding PressedTransferButton}"
                                              SBIsEnabledParameter="isSwitcherButtonEnabled|Viewed" />
@@ -218,7 +333,7 @@
                                              Grid.Column="2"
                                              BorderThickness="1,1,1,2"
                                              SBCommand="{Binding TriggerViewStatusWasChanged}"
-                                             SBCommandParameter="{x:Static enum:StatusView.WATCHING}"
+                                             SBCommandParameter="{x:Static help:StatusView.WATCHING}"
                                              SBSelectedItem="{Binding SelectedItem}"
                                              SBPressedTransferButton="{Binding PressedTransferButton}"
                                              SBIsEnabledParameter="isSwitcherButtonEnabled|Watching" />
@@ -226,76 +341,29 @@
                                              Grid.Column="3"
                                              BorderThickness="1,1,1,2"
                                              SBCommand="{Binding TriggerViewStatusWasChanged}"
-                                             SBCommandParameter="{x:Static enum:StatusView.DROPPED}"
+                                             SBCommandParameter="{x:Static help:StatusView.DROPPEDANIME}"
                                              SBSelectedItem="{Binding SelectedItem}"
                                              SBPressedTransferButton="{Binding PressedTransferButton}"
-                                             SBIsEnabledParameter="isSwitcherButtonEnabled|Dropped" />
+                                             SBIsEnabledParameter="isSwitcherButtonEnabled|Droppedanime" />
                         <cc:SelectableButton SBContent="Delete"
                                              Grid.Column="4"
                                              BorderThickness="1,1,1,2"
                                              SBCommand="{Binding TriggerViewStatusWasChanged}"
-                                             SBCommandParameter="{x:Static enum:StatusView.DELETE}"
+                                             SBCommandParameter="{x:Static help:StatusView.DELETE}"
                                              SBSelectedItem="{Binding SelectedItem}"
                                              SBPressedTransferButton="{Binding PressedTransferButton}"
                                              SBIsEnabledParameter="isSwitcherButtonEnabled|Delete" />
                     </Grid>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  VerticalAlignment="Bottom"
-                                  Margin="0,30,0,0">
-                        <StackPanel DataContext="{Binding Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <Image Source="{Binding CoverImage}"
-                                   Margin="-3,-3,-3,3"
-                                   Height="450"
-                                   HorizontalAlignment="Left" />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding DateAdded}"
-                                                 IBTBStaticText="Date added: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding RewatchCount}"
-                                                 IBTBStaticText="Rewatch count: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding PersonalScore}"
-                                                 IBTBStaticText="Personal score: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding WatchPriority}"
-                                                 IBTBStaticText="Watch priority: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding PersonalReview}"
-                                                 IBTBStaticText="Personal review: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding CurrentEpisode}"
-                                                 IBTBStaticText="Current episode: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding TitleEnglish}"
-                                                 IBTBStaticText="English: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding TitleRomaji}"
-                                                 IBTBStaticText="Romaji: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding TitleNative}"
-                                                 IBTBStaticText="Native: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding MeanScore}"
-                                                 IBTBStaticText="Mean score: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding Format}"
-                                                 IBTBStaticText="Format: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding Status}"
-                                                 IBTBStaticText="Status: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding Description}"
-                                                 IBTBStaticText="Description: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding Genres}"
-                                                 IBTBStaticText="Genres: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding Synonyms}"
-                                                 IBTBStaticText="Synonyms: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding Episodes}"
-                                                 IBTBStaticText="Number of episodes: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding Duration}"
-                                                 IBTBStaticText="Episode duration: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding StartDate}"
-                                                 IBTBStaticText="Start date: " />
-                            <cc:InfoBoxTextBlock IBTBDynamicItem="{Binding EndDate}"
-                                                 IBTBStaticText="End date: " />
-                        </StackPanel>
-                    </ScrollViewer>
-                    <cc:ChangeConfirmer CCDeleteItemCommand="{Binding DeleteItemFromDb}"
-                                        CCPressedTransferButton="{Binding PressedTransferButton}"
-                                        CCSaveItemCommand="{Binding SaveItemToDb}"
-                                        CCSelectedItemPersonalReview="{Binding Path=SelectedItemPersonalReview, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        CCSelectedItemPersonalScore="{Binding Path=SelectedItemPersonalScore, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        CCSelectedItemTitle="{Binding Path=SelectedItemTitle, Mode=OneWay}"
-                                        CCTriggerViewStatusWasChangedCommand="{Binding TriggerViewStatusWasChanged}" />
                 </Grid>
-            </Border>
+                <cc:ChangeConfirmer Margin="0,0,15,0"
+                                    CCDeleteItemCommand="{Binding DeleteItemFromDb}"
+                                    CCPressedTransferButton="{Binding PressedTransferButton}"
+                                    CCSaveItemCommand="{Binding SaveItemToDb}"
+                                    CCSelectedItemPersonalReview="{Binding Path=SelectedItemPersonalReview, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    CCSelectedItemPersonalScore="{Binding Path=SelectedItemPersonalScore, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    CCSelectedItemTitle="{Binding Path=SelectedItemTitle, Mode=OneWay}"
+                                    CCTriggerViewStatusWasChangedCommand="{Binding TriggerViewStatusWasChanged}" />
+            </Grid>
             <Border Grid.Column="2"
                     VerticalAlignment="Stretch"
                     Background="White"
@@ -311,98 +379,16 @@
                 </Label>
             </Border>
         </Grid>
-        <Border VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Background="White"
-                BorderBrush="Black"
-                BorderThickness="1"
-                Visibility="{Binding Path=IsAdvancedVisible, Converter={StaticResource CustomConverter}, ConverterParameter=isValueTrue}">
-            <Border.Effect>
-                <DropShadowEffect ShadowDepth="5"
-                                  Color="Gray" />
-            </Border.Effect>
-            <StackPanel Margin="10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="110" />
-                        <ColumnDefinition Width="140" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="ADVANCED SEARCH"
-                               HorizontalAlignment="Center"
-                               FontSize="20"
-                               Margin="0,0,0,10"
-                               Grid.Row="0"
-                               Grid.ColumnSpan="2" />
-                    <Label Content="Sort by"
-                           Grid.Row="1"
-                           Grid.Column="0" />
-                    <ComboBox Grid.Column="1"
-                              Grid.Row="1"
-                              Height="20"
-                              HorizontalAlignment="Left">
-                        <ComboBoxItem Content="fir" />
-                        <ComboBoxItem Content="sec" />
-                        <ComboBoxItem Content="thi" />
-                    </ComboBox>
-                    <Label Content="descending"
-                           Grid.Row="2"
-                           Grid.Column="0" />
-                    <CheckBox Grid.Column="1"
-                              Grid.Row="2"
-                              HorizontalAlignment="Left"
-                              Margin="0,5,0,0" />
-                    <Label Content="Is adult"
-                           Grid.Row="3"
-                           Grid.Column="0" />
-                    <CheckBox Grid.Column="1"
-                              Grid.Row="3"
-                              HorizontalAlignment="Left"
-                              Margin="0,5,0,0" />
-                    <Label Content="Selected genres"
-                           Grid.Row="4"
-                           VerticalAlignment="Center"
-                           Grid.Column="0" />
-                    <TextBlock Text="{Binding testval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                               Grid.Row="4"
-                               Grid.Column="1"
-                               Margin="0,0,0,10"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center" />
-                    <Label Content="Select genres"
-                           Grid.Row="5"
-                           VerticalAlignment="Center"
-                           Grid.Column="0" />
-                    <ListBox ItemsSource="{Binding testsrc}"
-                             Grid.Row="5"
-                             Height="100"
-                             Grid.Column="1"
-                             IsTextSearchEnabled="True"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}"
-                                          Content="{Binding Name}"
-                                          Command="{Binding ElementName=AnimeViewControl, Path=DataContext.SetChecked}"
-                                          CommandParameter="{Binding Id}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="Focusable"
-                                        Value="False" />
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
-                </Grid>
-            </StackPanel>
-        </Border>
+        <cc:AdvancedSearch ASIsVisible="{Binding IsAdvancedVisible}"
+                           ASClearFilter="{Binding ClearFilterTriggered}"
+                           ASGenresList="{Binding SearchGenres, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                           ASHideComponent="{Binding TriggerAdvancedWasClicked}"
+                           ASCurrentView="{Binding CurrentView, UpdateSourceTrigger=PropertyChanged}"
+                           ASIsAdult="{Binding Path=IsAdult, Mode=TwoWay}"
+                           ASSelectedSort="{Binding Path=SelectedSort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ASIsDescending="{Binding Path=IsDescending, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ASSelectedGenres="{Binding SelectedGenres, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                           ASSetChecked="{Binding SetChecked}"
+                           ASSortsList="{Binding Path=SearchModel.SortsList}" />
     </Grid>
 </UserControl>

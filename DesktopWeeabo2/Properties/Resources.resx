@@ -117,6 +117,47 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AnilistSearchQuery" xml:space="preserve">
+    <value>query ($id: Int, $page: Int, $search: String, $sort: [MediaSort], $genres: [String], $isAdult: Boolean) {
+	Page(page: $page, perPage: 50) {
+		pageInfo { 
+			total
+			hasNextPage
+		}
+		media(id: $id, type: {mediaTypeToReplace}, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
+			id 
+			title { 
+				english 
+				romaji
+				native
+			}
+			synonyms 
+			genres
+			type 
+			meanScore
+			format 
+			status 
+			description(asHtml: false) 
+			startDate{
+				year
+				month
+				day
+			}
+			endDate{
+				year
+				month
+				day
+			}
+			episodes 
+			duration
+			volumes
+			chapters
+			coverImage{ large }
+			isAdult
+		}
+	}
+}</value>
+  </data>
   <data name="CreateAnimeTable" xml:space="preserve">
     <value>CREATE TABLE 'anime_entries' (
                     'id' integer not null primary key,
@@ -142,7 +183,8 @@
                     'watch_priority' integer default 0,
                     'rewatch_count' integer default 0,
                     'current_episode' integer default 0,
-                    'date_added' text default '0000-00-00')</value>
+                    'date_added' text default '0000-00-00',
+                    'is_adult' integer default 0)</value>
   </data>
   <data name="CreateMangaTable" xml:space="preserve">
     <value>CREATE TABLE 'manga_entries' (
@@ -167,72 +209,7 @@
                     'read_priority' integer default 0,
                     'reread_count' integer default 0,
                     'current_chapter' integer default 0,
-                    'date_added' text default '0000-00-00')</value>
-  </data>
-  <data name="SearchAnimeQuery" xml:space="preserve">
-    <value>query ($id: Int, $page: Int, $search: String, $sort: [MediaSort]) {
-	Page(page: $page, perPage: 50) {
-		pageInfo { 
-			total
-			hasNextPage
-		}
-		media(id: $id, type: ANIME, search: $search, sort: $sort) {
-			id 
-			title { 
-				english 
-				romaji
-				native
-			}
-			synonyms 
-			genres
-			type 
-			meanScore
-			format 
-			status 
-			description(asHtml: false) 
-			startDate{
-				year
-				month
-				day
-			}
-			endDate{
-				year
-				month
-				day
-			}
-			episodes 
-			duration 
-			coverImage{ large }
-		}
-	}
-}</value>
-  </data>
-  <data name="SearchMangaQuery" xml:space="preserve">
-    <value>query ($id: Int, $page: Int, $search: String, $sort: [MediaSort] ) {
-	Page(page: $page, perPage: 50) {
-		pageInfo { 
-			total
-			hasNextPage
-		}
-		media(id: $id, type: MANGA, search: $search, sort: $sort) {
-			id 
-			title { 
-				english 
-				romaji
-				native
-			}
-			synonyms 
-			genres 
-			meanScore
-			type
-			format 
-			status 
-			description(asHtml: false) 
-			volumes
-			chapters
-			coverImage{ large }
-		}
-	}
-}</value>
+                    'date_added' text default '0000-00-00',
+                    'is_adult' integer default 0)</value>
   </data>
 </root>

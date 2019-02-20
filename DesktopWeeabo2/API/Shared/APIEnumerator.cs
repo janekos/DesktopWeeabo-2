@@ -1,4 +1,5 @@
-﻿using DesktopWeeabo2.Models.Shared;
+﻿using DesktopWeeabo2.Helpers;
+using DesktopWeeabo2.Models.Shared;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,16 @@ namespace DesktopWeeabo2.API.Shared {
 	abstract class APIEnumerator<T> where T : BaseModel {
 
 		protected int _CurrentPage = 1;
-        protected string _SearchString;
+		protected string _SearchString;
         protected bool _Type;
+        protected bool _IsAdult;
         protected string _SortBy;
+        protected string[] _Genres = new string[0];
 
 		public bool HasNextPage { get; protected set; } = false;
-        public string SearchString {
+		public int TotalItems { get; protected set; } = 0;
+
+		public string SearchString {
             get { return _SearchString; }
             set {
 				if (_SearchString != value) {
@@ -24,7 +29,15 @@ namespace DesktopWeeabo2.API.Shared {
 				}
             }
         }
-        public bool Type {
+		public int CurrentPage {
+			get { return _CurrentPage; }
+			set {
+				if (_CurrentPage != value) {
+					_CurrentPage = value;
+				}
+			}
+		}
+		public bool Type {
             get { return _Type; }
             set {
 				if (_Type != value) {
@@ -33,7 +46,16 @@ namespace DesktopWeeabo2.API.Shared {
 				}
             }
         }
-        public string SortBy {
+		public bool IsAdult {
+			get { return _IsAdult; }
+			set {
+				if (_IsAdult != value) {
+					_IsAdult = value;
+					ResetQueryVars();
+				}
+			}
+		}
+		public string SortBy {
             get { return _SortBy; }
             set {
 				if (_SortBy != value) {
@@ -42,26 +64,36 @@ namespace DesktopWeeabo2.API.Shared {
 				}
             }
         }
+		public string[] Genres {
+			get { return _Genres; }
+			set {
+				if (string.Join(",",_Genres) != string.Join(",", value)) {
+					_Genres = value;
+					ResetQueryVars();
+				}
+			}
+		}
 
-        public APIEnumerator() { }
+		public APIEnumerator() { }
 
         public async Task<T[]> GetCurrentSet() {
 
-            JObject result = JObject.Parse(await APIQueries.Search(_SearchString, _CurrentPage, _SortBy, _Type));
+            JObject result = JObject.Parse(await APIQueries.Search(StringHelpers.APIVariableStringGenerator(_SearchString, CurrentPage, _SortBy, _Genres, _IsAdult), _Type));
 
-            // raiseproperty faulty query
             if (result["data"].Type == JTokenType.Null) { throw new ArgumentException("Server returned nothing."); }
 
             HasNextPage = (bool)result["data"]["Page"]["pageInfo"]["hasNextPage"];
+            TotalItems = (int)result["data"]["Page"]["pageInfo"]["total"];
 
-			if (HasNextPage) _CurrentPage = _CurrentPage + 1;
+			if (HasNextPage) CurrentPage = CurrentPage + 1;
 
             return ManageItems((JArray)result["data"]["Page"]["media"]);
         }
 
         protected void ResetQueryVars() {
-            _CurrentPage = 1;
+			CurrentPage = 1;
             HasNextPage = false;
+            TotalItems = 0;
         }
 
         protected virtual T[] ManageItems(JArray items) => new T[0];

@@ -1,4 +1,4 @@
-﻿using DesktopWeeabo2.Helpers.Enums;
+﻿using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models.Shared;
 using System;
 using System.Collections.Generic;
@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Data.Repositories.Shared {
     public interface IRepo<T> where T : BaseModel{
-		Task<RepoResponse> AddOrUpdate(T item);
-		Task<RepoResponse> Delete(int id);
+		void Add(T item);
+		void Update(T item);
+		void Delete(int id);
         Task<T> Get(int id);
-		Task<T> Get(T entity);
-		IEnumerable<T> FindEnumerable(Func<T, bool> expression);
+		IEnumerable<T> FindSet(Func<T, bool> expression, Func<T, object> orderBy, bool isDescending);
     }
 }

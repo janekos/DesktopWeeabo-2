@@ -16,9 +16,9 @@ namespace DesktopWeeabo2.Data {
         }
 
         private static void CheckFiles() {
-            if (!Directory.Exists(GlobalConfig.AppDir)) { Directory.CreateDirectory(GlobalConfig.AppDir); }
-            if (!File.Exists(GlobalConfig.AppDir + "\\entries.db")) { InitDB(GlobalConfig.AppDir + "\\entries.db"); }
-            if (!File.Exists(GlobalConfig.AppDir + "\\config.json")) { GlobalConfig.SerializeConfig(); }
+            if (!Directory.Exists(GlobalConfig.AppDir)) Directory.CreateDirectory(GlobalConfig.AppDir);
+            if (!File.Exists(GlobalConfig.AppDir + "\\entries.db")) InitDB(GlobalConfig.AppDir + "\\entries.db");
+            if (!File.Exists(GlobalConfig.AppDir + "\\config.json")) GlobalConfig.SerializeConfig();
         }
 
         private static void InitDB(string dbPath) {

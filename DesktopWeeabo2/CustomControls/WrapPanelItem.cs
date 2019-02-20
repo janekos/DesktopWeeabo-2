@@ -29,25 +29,11 @@ namespace DesktopWeeabo2.CustomControls
 
 		public static readonly DependencyProperty WPIImageProperty = DependencyProperty.Register("WPIImage", typeof(string), typeof(WrapPanelItem), new PropertyMetadata(null));
 
-		public string WPITitleEnglish {
-			get { return (string)GetValue(WPITitleEnglishProperty); }
-			set { SetValue(WPITitleEnglishProperty, value); }
+		public string WPITitle{
+			get { return (string)GetValue(WPITitleProperty); }
+			set { SetValue(WPITitleProperty, value); }
 		}
 
-		public static readonly DependencyProperty WPITitleEnglishProperty = DependencyProperty.Register("WPITitleEnglish", typeof(string), typeof(WrapPanelItem), new PropertyMetadata(null));
-
-		public string WPITitleRomaji {
-			get { return (string)GetValue(WPITitleRomajiProperty); }
-			set { SetValue(WPITitleRomajiProperty, value); }
-		}
-
-		public static readonly DependencyProperty WPITitleRomajiProperty = DependencyProperty.Register("WPITitleRomaji", typeof(string), typeof(WrapPanelItem), new PropertyMetadata(null));
-
-		public string WPITitleNative {
-			get { return (string)GetValue(WPITitleNativeProperty); }
-			set { SetValue(WPITitleNativeProperty, value); }
-		}
-
-		public static readonly DependencyProperty WPITitleNativeProperty = DependencyProperty.Register("WPITitleNative", typeof(string), typeof(WrapPanelItem), new PropertyMetadata(null));
+		public static readonly DependencyProperty WPITitleProperty = DependencyProperty.Register("WPITitle", typeof(string), typeof(WrapPanelItem), new PropertyMetadata(null));
 	}
 }

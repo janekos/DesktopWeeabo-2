@@ -61,6 +61,38 @@ namespace DesktopWeeabo2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to query ($id: Int, $page: Int, $search: String, $sort: [MediaSort], $genres: [String], $isAdult: Boolean) {
+        ///	Page(page: $page, perPage: 50) {
+        ///		pageInfo { 
+        ///			total
+        ///			hasNextPage
+        ///		}
+        ///		media(id: $id, type: {mediaTypeToReplace}, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
+        ///			id 
+        ///			title { 
+        ///				english 
+        ///				romaji
+        ///				native
+        ///			}
+        ///			synonyms 
+        ///			genres
+        ///			type 
+        ///			meanScore
+        ///			format 
+        ///			status 
+        ///			description(asHtml: false) 
+        ///			startDate{
+        ///				year
+        ///				month
+        ///		 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AnilistSearchQuery {
+            get {
+                return ResourceManager.GetString("AnilistSearchQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE &apos;anime_entries&apos; (
         ///                    &apos;id&apos; integer not null primary key,
         ///                    &apos;id_mal&apos; integer default 0,
@@ -95,81 +127,6 @@ namespace DesktopWeeabo2.Properties {
         internal static string CreateMangaTable {
             get {
                 return ResourceManager.GetString("CreateMangaTable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to query ($id: Int, $page: Int, $search: String, $sort: [MediaSort]) {
-        ///	Page(page: $page, perPage: 50) {
-        ///		pageInfo { 
-        ///			total
-        ///			hasNextPage
-        ///		}
-        ///		media(id: $id, type: ANIME, search: $search, sort: $sort) {
-        ///			id 
-        ///			title { 
-        ///				english 
-        ///				romaji
-        ///				native
-        ///			}
-        ///			synonyms 
-        ///			genres
-        ///			type 
-        ///			meanScore
-        ///			format 
-        ///			status 
-        ///			description(asHtml: false) 
-        ///			startDate{
-        ///				year
-        ///				month
-        ///				day
-        ///			}
-        ///			endDate{
-        ///				year
-        ///				month
-        ///				day
-        ///			}
-        ///			episodes 
-        ///			duration 
-        ///	 [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string SearchAnimeQuery {
-            get {
-                return ResourceManager.GetString("SearchAnimeQuery", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to query ($id: Int, $page: Int, $search: String, $sort: [MediaSort] ) {
-        ///	Page(page: $page, perPage: 50) {
-        ///		pageInfo { 
-        ///			total
-        ///			hasNextPage
-        ///		}
-        ///		media(id: $id, type: MANGA, search: $search, sort: $sort) {
-        ///			id 
-        ///			title { 
-        ///				english 
-        ///				romaji
-        ///				native
-        ///			}
-        ///			synonyms 
-        ///			genres 
-        ///			meanScore
-        ///			type
-        ///			format 
-        ///			status 
-        ///			description(asHtml: false) 
-        ///			volumes
-        ///			chapters
-        ///			coverImage{ large }
-        ///		}
-        ///	}
-        ///}.
-        /// </summary>
-        internal static string SearchMangaQuery {
-            get {
-                return ResourceManager.GetString("SearchMangaQuery", resourceCulture);
             }
         }
     }

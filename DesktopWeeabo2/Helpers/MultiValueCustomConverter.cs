@@ -1,5 +1,5 @@
-﻿using DesktopWeeabo2.Models;
-using DesktopWeeabo2.ViewModels.Shared;
+﻿using DesktopWeeabo2.Helpers;
+using DesktopWeeabo2.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,7 +13,6 @@ namespace DesktopWeeabo2.Helpers
 {
 	class MultiValueCustomConverter : IMultiValueConverter {
 		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
-			//Console.WriteLine(parameter);
 			string[] parameters = (
 				parameter == null 
 					? (values[values.Length - 1] != null
@@ -26,10 +25,27 @@ namespace DesktopWeeabo2.Helpers
 				case "mainBoxText":
 					if (values[0] != null && values[1] != null && values[2] != null && values[3] != null) {
 						if ((bool)values[3]) return "Loading";
-						if ((string)values[2] == StatusView.ONLINE && (int) values[0] == 0) return (((string)values[1]).Length == 0) ? "Try searching for something" : $"No result for {values[1]}";
-					    string currView = (((string)values[2]).Equals(StatusView.TOWATCH) ? "To watch" : ((string)values[2]).Equals(StatusView.TOREAD) ? "To read" : (string)values[2]);
-						if ((int) values[0] == 0 && ((string)values[1]).Length != 0) return $"No result for {values[1]} in '{currView}' view"; ;
-						if((int) values[0] == 0) return $"No items in '{currView}' view";		
+						if ((string)values[2] == StatusView.ONLINE && (int)values[0] == 0) return (((string)values[1]).Length == 0) ? "Try searching for something" : $"No result for {values[1]}";
+
+						string currView;
+						switch ((string)values[2]) {
+							case StatusView.TOWATCH:
+								currView = "To watch";
+								break;
+							case StatusView.TOREAD:
+								currView = "To read";
+								break;
+							case StatusView.DROPPEDANIME:
+							case StatusView.DROPPEDMANGA:
+								currView = "Dropped";
+								break;
+							default:
+								currView = (string)values[2];
+								break;
+						}
+
+						if ((int)values[0] == 0 && ((string)values[1]).Length != 0) return $"No result for {values[1]} in '{currView}' view"; ;
+						if ((int)values[0] == 0) return $"No items in '{currView}' view";
 					}
 					return null;
 				case "isSwitcherButtonEnabled":
@@ -48,10 +64,30 @@ namespace DesktopWeeabo2.Helpers
 					return null;
 				case "isButtonSelected":
 					if (values[0] != null && parameters[1] != null) {
-						if (values[0].GetType() == typeof(string) && (string) values[0] != null && ((string)values[0]).Equals(parameters[1])) return true;
+						if (values[0].GetType() == typeof(string) && (string)values[0] != null && ((string)values[0]).Equals(parameters[1])) return true;
 						if (values[0].GetType() == typeof(AnimeModel) && ((AnimeModel)values[0]).ViewingStatus != null && ((AnimeModel)values[0]).ViewingStatus.Equals(parameters[1])) return true;
 						if (values[0].GetType() == typeof(MangaModel) && ((MangaModel)values[0]).ReadingStatus != null && ((MangaModel)values[0]).ReadingStatus.Equals(parameters[1])) return true;
 
+					}
+					return false;
+				case "AreLocalSortsVisible":
+					if (values[0] != null && values[1] != null) {
+						switch (values[1]) {
+							case StatusView.TOWATCH:
+							case StatusView.VIEWED:
+							case StatusView.WATCHING:
+							case StatusView.DROPPEDANIME:
+								return (SortLocation)values[0] != SortLocation.MANGA;
+							case StatusView.TOREAD:
+							case StatusView.RED:
+							case StatusView.READING:
+							case StatusView.DROPPEDMANGA:
+								return (SortLocation)values[0] != SortLocation.ANIME;
+							case StatusView.ONLINE:
+								return (SortLocation)values[0] == SortLocation.ONLINE;
+							default:
+								return false;
+						}
 					}
 					return false;
 				default:

@@ -1,17 +1,14 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:DesktopWeeabo2.CustomControls"
-                    xmlns:conv="clr-namespace:DesktopWeeabo2.Helpers"
-                    xmlns:enum="clr-namespace:DesktopWeeabo2.ViewModels.Shared">
-
-    <conv:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
-    <conv:CustomConverter x:Key="CustomConverter" />
-
+                    xmlns:help="clr-namespace:DesktopWeeabo2.Helpers">
+    <help:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
+    <help:CustomConverter x:Key="CustomConverter" />
     <Style TargetType="{x:Type local:SelectableButton}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:SelectableButton}">
-                    <Button Content="{TemplateBinding SBContent }"
+                    <Button Content="{TemplateBinding SBContent}"
                             Command="{TemplateBinding SBCommand}"
                             CommandParameter="{TemplateBinding SBCommandParameter}"
                             Cursor="Hand">
@@ -56,57 +53,107 @@
             </Setter.Value>
         </Setter>
     </Style>
-
     <Style TargetType="{x:Type local:InfoBoxTextBlock}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:InfoBoxTextBlock}">
-                    <TextBlock FontSize="16"
-                               TextWrapping="Wrap"
-                               Visibility="{Binding Path=IBTBDynamicItem, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty, RelativeSource={RelativeSource TemplatedParent}}">
-                                <Run Text="{TemplateBinding IBTBStaticText}"
-                                     FontWeight="Bold" />
-                                <Run Text="{Binding Path=IBTBDynamicItem, Converter={StaticResource CustomConverter}, ConverterParameter=formatInfoBoxTextBlock, RelativeSource={RelativeSource TemplatedParent}}" />
-                    </TextBlock>
+                    <DockPanel TextBlock.FontSize="14" Margin="10,0,0,0" LastChildFill="True"
+                          Visibility="{Binding Path=DynamicItem, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty, RelativeSource={RelativeSource TemplatedParent}}">
+                        <TextBlock TextAlignment="Center" DockPanel.Dock="{TemplateBinding FirstItemLocation}"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="DemiBold"
+                                   Width="Auto"
+                                   TextWrapping="NoWrap"
+                                   Text="{TemplateBinding StaticText}" />
+                        <TextBox Background="Transparent"
+                                 BorderThickness="0"
+                                 IsReadOnly="True"
+                                 TextAlignment="Justify"
+                                 TextWrapping="Wrap"
+                                 Text="{Binding Path=DynamicItem, Converter={StaticResource CustomConverter}, ConverterParameter=formatInfoBoxTextBlock, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" />
+                    </DockPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
     <Style TargetType="{x:Type local:WrapPanelItem}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:WrapPanelItem}">
-                    <Border BorderBrush="Black"
-                            BorderThickness="1"
-                            Margin="5"
-                            Padding="3"
-                            ClipToBounds="True"
-                            MaxWidth="220">
-                        <StackPanel Orientation="Vertical"
-                                    VerticalAlignment="Top">
-                            <Image Margin="-3,-3,-3,3">
-                                <Image.Source>
-                                    <BitmapImage UriSource="{Binding WPIImage, RelativeSource={RelativeSource TemplatedParent}}"
-                                                 UriCachePolicy=" CacheIfAvailable " />
-                                </Image.Source>
-                            </Image>
-                            <TextBlock Text="{TemplateBinding WPITitleEnglish}"
-                                       TextWrapping="Wrap"
-                                       Visibility="{Binding Path=WPITitleEnglish, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty, RelativeSource={RelativeSource TemplatedParent}}" />
-                            <TextBlock Text="{TemplateBinding WPITitleRomaji}"
-                                       TextWrapping="Wrap"
-                                       Visibility="{Binding Path=WPITitleRomaji, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty, RelativeSource={RelativeSource TemplatedParent}}" />
-                            <TextBlock Text="{TemplateBinding WPITitleNative}"
-                                       TextWrapping="Wrap"
-                                       Visibility="{Binding Path=WPITitleNative, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty, RelativeSource={RelativeSource TemplatedParent}}" />
+                    <Grid Height="260"
+                          Name="WrapperGrid"
+                          Width="180">
+                        <StackPanel>
+                            <Label Background="LightGray"
+                                   VerticalContentAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   BorderBrush="White"
+                                   BorderThickness="0,0,0,3"
+                                   Visibility="{Binding Path=WPITitle, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty, RelativeSource={RelativeSource TemplatedParent}}">
+                                <TextBlock Text="{TemplateBinding WPITitle}"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           FontSize="14" />
+                            </Label>
+                            <Grid Background="LightGray"
+                                  Height="230"
+                                  Width="180"
+                                  ClipToBounds="True">
+                                <TextBlock Text="Loading"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                                <Image Source="{Binding WPIImage, RelativeSource={RelativeSource TemplatedParent}}"
+                                       Stretch="UniformToFill"
+                                       RenderTransformOrigin="0.5,0.5"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="RenderTransform">
+                                                <Setter.Value>
+                                                    <ScaleTransform ScaleX="1"
+                                                                    ScaleY="1" />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsMouseOver, ElementName=WrapperGrid}"
+                                                             Value="True">
+                                                    <DataTrigger.EnterActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation Duration="0:0:0.1"
+                                                                                 Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                                                                 To="1.2" />
+                                                                <DoubleAnimation Duration="0:0:0.1"
+                                                                                 Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                                                                 To="1.2" />
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.EnterActions>
+                                                    <DataTrigger.ExitActions>
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <DoubleAnimation Duration="0:0:0.1"
+                                                                                 Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                                                                 To="1" />
+                                                                <DoubleAnimation Duration="0:0:0.1"
+                                                                                 Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                                                                 To="1" />
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </DataTrigger.ExitActions>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </Grid>
                         </StackPanel>
-                    </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
     <Style TargetType="{x:Type local:ChangeConfirmer}">
         <Setter Property="Template">
             <Setter.Value>
@@ -114,8 +161,15 @@
                     <ControlTemplate.Resources>
                         <DataTemplate x:Key="WatchedOrDroppedOrRedConfirmer">
                             <StackPanel>
-                                <TextBlock FontSize="14" Margin="0, 0, 0, 5" Text="Add a personal review:" />
-                                <TextBox FontSize="14" Margin="0, 0, 0, 10" Height="100" HorizontalAlignment="Stretch"
+                                <TextBlock FontSize="14"
+                                           Margin="0, 0, 0, 5"
+                                           Text="Add a personal review:" />
+                                <TextBox FontSize="14"
+                                         VerticalScrollBarVisibility="Auto"
+                                         Margin="0, 0, 0, 10"
+                                         Height="100"
+                                         TextWrapping="Wrap"
+                                         HorizontalAlignment="Stretch"
                                          Text="{Binding Path=CCSelectedItemPersonalReview, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}" />
                                 <Grid Margin="0, 0, 0, 5">
                                     <Grid.ColumnDefinitions>
@@ -123,8 +177,11 @@
                                         <ColumnDefinition Width="60" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" FontSize="14" Text="Add a personal score:" />
-                                    <TextBox Grid.Column="1" FontSize="14"
+                                    <TextBlock Grid.Column="0"
+                                               FontSize="14"
+                                               Text="Add a personal score:" />
+                                    <TextBox Grid.Column="1"
+                                             FontSize="14"
                                              Text="{Binding Path=CCSelectedItemPersonalScore, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}" />
                                 </Grid>
                                 <TextBlock Margin="0, 0, 0, 10"
@@ -135,9 +192,12 @@
                                         <ColumnDefinition Width="70" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" Command="{Binding Path=CCSaveItemCommand, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}"
+                                    <Button Grid.Column="0"
+                                            Command="{Binding Path=CCSaveItemCommand, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}"
                                             Width="60">Submit</Button>
-                                    <Button Grid.Column="1" Width="60" Command="{Binding Path=CCTriggerViewStatusWasChangedCommand, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}"
+                                    <Button Grid.Column="1"
+                                            Width="60"
+                                            Command="{Binding Path=CCTriggerViewStatusWasChangedCommand, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}"
                                             CommandParameter="">Cancel</Button>
                                 </Grid>
                             </StackPanel>
@@ -151,9 +211,11 @@
                                         <ColumnDefinition Width="70" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" Command="{Binding Path=CCSaveItemCommand, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}"
+                                    <Button Grid.Column="0"
+                                            Command="{Binding Path=CCSaveItemCommand, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}"
                                             Width="60">Submit</Button>
-                                    <Button Grid.Column="1" Width="60"
+                                    <Button Grid.Column="1"
+                                            Width="60"
                                             Command="{Binding Path=CCTriggerViewStatusWasChangedCommand, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}"
                                             CommandParameter="">Cancel</Button>
                                 </Grid>
@@ -165,8 +227,7 @@
                                            Margin="0, 0, 10, 0">
                 <Run Text="Are you sure you want to remove "
                                     FontWeight="Bold" />
-                <Run Text="{Binding Path=CCSelectedItemTitle, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}" />
-                                </TextBlock>
+                <Run Text="{Binding Path=CCSelectedItemTitle, RelativeSource={RelativeSource AncestorType=local:ChangeConfirmer}}" /></TextBlock>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="60" />
@@ -185,7 +246,7 @@
                         </DataTemplate>
                     </ControlTemplate.Resources>
                     <Border BorderBrush="black"
-                            BorderThickness="1,0,1,1"
+                            BorderThickness="0,2,0,2"
                             VerticalAlignment="Top"
                             Margin="0,30,0,0"
                             Visibility="{Binding CCPressedTransferButton, Converter={StaticResource CustomConverter}, ConverterParameter=isStringEmpty, RelativeSource={RelativeSource TemplatedParent}}"
@@ -199,44 +260,49 @@
                                         <Style.Triggers>
                                             <!--changeConfirmer-->
                                             <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         Value="{x:Static enum:StatusView.TOWATCH}">
+                                                         Value="{x:Static help:StatusView.TOWATCH}">
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource ChangeConfirmer}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         Value="{x:Static enum:StatusView.WATCHING}">
+                                                         Value="{x:Static help:StatusView.WATCHING}">
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource ChangeConfirmer}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         Value="{x:Static enum:StatusView.TOREAD}">
+                                                         Value="{x:Static help:StatusView.TOREAD}">
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource ChangeConfirmer}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         Value="{x:Static enum:StatusView.READING}">
+                                                         Value="{x:Static help:StatusView.READING}">
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource ChangeConfirmer}" />
                                             </DataTrigger>
                                             <!--watchedordroppedorred-->
                                             <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         Value="{x:Static enum:StatusView.VIEWED}">
+                                                         Value="{x:Static help:StatusView.VIEWED}">
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         Value="{x:Static enum:StatusView.DROPPED}">
+                                                         Value="{x:Static help:StatusView.DROPPEDANIME}">
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         Value="{x:Static enum:StatusView.RED}">
+                                                         Value="{x:Static help:StatusView.DROPPEDMANGA}">
+                                                <Setter Property="ContentTemplate"
+                                                        Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
+                                                         Value="{x:Static help:StatusView.RED}">
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                                             </DataTrigger>
                                             <!--delete-->
                                             <DataTrigger Binding="{Binding CCPressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                                         Value="{x:Static enum:StatusView.DELETE}">
+                                                         Value="{x:Static help:StatusView.DELETE}">
                                                 <Setter Property="ContentTemplate"
                                                         Value="{StaticResource DeleteConfirmer}" />
                                             </DataTrigger>
@@ -250,15 +316,180 @@
             </Setter.Value>
         </Setter>
     </Style>
-
     <Style TargetType="{x:Type local:AdvancedSearch}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:AdvancedSearch}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                    </Border>
+                    <Grid HorizontalAlignment="Stretch"
+                          Height="Auto"
+                          Width="Auto"
+                          Visibility="{Binding Path=ASIsVisible, Converter={StaticResource CustomConverter}, ConverterParameter=isValueTrue, RelativeSource={RelativeSource TemplatedParent}}"
+                          VerticalAlignment="Stretch">
+                        <!--<Grid.Style>
+                            <Style TargetType="Grid">
+                                <Style.Triggers>
+                                    <Trigger Property="Visibility"
+                                             Value="Visible">
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Duration="0:0:0.01"
+                                                                     Storyboard.TargetProperty="Opacity"
+                                                                     From="0.0"
+                                                                     To="1.0" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>-->
+                        <Grid Height="Auto"
+                              Width="Auto"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch">
+                            <Grid.Effect>
+                                <BlurEffect Radius="40"
+                                            KernelType="Gaussian"
+                                            RenderingBias="Performance" />
+                            </Grid.Effect>
+                            <Grid.Background>
+                                <SolidColorBrush Color="Black"
+                                                 Opacity="0.4" />
+                            </Grid.Background>
+                            <Grid.InputBindings>
+                                <MouseBinding Gesture="LeftClick"
+                                              Command="{Binding ASHideComponent, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Grid.InputBindings>
+                        </Grid>
+                        <Border VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Background="White"
+                                BorderBrush="Black"
+                                BorderThickness="1">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="5"
+                                                  Color="Gray" />
+                            </Border.Effect>
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*" />
+                                    <RowDefinition Height="1*" />
+                                    <RowDefinition Height="1*" />
+                                    <RowDefinition Height="1*" />
+                                    <RowDefinition Height="5*" />
+                                    <RowDefinition Height="5*" />
+                                    <RowDefinition Height="1*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="ADVANCED SEARCH"
+                                           HorizontalAlignment="Center"
+                                           FontSize="20"
+                                           Margin="0,0,0,10"
+                                           Grid.Row="0"
+                                           Grid.ColumnSpan="2" />
+                                <Label Content="Sort by"
+                                       Grid.Row="1"
+                                       Grid.Column="0" />
+                                <ComboBox Grid.Column="1"
+                                          Grid.Row="1"
+                                          Height="20"
+                                          SelectedItem="{Binding ASSelectedSort, RelativeSource={RelativeSource TemplatedParent}}"
+                                          ItemsSource="{TemplateBinding ASSortsList}"
+                                          HorizontalAlignment="Stretch">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding SortName}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Style.Triggers>
+                                                <DataTrigger Value="False">
+                                                    <DataTrigger.Binding>
+                                                        <MultiBinding Converter="{StaticResource MultiValueCustomConverter}"
+                                                                      ConverterParameter="AreLocalSortsVisible">
+                                                            <Binding Path="VisibleIn" />
+                                                            <Binding Path="ASCurrentView"
+                                                                     RelativeSource="{RelativeSource AncestorType=local:AdvancedSearch}" />
+                                                        </MultiBinding>
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="Visibility"
+                                                            Value="Collapsed" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                </ComboBox>
+                                <Label Content="descending"
+                                       Grid.Row="2"
+                                       Grid.Column="0" />
+                                <CheckBox Grid.Column="1"
+                                          Grid.Row="2"
+                                          HorizontalAlignment="Left"
+                                          IsChecked="{Binding ASIsDescending, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Margin="0,5,0,0" />
+                                <Label Content="Is adult"
+                                       Grid.Row="3"
+                                       Grid.Column="0" />
+                                <CheckBox Grid.Column="1"
+                                          Grid.Row="3"
+                                          HorizontalAlignment="Left"
+                                          IsChecked="{Binding ASIsAdult, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Margin="0,5,0,0" />
+                                <Label Content="Selected genres"
+                                       Grid.Row="4"
+                                       VerticalAlignment="Center"
+                                       Grid.Column="0" />
+                                <TextBlock Text="{Binding ASSelectedGenres, RelativeSource={RelativeSource TemplatedParent}}"
+                                           Grid.Row="4"
+                                           Grid.Column="1"
+                                           Margin="0,0,0,10"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Center" />
+                                <Label Content="Select genres"
+                                       Grid.Row="5"
+                                       VerticalAlignment="Center"
+                                       Grid.Column="0" />
+                                <ListBox Grid.Row="5"
+                                         ItemsSource="{TemplateBinding ASGenresList}"
+                                         Height="140"
+                                         Grid.Column="1"
+                                         IsTextSearchEnabled="True"
+                                         Margin="0,0,0,15"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                                      Content="{Binding Name}"
+                                                      Command="{Binding ASSetChecked, RelativeSource={RelativeSource AncestorType=local:AdvancedSearch}}" />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="{x:Type ListBoxItem}">
+                                            <Setter Property="Focusable"
+                                                    Value="False" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                                <Button Height="20"
+                                        Grid.Row="6"
+                                        Grid.Column="0"
+                                        Content="Close"
+                                        Command="{Binding ASHideComponent, RelativeSource={RelativeSource TemplatedParent}}" />
+                                <Button Height="20"
+                                        Grid.Row="6"
+                                        Grid.Column="1"
+                                        Width="110"
+                                        HorizontalAlignment="Right"
+                                        Content="Clear filter"
+                                        Command="{Binding ASClearFilter, RelativeSource={RelativeSource TemplatedParent}}" />
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

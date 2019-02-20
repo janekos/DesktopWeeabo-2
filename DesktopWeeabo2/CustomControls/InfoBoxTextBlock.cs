@@ -22,18 +22,25 @@ namespace DesktopWeeabo2.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(InfoBoxTextBlock), new FrameworkPropertyMetadata(typeof(InfoBoxTextBlock)));
         }
 
-		public object IBTBDynamicItem {
-			get { return (object)GetValue(IBTBDynamicItemProperty); }
-			set { SetValue(IBTBDynamicItemProperty, value); }
+		public object DynamicItem {
+			get { return (object)GetValue(DynamicItemProperty); }
+			set { SetValue(DynamicItemProperty, value); }
 		}
 
-		public static readonly DependencyProperty IBTBDynamicItemProperty = DependencyProperty.Register("IBTBDynamicItem", typeof(object), typeof(InfoBoxTextBlock), new PropertyMetadata(null));
+		public static readonly DependencyProperty DynamicItemProperty = DependencyProperty.Register("DynamicItem", typeof(object), typeof(InfoBoxTextBlock), new PropertyMetadata(null));
 
-		public string IBTBStaticText {
-			get { return (string)GetValue(IBTBStaticTextProperty); }
-			set { SetValue(IBTBStaticTextProperty, value); }
+		public string StaticText {
+			get { return (string)GetValue(StaticTextProperty); }
+			set { SetValue(StaticTextProperty, value); }
 		}
 
-		public static readonly DependencyProperty IBTBStaticTextProperty = DependencyProperty.Register("IBTBStaticText", typeof(string), typeof(InfoBoxTextBlock), new PropertyMetadata(null));
+		public static readonly DependencyProperty StaticTextProperty = DependencyProperty.Register("StaticText", typeof(string), typeof(InfoBoxTextBlock), new PropertyMetadata(null));
+
+		public Dock FirstItemLocation {
+			get { return (Dock)GetValue(FirstItemLocationProperty); }
+			set { SetValue(FirstItemLocationProperty, value); }
+		}
+
+		public static readonly DependencyProperty FirstItemLocationProperty = DependencyProperty.Register("FirstItemLocation", typeof(Dock), typeof(InfoBoxTextBlock), new PropertyMetadata(Dock.Left));
 	}
 }

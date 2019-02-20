@@ -32,8 +32,9 @@ namespace DesktopWeeabo2.API {
                     TitleEnglish = items[i]["title"]["english"].Type == JTokenType.Null ? "" : (string)items[i]["title"]["english"],
                     TitleRomaji = items[i]["title"]["romaji"].Type == JTokenType.Null ? "" : (string)items[i]["title"]["romaji"],
                     TitleNative = items[i]["title"]["native"].Type == JTokenType.Null ? "" : (string)items[i]["title"]["native"],
-                    CoverImage = items[i]["coverImage"]["large"].Type == JTokenType.Null ? "" : (string)items[i]["coverImage"]["large"]
-                };
+                    CoverImage = items[i]["coverImage"]["large"].Type == JTokenType.Null ? "" : (string)items[i]["coverImage"]["large"],
+					IsAdult = items[i]["isAdult"].Type == JTokenType.Null ? false : (bool)items[i]["isAdult"]
+				};
             }
 
             return arr;

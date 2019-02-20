@@ -6,9 +6,8 @@
         xmlns:local="clr-namespace:DesktopWeeabo2"
         xmlns:Views="clr-namespace:DesktopWeeabo2.Views"
         xmlns:ViewModels="clr-namespace:DesktopWeeabo2.ViewModels"
-        xmlns:conv="clr-namespace:DesktopWeeabo2.Helpers"
         xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
-        xmlns:enum="clr-namespace:DesktopWeeabo2.Helpers.Enums"
+        xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
         mc:Ignorable="d"
         Title="MainWindow"
         Height="800"
@@ -26,7 +25,7 @@
         <DataTemplate DataType="{x:Type ViewModels:SettingsViewModel}">
             <Views:SettingsView />
         </DataTemplate>
-        <conv:CustomConverter x:Key="CustomConverter" />
+        <help:CustomConverter x:Key="CustomConverter" />
     </Window.Resources>
 
     <Grid>
@@ -47,7 +46,7 @@
                             Height="53"
                             FontSize="20"
                              SBCommand="{Binding ChangeView}"
-                             SBCommandParameter="{x:Static enum:GlobalView.ANIMEVIEW}"
+                             SBCommandParameter="{x:Static help:GlobalView.ANIMEVIEW}"
                              SBCurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
                              SBIsSelectedParameter="isButtonSelected|Animeview" />
         <cc:SelectableButton SBContent="Manga"
@@ -58,7 +57,7 @@
                             Height="53"
                             FontSize="20"
                              SBCommand="{Binding ChangeView}"
-                             SBCommandParameter="{x:Static enum:GlobalView.MANGAVIEW}"
+                             SBCommandParameter="{x:Static help:GlobalView.MANGAVIEW}"
                              SBCurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
                              SBIsSelectedParameter="isButtonSelected|Mangaview" />
         <cc:SelectableButton SBContent="Settings"
@@ -69,7 +68,7 @@
                             Height="53"
                             FontSize="20"
                              SBCommand="{Binding ChangeView}"
-                             SBCommandParameter="{x:Static enum:GlobalView.SETTINGSVIEW}"
+                             SBCommandParameter="{x:Static help:GlobalView.SETTINGSVIEW}"
                              SBCurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
                              SBIsSelectedParameter="isButtonSelected|Settingsview"/>
         <Border x:Name="Toast"
