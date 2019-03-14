@@ -13,6 +13,24 @@ using System.Windows.Media;
 namespace DesktopWeeabo2.ViewModels {
 	class MainWindowViewModel : BaseViewModel {
 
+		Random ResidentRandom = new Random();
+
+		public string IntroMessage {
+			get {
+				string[] veryFunnyMessages = new string[]{
+					"loading...",
+					"hajimeing...",
+					"it's you again...",
+					"almost there!",
+					"starting!",
+					"what?",
+					"thinking..."
+				};				
+
+				return veryFunnyMessages[ResidentRandom.Next(veryFunnyMessages.Length)];
+			}
+		}
+
 		private string _ToastMessage = "";
 		public string ToastMessage {
 			get { return _ToastMessage; }

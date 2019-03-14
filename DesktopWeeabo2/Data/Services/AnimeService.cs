@@ -5,6 +5,7 @@ using DesktopWeeabo2.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,15 +14,21 @@ namespace DesktopWeeabo2.Data.Services {
 		public async Task<DBResponse> AddOrUpdate(AnimeModel entity) {
 			try {
 				using (var repo = new AnimeRepo()) {
-					if (await repo.Get(entity.Id) == null) {
-						repo.Add(entity);
+					var dbEntity = await repo.Get(entity.Id);
+					if (dbEntity == null) {
+						repo.Add(dbEntity);
 						return DBResponse.ADDED;
-					} else {
-						repo.Update(entity);
-						return DBResponse.UPDATED;
+					}
+					else {
+						if (ReflectionHelpers.CompareObjectValues(dbEntity, entity)) {
+							repo.Update(dbEntity, entity);
+							return DBResponse.UPDATED;
+						}
+						return DBResponse.NOCHANGES;
 					}
 				}
-			} catch (Exception) { return DBResponse.ERROR; }
+			}
+			catch (Exception) { return DBResponse.ERROR; }
 		}
 
 		public DBResponse Delete(int id) {
@@ -30,7 +37,8 @@ namespace DesktopWeeabo2.Data.Services {
 					repo.Delete(id);
 					return DBResponse.DELETED;
 				}
-			} catch (Exception) { return DBResponse.ERROR; }
+			}
+			catch (Exception) { return DBResponse.ERROR; }
 		}
 
 		private bool IsAdultCondition(SearchModel search, AnimeModel item) =>
@@ -41,7 +49,7 @@ namespace DesktopWeeabo2.Data.Services {
 			search.SearchText.Length > 0
 				? (item.TitleEnglish.ToLower().Contains(search.SearchText) || item.TitleRomaji.ToLower().Contains(search.SearchText) || item.TitleNative.ToLower().Contains(search.SearchText))
 				: true;
-		private bool ContainsGenre(string[] selectedGenres, AnimeModel item) => 
+		private bool ContainsGenre(string[] selectedGenres, AnimeModel item) =>
 			selectedGenres.Length > 0
 				? !selectedGenres.Except(item.Genres.Replace(" ", string.Empty).Split(',')).Any()
 				: true;
@@ -51,7 +59,7 @@ namespace DesktopWeeabo2.Data.Services {
 			string[] selectedGenres = search.GenresList.Where(genre => genre.IsSelected).Select(genre => genre.Name).ToArray();
 			using (var repo = new AnimeRepo()) {
 				return repo.FindSet(
-					item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView,item),
+					item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView, item),
 					item => item.GetType().GetProperty(search.SelectedSort.LocalValue).GetValue(item),
 					search.IsDescending
 				).ToArray();

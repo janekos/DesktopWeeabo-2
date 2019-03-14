@@ -8,13 +8,15 @@
         xmlns:ViewModels="clr-namespace:DesktopWeeabo2.ViewModels"
         xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
         xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        ContentRendered="Window_ContentRendered"
         mc:Ignorable="d"
-        Title="MainWindow"
-        Height="800"
+        x:Name="MainWIndow"
+        Title="DesktopWeeabo 2"
         Width="1024"
+        Height="800"
         MinWidth="1024"
         MinHeight="800">
-
     <Window.Resources>
         <DataTemplate DataType="{x:Type ViewModels:AnimeViewModel}">
             <Views:AnimeView />
@@ -27,7 +29,6 @@
         </DataTemplate>
         <help:CustomConverter x:Key="CustomConverter" />
     </Window.Resources>
-
     <Grid>
         <Label Content="LOGO"
                HorizontalAlignment="Left"
@@ -39,38 +40,38 @@
                BorderBrush="Black"
                BorderThickness="2" />
         <cc:SelectableButton SBContent="Anime"
-                            HorizontalAlignment="Left"
-                            Margin="122,10,0,0"
-                            VerticalAlignment="Top"
-                            Width="107"
-                            Height="53"
-                            FontSize="20"
+                             HorizontalAlignment="Left"
+                             Margin="122,10,0,0"
+                             VerticalAlignment="Top"
+                             Width="107"
+                             Height="53"
+                             FontSize="20"
                              SBCommand="{Binding ChangeView}"
                              SBCommandParameter="{x:Static help:GlobalView.ANIMEVIEW}"
                              SBCurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
                              SBIsSelectedParameter="isButtonSelected|Animeview" />
         <cc:SelectableButton SBContent="Manga"
-                            HorizontalAlignment="Left"
-                            Margin="229,10,0,0"
-                            VerticalAlignment="Top"
-                            Width="107"
-                            Height="53"
-                            FontSize="20"
+                             HorizontalAlignment="Left"
+                             Margin="229,10,0,0"
+                             VerticalAlignment="Top"
+                             Width="107"
+                             Height="53"
+                             FontSize="20"
                              SBCommand="{Binding ChangeView}"
                              SBCommandParameter="{x:Static help:GlobalView.MANGAVIEW}"
                              SBCurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
                              SBIsSelectedParameter="isButtonSelected|Mangaview" />
         <cc:SelectableButton SBContent="Settings"
-                            HorizontalAlignment="Left"
-                            Margin="336,10,0,0"
-                            VerticalAlignment="Top"
-                            Width="107"
-                            Height="53"
-                            FontSize="20"
+                             HorizontalAlignment="Left"
+                             Margin="336,10,0,0"
+                             VerticalAlignment="Top"
+                             Width="107"
+                             Height="53"
+                             FontSize="20"
                              SBCommand="{Binding ChangeView}"
                              SBCommandParameter="{x:Static help:GlobalView.SETTINGSVIEW}"
                              SBCurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
-                             SBIsSelectedParameter="isButtonSelected|Settingsview"/>
+                             SBIsSelectedParameter="isButtonSelected|Settingsview" />
         <Border x:Name="Toast"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
@@ -88,7 +89,7 @@
                        Foreground="{Binding Path=ToastTextColor, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                        Margin="20, 5"
                        FontSize="16"
-                       Name="ToastBlock"/>
+                       Name="ToastBlock" />
             <Border.Triggers>
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
                     <BeginStoryboard Name="ShowToast">
@@ -104,7 +105,60 @@
                 </EventTrigger>
             </Border.Triggers>
         </Border>
-        <ContentPresenter Content="{Binding ViewModelsView.CurrentItem}"
+        <ContentPresenter Panel.ZIndex="10"
+                          Content="{Binding ViewModelsView.CurrentItem}"
                           Margin="10,70,10,10" />
+        <Grid Name="StartingLoader"
+              IsHitTestVisible="True"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Panel.ZIndex="100"
+              Opacity="1"
+              Background="white">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=StartingLoader, Path=IsHitTestVisible}"
+                                     Value="False">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:.8"
+                                                                  Value="1" />
+                                            <EasingDoubleKeyFrame KeyTime="0:0:1"
+                                                                  Value="0" />
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ElementName=StartingLoader, Path=Opacity}" Value="0">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Image Height="60"
+                       Grid.Row="0"
+                       Margin="20"
+                       Width="60"
+                       Stretch="UniformToFill"
+                       gif:ImageBehavior.AutoStart="True"
+                       gif:ImageBehavior.AnimatedSource="Resources/load.gif"
+                       gif:ImageBehavior.RepeatBehavior="Forever" />
+                <TextBlock Grid.Row="1"
+                           TextAlignment="Center"
+                           Text="{Binding IntroMessage, Mode=OneTime}"
+                           FontSize="18"
+                           FontStyle="Italic" />
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

@@ -11,6 +11,7 @@ namespace DesktopWeeabo2.Helpers {
 		DELETED,
 		EXISTS,
 		NOTEXISTS,
+		NOCHANGES,
 		ERROR
 	}
 

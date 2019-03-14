@@ -33,5 +33,9 @@ namespace DesktopWeeabo2.Data.Repositories
 		public void Update(MangaModel item) {
 			throw new NotImplementedException();
 		}
+
+		public void Update(MangaModel dbItem, MangaModel newItem) {
+			throw new NotImplementedException();
+		}
 	}
 }

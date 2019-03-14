@@ -25,7 +25,7 @@ namespace DesktopWeeabo2.Helpers
 				case "mainBoxText":
 					if (values[0] != null && values[1] != null && values[2] != null && values[3] != null) {
 						if ((bool)values[3]) return "Loading";
-						if ((string)values[2] == StatusView.ONLINE && (int)values[0] == 0) return (((string)values[1]).Length == 0) ? "Try searching for something" : $"No result for {values[1]}";
+						if ((string)values[2] == StatusView.ONLINE && (int)values[0] == 0) return (((string)values[1]).Length == 0) ? "Try searching for something or press the 'Search' button" : $"No result for {values[1]}";
 
 						string currView;
 						switch ((string)values[2]) {

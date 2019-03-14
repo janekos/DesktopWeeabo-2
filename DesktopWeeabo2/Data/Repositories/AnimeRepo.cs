@@ -17,11 +17,8 @@ namespace DesktopWeeabo2.Data.Repositories {
 			await _db.SaveChangesAsync();
 		}
 
-		public async void Update(AnimeModel item) {
-			var entity = await Get(item.Id);
-			if (entity == null) return;
-
-			_db.Entry(entity).CurrentValues.SetValues(item);
+		public async void Update(AnimeModel dbItem, AnimeModel newItem) {
+			_db.Entry(dbItem).CurrentValues.SetValues(newItem);
 			await _db.SaveChangesAsync();
 		}
 

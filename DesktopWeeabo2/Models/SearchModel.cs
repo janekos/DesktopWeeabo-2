@@ -36,7 +36,7 @@ namespace DesktopWeeabo2.Models {
 	public class SearchModel {
 		public SortObject[] InitSortsList () => new SortObject[] {
 			new SortObject("Id",             "ID",            nameof(BaseModel.Id),             SortLocation.ONLINE),
-			new SortObject("Score",          "SCORE",         nameof(BaseModel.MeanScore),      SortLocation.ONLINE),
+			new SortObject("Score",          "SCORE",         nameof(BaseModel.AverageScore),   SortLocation.ONLINE),
 			new SortObject("Status",         "STATUS",        nameof(BaseModel.Status),         SortLocation.ONLINE),
 			new SortObject("Native title",   "TITLE_NATIVE",  nameof(BaseModel.TitleNative),    SortLocation.ONLINE),
 			new SortObject("Romaji title",   "TITLE_ROMAJI",  nameof(BaseModel.TitleRomaji),    SortLocation.ONLINE),

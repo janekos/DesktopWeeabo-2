@@ -1,5 +1,6 @@
 ﻿using DesktopWeeabo2.Models;
 using DesktopWeeabo2.Models.Shared;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -31,6 +32,16 @@ namespace DesktopWeeabo2.Helpers {
 			if (search.Length > 0) json.Add(new JProperty("search", search));
 			if (genres.Length > 0) json.Add(new JProperty("genres", new JArray(genres)));
 			return json.ToString();
+		}
+
+		public static string PrependAdditionalUrls(ExternalLink[] additionalUrls, JArray urls) {
+			for (int i = 0; i < additionalUrls.Length; i++) {
+				urls.Insert(0, new JObject(
+					new JProperty("site", additionalUrls[i].Site),
+					new JProperty("url", additionalUrls[i].Url)
+				));
+			}
+			return urls.ToString(Formatting.None);
 		}
 	}
 }

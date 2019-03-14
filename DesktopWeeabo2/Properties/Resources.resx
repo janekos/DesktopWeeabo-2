@@ -124,8 +124,9 @@
 			total
 			hasNextPage
 		}
-		media(id: $id, type: {mediaTypeToReplace}, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
-			id 
+		media(id: $id, type: ANIME, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
+			id
+			idMal
 			title { 
 				english 
 				romaji
@@ -134,7 +135,7 @@
 			synonyms 
 			genres
 			type 
-			meanScore
+			averageScore
 			format 
 			status 
 			description(asHtml: false) 
@@ -154,62 +155,80 @@
 			chapters
 			coverImage{ large }
 			isAdult
+			nextAiringEpisode {
+				airingAt
+				episode
+			}
+			siteUrl
+			externalLinks { 
+				url
+				site
+			}
 		}
 	}
 }</value>
   </data>
   <data name="CreateAnimeTable" xml:space="preserve">
     <value>CREATE TABLE 'anime_entries' (
-                    'id' integer not null primary key,
-                    'id_mal' integer default 0,
-                    'mean_score' integer default 0,
-                    'episodes' integer default 0,
-                    'duration' integer default 0,
-                    'type' string default '',
-                    'format' string default '',
-                    'status' string default '',
-                    'description' string default '',
-                    'genres' string default '',
-                    'synonyms' string default '',
-                    'title_english' string default '',
-                    'title_romaji' string default '',
-                    'title_native' string default '',
-                    'start_date' text default '0000-00-00',
-                    'end_date' text default '0000-00-00',
-                    'cover_image' string default '',
-                    'viewing_status' string default '',
-                    'personal_score' integer default 0,
-                    'personal_review' string default '',
-                    'watch_priority' integer default 0,
-                    'rewatch_count' integer default 0,
-                    'current_episode' integer default 0,
-                    'date_added' text default '0000-00-00',
-                    'is_adult' integer default 0)</value>
+	'id' integer not null primary key,
+	'id_mal' integer,
+	'average_score' integer,
+	'episodes' integer,
+	'duration' integer,
+	'type' string,
+	'format' string,
+	'status' string,
+	'description' string,
+	'genres' string,
+	'synonyms' string,
+	'title_english' string,
+	'title_romaji' string,
+	'title_native' string,
+	'start_date' text,
+	'end_date' text,
+	'cover_image' string,
+	'viewing_status' string,
+	'personal_score' integer,
+	'personal_review' string,
+	'watch_priority' integer,
+	'rewatch_count' integer,
+	'current_episode' integer,
+	'date_added' text,
+	'is_adult' integer,
+	'next_airing_episode' string,
+	'external_links' string
+)</value>
   </data>
   <data name="CreateMangaTable" xml:space="preserve">
     <value>CREATE TABLE 'manga_entries' (
-                    'id' integer not null primary key,
-                    'id_mal' integer default 0,
-                    'mean_score' integer default 0,
-                    'volumes' integer default 0,
-                    'chapters' integer default 0,
-                    'type' string default '',
-                    'format' string default '',
-                    'status' string default '',
-                    'description' string default '',
-                    'genres' string default '',
-                    'synonyms' string default '',
-                    'title_english' string default '',
-                    'title_romaji' string default '',
-                    'title_native' string default '',
-                    'cover_image' string default '',
-                    'reading_status' string default '',
-                    'personal_score' integer default 0,
-                    'personal_review' string default '',
-                    'read_priority' integer default 0,
-                    'reread_count' integer default 0,
-                    'current_chapter' integer default 0,
-                    'date_added' text default '0000-00-00',
-                    'is_adult' integer default 0)</value>
+	'id' integer not null primary key,
+	'id_mal' integer,
+	'average_score' integer,
+	'volumes' integer,
+	'chapters' integer,
+	'type' string,
+	'format' string,
+	'status' string,
+	'description' string,
+	'genres' string,
+	'synonyms' string,
+	'title_english' string,
+	'title_romaji' string,
+	'title_native' string,
+	'cover_image' string,
+	'reading_status' string,
+	'personal_score' integer,
+	'personal_review' string,
+	'read_priority' integer,
+	'reread_count' integer,
+	'current_chapter' integer,
+	'date_added' text,
+	'is_adult' integer,
+	'external_links' string
+)</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="load" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\load.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

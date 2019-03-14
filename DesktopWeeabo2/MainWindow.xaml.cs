@@ -25,20 +25,14 @@ namespace DesktopWeeabo2 {
     public partial class MainWindow : Window {
 
         public MainWindow() {
-            InitializeComponent();
+			InitializeComponent();
             InitAppData.Init();
             DataContext = new MainWindowViewModel();
-            //test();
         }
 
-        private void test() {
-            Task.Run(() => {
-				using (var repo = new AnimeRepo()) {
-					var a = repo.FindSet(x => true, x => x.Id);
-					Console.WriteLine(a);
-					Console.WriteLine(a);
-				}
-			});
-        }
-    }
+		private async void Window_ContentRendered(object sender, EventArgs e) {
+			await InitAppData.WakeDB();
+			StartingLoader.IsHitTestVisible = false;
+		}
+	}
 }

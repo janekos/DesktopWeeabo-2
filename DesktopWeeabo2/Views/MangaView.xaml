@@ -92,7 +92,7 @@
                                 <TextBlock Text="{Binding TitleNative}"></TextBlock>
                                 <TextBlock Text="{Binding Type}"></TextBlock>
                                 <TextBlock Text="{Binding ReadingStatus}"></TextBlock>
-                                <Button Visibility="{Binding Path=DataContext.CurrentView, ElementName=MangaViewControl, Converter={StaticResource Converter}, ConverterParameter=isStringEmpty}">Add to db</Button>
+                                <Button Visibility="{Binding Path=DataContext.CurrentView, ElementName=MangaViewControl, Converter={StaticResource Converter}, ConverterParameter=isValueEmpty}">Add to db</Button>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

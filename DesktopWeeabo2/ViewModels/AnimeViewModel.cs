@@ -43,12 +43,20 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public string SelectedItemPersonalReview {
 			get { return _SelectedItem?.PersonalReview; }
-			set { if (_SelectedItem.PersonalReview != value) { _SelectedItem.PersonalReview = value; RaisePropertyChanged("SelectedItem"); } }
+			set {
+				if (_SelectedItem.PersonalReview != value) _SelectedItem.PersonalReview = value;
+				RaisePropertyChanged("SelectedItemPersonalReview");
+				RaisePropertyChanged("SelectedItem");
+			}
 		}
 
-		public int SelectedItemPersonalScore {
-			get { return _SelectedItem == null ? 0 : _SelectedItem.PersonalScore; }
-			set { if (_SelectedItem.PersonalScore != value) { _SelectedItem.PersonalScore = value; RaisePropertyChanged("SelectedItem"); } }
+		public int? SelectedItemPersonalScore {
+			get { return (_SelectedItem == null || _SelectedItem.PersonalScore == null) ? 0 : _SelectedItem.PersonalScore; }
+			set {
+				if (_SelectedItem.PersonalScore != value) _SelectedItem.PersonalScore = value;
+				RaisePropertyChanged("SelectedItemPersonalScore");
+				RaisePropertyChanged("SelectedItem");
+			}
 		}
 
 		public AnimeViewModel() : base() { BindingOperations.EnableCollectionSynchronization(AnimeItems, _CollectionLock); }
@@ -137,7 +145,7 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public DelegateCommand ChangeItemSource => new DelegateCommand(
 			new Action<object>((e) => {
-				if (CurrentView.Equals(e as string)) return; 
+				if (CurrentView.Equals(e as string)) return;
 
 				DontTriggerSearchChanged = true;
 				if ((SelectedSort.VisibleIn == SortLocation.ANIME || SelectedSort.VisibleIn == SortLocation.LOCAL) && (e as string) == StatusView.ONLINE) SelectedSort = SearchModel.SortsList[0];
@@ -146,7 +154,12 @@ namespace DesktopWeeabo2.ViewModels {
 				CurrentView = e as string;
 				RenewView();
 
-				if (!e.Equals(StatusView.ONLINE)) { AddLocalItemsToView(); }
+				if (!e.Equals(StatusView.ONLINE)) {
+					AddLocalItemsToView();
+				}
+				else if(e.Equals(StatusView.ONLINE) && SearchText.Length > 0) {
+					AddOnlineItemsToView.Execute(null);
+				} 
 			})
 		);
 
@@ -198,18 +211,20 @@ namespace DesktopWeeabo2.ViewModels {
 		);
 
 		public DelegateCommand SaveItemToDb => new DelegateCommand(
-			new Action(async () => {
-				await Task.Run(async () => {
+			new Action<object>((e) => {
+				if (e.ToString().Equals("PersonalEditStart")) return;
+				Task.Run(async () => {
 					try {
-						_SelectedItem.ViewingStatus = PressedTransferButton;
-						_SelectedItem.DateAdded = DateTime.Now;
+						_SelectedItem.ViewingStatus = PressedTransferButton.Length > 0 ? PressedTransferButton : CurrentView;
+						if (_SelectedItem.DateAdded == null) _SelectedItem.DateAdded = DateTime.Now;
 						var itemWorkResponse = await AnimeService.AddOrUpdate(_SelectedItem);
 
 						if (itemWorkResponse == DBResponse.ADDED) ToastService.ShowToast($"Succesfully saved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view!", "success");
-						else if (itemWorkResponse == DBResponse.UPDATED) ToastService.ShowToast($"Succesfully moved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view!", "success");
+						else if (itemWorkResponse == DBResponse.UPDATED) ToastService.ShowToast($"Succesfully updated '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}'!", "success");
+						else if (itemWorkResponse == DBResponse.NOCHANGES) ToastService.ShowToast("No changes detected.", "warning");
 						else throw new Exception("Repo returned ERROR");
 
-						if (CurrentView == StatusView.ONLINE) {
+						if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
 							RenewView(true);
 						}
 						else {

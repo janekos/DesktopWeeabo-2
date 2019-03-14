@@ -1,4 +1,5 @@
-﻿using DesktopWeeabo2.Models.Shared;
+﻿using DesktopWeeabo2.Helpers;
+using DesktopWeeabo2.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,10 +12,10 @@ namespace DesktopWeeabo2.Models {
     public class AnimeModel : BaseModel {
 
         [Column("episodes")]
-        public int Episodes { get; set; }
+        public int? Episodes { get; set; }
 
         [Column("duration")]
-        public int Duration { get; set; }
+        public int? Duration { get; set; }
 
         /*problem kids*/
         [Column("start_date")]
@@ -23,17 +24,36 @@ namespace DesktopWeeabo2.Models {
         [Column("end_date")]
         public DateTime EndDate { get; set; }
 
-        /*custom vars*/
-        [Column("viewing_status")]
+		[Column("next_airing_episode")]
+		public string NextAiringEpisode { get; set; }
+
+		/*custom vars*/
+		[Column("viewing_status")]
         public string ViewingStatus { get; set; }
 
         [Column("watch_priority")]
-        public int WatchPriority { get; set; }
+        public int? WatchPriority { get; set; }
 
         [Column("rewatch_count")]
-        public int RewatchCount { get; set; }
+        public int? RewatchCount { get; set; }
 
         [Column("current_episode")]
-        public int CurrentEpisode { get; set; }
+        public int? CurrentEpisode { get; set; }
+
+		[UnReflectable]
+		public int? GetNextAiringEpisodeNumber {
+			get {
+				if (int.TryParse(NextAiringEpisode?.Split('|')[1], out int result)) return result;
+				return null;
+			}
+		}
+
+		[UnReflectable]
+		public DateTime? GetNextAiringEpisodeDate {
+			get {
+				if (long.TryParse(NextAiringEpisode?.Split('|')[0], out long result)) return DateTimeOffset.FromUnixTimeSeconds(result).UtcDateTime;
+				return null;
+			}
+		}
 	}
 }

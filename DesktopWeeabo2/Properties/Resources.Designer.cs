@@ -22,7 +22,7 @@ namespace DesktopWeeabo2.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace DesktopWeeabo2.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DesktopWeeabo2.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace DesktopWeeabo2.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -67,8 +67,9 @@ namespace DesktopWeeabo2.Properties {
         ///			total
         ///			hasNextPage
         ///		}
-        ///		media(id: $id, type: {mediaTypeToReplace}, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
-        ///			id 
+        ///		media(id: $id, type: ANIME, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
+        ///			id
+        ///			idMal
         ///			title { 
         ///				english 
         ///				romaji
@@ -77,16 +78,16 @@ namespace DesktopWeeabo2.Properties {
         ///			synonyms 
         ///			genres
         ///			type 
-        ///			meanScore
+        ///			averageScore
         ///			format 
         ///			status 
         ///			description(asHtml: false) 
         ///			startDate{
         ///				year
         ///				month
-        ///		 [rest of string was truncated]&quot;;.
+        ///				d [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string AnilistSearchQuery {
+        public static string AnilistSearchQuery {
             get {
                 return ResourceManager.GetString("AnilistSearchQuery", resourceCulture);
             }
@@ -94,18 +95,29 @@ namespace DesktopWeeabo2.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE &apos;anime_entries&apos; (
-        ///                    &apos;id&apos; integer not null primary key,
-        ///                    &apos;id_mal&apos; integer default 0,
-        ///                    &apos;mean_score&apos; integer default 0,
-        ///                    &apos;episodes&apos; integer default 0,
-        ///                    &apos;duration&apos; integer default 0,
-        ///                    &apos;type&apos; string default &apos;&apos;,
-        ///                    &apos;format&apos; string default &apos;&apos;,
-        ///                    &apos;status&apos; string default &apos;&apos;,
-        ///                    &apos;description&apos; string default &apos;&apos;,
-        ///                    &apos; [rest of string was truncated]&quot;;.
+        ///	&apos;id&apos; integer not null primary key,
+        ///	&apos;id_mal&apos; integer,
+        ///	&apos;average_score&apos; integer,
+        ///	&apos;episodes&apos; integer,
+        ///	&apos;duration&apos; integer,
+        ///	&apos;type&apos; string,
+        ///	&apos;format&apos; string,
+        ///	&apos;status&apos; string,
+        ///	&apos;description&apos; string,
+        ///	&apos;genres&apos; string,
+        ///	&apos;synonyms&apos; string,
+        ///	&apos;title_english&apos; string,
+        ///	&apos;title_romaji&apos; string,
+        ///	&apos;title_native&apos; string,
+        ///	&apos;start_date&apos; text,
+        ///	&apos;end_date&apos; text,
+        ///	&apos;cover_image&apos; string,
+        ///	&apos;viewing_status&apos; string,
+        ///	&apos;personal_score&apos; integer,
+        ///	&apos;personal_review&apos; string,
+        ///	&apos;watch_pr [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string CreateAnimeTable {
+        public static string CreateAnimeTable {
             get {
                 return ResourceManager.GetString("CreateAnimeTable", resourceCulture);
             }
@@ -113,20 +125,40 @@ namespace DesktopWeeabo2.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE &apos;manga_entries&apos; (
-        ///                    &apos;id&apos; integer not null primary key,
-        ///                    &apos;id_mal&apos; integer default 0,
-        ///                    &apos;mean_score&apos; integer default 0,
-        ///                    &apos;volumes&apos; integer default 0,
-        ///                    &apos;chapters&apos; integer default 0,
-        ///                    &apos;type&apos; string default &apos;&apos;,
-        ///                    &apos;format&apos; string default &apos;&apos;,
-        ///                    &apos;status&apos; string default &apos;&apos;,
-        ///                    &apos;description&apos; string default &apos;&apos;,
-        ///                    &apos;g [rest of string was truncated]&quot;;.
+        ///	&apos;id&apos; integer not null primary key,
+        ///	&apos;id_mal&apos; integer,
+        ///	&apos;average_score&apos; integer,
+        ///	&apos;volumes&apos; integer,
+        ///	&apos;chapters&apos; integer,
+        ///	&apos;type&apos; string,
+        ///	&apos;format&apos; string,
+        ///	&apos;status&apos; string,
+        ///	&apos;description&apos; string,
+        ///	&apos;genres&apos; string,
+        ///	&apos;synonyms&apos; string,
+        ///	&apos;title_english&apos; string,
+        ///	&apos;title_romaji&apos; string,
+        ///	&apos;title_native&apos; string,
+        ///	&apos;cover_image&apos; string,
+        ///	&apos;reading_status&apos; string,
+        ///	&apos;personal_score&apos; integer,
+        ///	&apos;personal_review&apos; string,
+        ///	&apos;read_priority&apos; integer,
+        ///	&apos;reread_count&apos; integer, [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string CreateMangaTable {
+        public static string CreateMangaTable {
             get {
                 return ResourceManager.GetString("CreateMangaTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap load {
+            get {
+                object obj = ResourceManager.GetObject("load", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace DesktopWeeabo2.Helpers
@@ -16,8 +17,12 @@ namespace DesktopWeeabo2.Helpers
 			switch (parameters[0]) {
 				case "isValueTrue":
 					return (value != null && (bool) value) ? Visibility.Visible : Visibility.Collapsed;
-				case "isStringEmpty":
-					return (value == null || value.ToString().Length == 0) ? Visibility.Collapsed : Visibility.Visible;
+				case "isValueEmpty":
+					if (value != null) {
+						if (value.GetType() == typeof(DateTime)) return ((DateTime)value).Equals(DateTime.MinValue) ? Visibility.Collapsed : Visibility.Visible;
+						return value.ToString().Length == 0 ? Visibility.Collapsed : Visibility.Visible;
+					}
+					return Visibility.Collapsed;
 				case "isButtonSelected":
 					return (value != null && parameters[1] != null && (string) value == parameters[1]);
 				case "isValueNull":
@@ -26,18 +31,19 @@ namespace DesktopWeeabo2.Helpers
 					return !(value == null || ((AnimeModel)value).ViewingStatus == null || !((AnimeModel)value).ViewingStatus.Equals(parameters[1]));
 				case "reverseBoolean":
 					return !(value != null && (bool)value);
-				case "formatInfoBoxTextBlock":
+				case "formatInfoBlockDynamicItem":
 					if (value != null) {
-						if (value.GetType() == typeof(DateTime)) return ((DateTime)value).ToString("dd/MM/yyyy");
+						if (value.GetType() == typeof(DateTime)) return ((DateTime)value).ToString("dd MMM yyyy");
+						return value;
 					}
-					return value;
+					return null;
 				default:
 					return null;
 			}
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-			throw new NotImplementedException();
+			return value;
 		}
 	}
 }

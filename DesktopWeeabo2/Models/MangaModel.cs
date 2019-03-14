@@ -11,22 +11,22 @@ namespace DesktopWeeabo2.Models {
     public class MangaModel : BaseModel {
 
         [Column("volumes")]
-        public int Volumes { get; set; }
+        public int? Volumes { get; set; }
 
         [Column("chapters")]
-        public int Chapters { get; set; }
+        public int? Chapters { get; set; }
 
         /*custom vars*/
         [Column("reading_status")]
         public string ReadingStatus { get; set; }
 
         [Column("read_priority")]
-        public int ReadPriority { get; set; }
+        public int? ReadPriority { get; set; }
 
         [Column("reread_count")]
-        public int RereadCount { get; set; }
+        public int? RereadCount { get; set; }
 
         [Column("current_chapter")]
-        public int CurrentChapter { get; set; }
+        public int? CurrentChapter { get; set; }
     }
 }

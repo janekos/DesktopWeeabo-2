@@ -15,15 +15,24 @@ namespace DesktopWeeabo2.Data {
             SetDataDir();
         }
 
-        private static void CheckFiles() {
+		public static async Task<bool> WakeDB() {
+			using(var db = new EntriesContext()) {
+				await db.AnimeItems.FindAsync(0);
+			}
+			return true;
+		}
+
+		private static void CheckFiles() {
             if (!Directory.Exists(GlobalConfig.AppDir)) Directory.CreateDirectory(GlobalConfig.AppDir);
-            if (!File.Exists(GlobalConfig.AppDir + "\\entries.db")) InitDB(GlobalConfig.AppDir + "\\entries.db");
+            if (!File.Exists(GlobalConfig.AppDir + "\\entries.db")) InitDB();
             if (!File.Exists(GlobalConfig.AppDir + "\\config.json")) GlobalConfig.SerializeConfig();
         }
 
-        private static void InitDB(string dbPath) {
+        private static void InitDB() {
 
-            SQLiteConnection.CreateFile(dbPath);
+			string dbPath = GlobalConfig.AppDir + "\\entries.db";
+
+			SQLiteConnection.CreateFile(dbPath);
 
             using (var db = new SQLiteConnection("Data Source=" + dbPath)) {
 
@@ -31,9 +40,11 @@ namespace DesktopWeeabo2.Data {
 
                 new SQLiteCommand(Resources.ResourceManager.GetString("CreateAnimeTable"), db).ExecuteNonQuery();
                 new SQLiteCommand(Resources.ResourceManager.GetString("CreateMangaTable"), db).ExecuteNonQuery();
+
+				db.Close();
             }
         }
 
         private static void SetDataDir() => AppDomain.CurrentDomain.SetData("DataDirectory", GlobalConfig.AppDir);
-    }
+	}
 }

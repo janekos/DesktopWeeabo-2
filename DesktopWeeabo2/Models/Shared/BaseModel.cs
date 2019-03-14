@@ -1,4 +1,6 @@
 ﻿using DesktopWeeabo2.Helpers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,10 +18,10 @@ namespace DesktopWeeabo2.Models.Shared {
         public int Id { get; set; }
 
 		[Column("id_mal")]
-		public int IdMal { get; set; }
+		public int? IdMal { get; set; }
 
-		[Column("mean_score")]
-        public int MeanScore { get; set; }
+		[Column("average_score")]
+        public int? AverageScore { get; set; }
 
         [Column("type")]
         public string Type { get; set; }
@@ -55,16 +57,20 @@ namespace DesktopWeeabo2.Models.Shared {
         [Column("cover_image")]
         public string CoverImage { get; set; }
 
+		[Column("external_links")]
+		public string ExternalLinks { get; set; }
+
         /*custom vars*/
         [Column("personal_score")]
-        public int PersonalScore { get; set; }
+        public int? PersonalScore { get; set; }
 
         [Column("personal_review")]
         public string PersonalReview { get; set; }
 
         [Column("date_added")]
-        public DateTime DateAdded { get; set; }
+        public DateTime? DateAdded { get; set; }
 
+		[UnReflectable]
 		public string FirstWorkingTitle {
 			get {
 				string title = StringHelpers.GetFirstNotNullItemTitle(this);
@@ -76,5 +82,23 @@ namespace DesktopWeeabo2.Models.Shared {
 				return title;
 			}
 		}
+
+		[UnReflectable]
+		public ExternalLink[] GetExternalLinksList {
+			get {
+				if (ExternalLinks != null) return JsonConvert.DeserializeObject<ExternalLink[]>(ExternalLinks);
+				return null;
+			}
+		}
+	}
+
+	public class ExternalLink {
+		[JsonProperty("url")]
+		public string Url { get; set; }
+
+		[JsonProperty("site")]
+		public string Site { get; set; }
+
+		public string GetSite { get { return $"{Site}: "; } }
 	}
 }
