@@ -125,6 +125,7 @@
     <Compile Include="Helpers\StringHelpers.cs" />
     <Compile Include="Helpers\ToastService.cs" />
     <Compile Include="Models\SearchModel.cs" />
+    <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="ViewModels\AnimeViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MangaViewModel.cs" />

@@ -12,6 +12,6 @@ namespace DesktopWeeabo2.Data.Services.Shared {
 		Task<DBResponse> AddOrUpdate(T entity);
 		DBResponse Delete(int id);
 		T[] GetBySearchModelAndCurrentView(SearchModel search, string currentView);
-		T[] GetCustom(Func<AnimeModel, bool> condition);
+		T[] GetCustom(Func<T, bool> condition);
 	}
 }

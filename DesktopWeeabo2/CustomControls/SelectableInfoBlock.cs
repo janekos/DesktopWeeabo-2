@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -17,6 +19,13 @@ namespace DesktopWeeabo2.CustomControls {
 	public class SelectableInfoBlock : InfoBlock {
 		static SelectableInfoBlock() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(SelectableInfoBlock), new FrameworkPropertyMetadata(typeof(SelectableInfoBlock)));
+		}
+
+		protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e) {
+			var button = (ToggleButton)Template.FindName("BlockEditButton", this);			
+			if (!(bool)e.NewValue && button.IsChecked == true) button.IsChecked = false;
+
+			base.OnIsKeyboardFocusWithinChanged(e);
 		}
 
 		public bool IsVertical {

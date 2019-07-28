@@ -90,6 +90,11 @@ namespace DesktopWeeabo2.Helpers
 						}
 					}
 					return false;
+				case "PlaceHolderVisibilty":
+					// 0 - ischecked
+					// 1 - text.isempty
+					if (values[0] != null && values[1] != null) return !((bool)values[0]) && (bool)values[1] ? Visibility.Visible : Visibility.Collapsed;
+					return Visibility.Hidden;
 				default:
 					return null;
 			}

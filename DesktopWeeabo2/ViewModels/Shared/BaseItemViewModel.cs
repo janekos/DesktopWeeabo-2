@@ -146,6 +146,8 @@ namespace DesktopWeeabo2.ViewModels.Shared {
             throw new NotImplementedException("AddLocalItems has to be implemented in ViewModel.");
         }
 
+		public DelegateCommand TriggerViewStatusWasChanged => new DelegateCommand(new Action<object>(e => PressedTransferButton = e as string));
+
 		public DelegateCommand SetChecked => new DelegateCommand(new Action(() => {
 			SelectedGenres = StringHelpers.GenreHelper(SearchModel.GenresList);
 			RaisePropertyChanged("SearchChanged");

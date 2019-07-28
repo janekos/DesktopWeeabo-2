@@ -16,7 +16,7 @@ namespace DesktopWeeabo2.Data.Services {
 				using (var repo = new AnimeRepo()) {
 					var dbEntity = await repo.Get(entity.Id);
 					if (dbEntity == null) {
-						repo.Add(dbEntity);
+						repo.Add(entity);
 						return DBResponse.ADDED;
 					}
 					else {

@@ -1,4 +1,5 @@
-﻿using DesktopWeeabo2.Helpers;
+﻿using DesktopWeeabo2.Data;
+using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.Generic;
@@ -7,14 +8,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
 namespace DesktopWeeabo2.ViewModels {
 	class MainWindowViewModel : BaseViewModel {
-
-		Random ResidentRandom = new Random();
-
 		public string IntroMessage {
 			get {
 				string[] veryFunnyMessages = new string[]{
@@ -25,9 +24,31 @@ namespace DesktopWeeabo2.ViewModels {
 					"starting!",
 					"what?",
 					"thinking..."
-				};				
+				};
 
-				return veryFunnyMessages[ResidentRandom.Next(veryFunnyMessages.Length)];
+				return veryFunnyMessages[new Random().Next(veryFunnyMessages.Length)];
+			}
+		}
+
+		private Visibility _ConsentBoxVisibility = Visibility.Collapsed;
+		public Visibility ConsentBoxVisibility {
+			get { return _ConsentBoxVisibility; }
+			set {
+				if (value != _ConsentBoxVisibility) {
+					_ConsentBoxVisibility = value;
+					RaisePropertyChanged("ConsentBoxVisibility");
+				}
+			}
+		}
+
+		private bool _IsLoading = true;
+		public bool IsLoading {
+			get { return _IsLoading; }
+			set {
+				if (value != _IsLoading) {
+					_IsLoading = value;
+					RaisePropertyChanged("IsLoading");
+				}
 			}
 		}
 
@@ -112,6 +133,9 @@ namespace DesktopWeeabo2.ViewModels {
 			};
 			ViewModelsView = CollectionViewSource.GetDefaultView(ViewModels);
 
+			if (InitAppData.CheckRootDir()) InitApp();
+			else ConsentBoxVisibility = Visibility.Visible;
+
 			ToastService.ToastMessageRecieved += (message, messageType) => {
 				switch (messageType) {
 					case "warning":
@@ -140,6 +164,22 @@ namespace DesktopWeeabo2.ViewModels {
 			};
 		}
 
+		private async void InitApp() {
+			InitAppData.Init();
+			await InitAppData.WakeDB();
+			IsLoading = false;
+		}
+
+		public DelegateCommand GiveConsent => new DelegateCommand(
+			new Action<object>((e) => {
+				if (e.ToString().Equals("ACCEPT")) {
+					ConsentBoxVisibility = Visibility.Collapsed;
+					InitApp();
+				} else {
+					Environment.Exit(0);
+				}
+			})
+		);
 
 		public DelegateCommand ChangeView => new DelegateCommand(
 		new Action<object>(

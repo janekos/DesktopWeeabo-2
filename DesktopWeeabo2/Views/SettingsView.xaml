@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
              xmlns:local="clr-namespace:DesktopWeeabo2.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock Foreground="Black" Margin="298,189,334,156" FontSize="48">Settings</TextBlock>
-    </Grid>
+  <Border BorderThickness="2" BorderBrush="Black">
+    <StackPanel Width="200" HorizontalAlignment="Left">
+    </StackPanel>
+  </Border>
 </UserControl>

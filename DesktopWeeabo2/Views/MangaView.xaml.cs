@@ -17,8 +17,8 @@ using System.Windows.Shapes;
 namespace DesktopWeeabo2.Views {
     public partial class MangaView : UserControl {
         public MangaView() {
-            InitializeComponent();
             DataContext = new MangaViewModel();
+            InitializeComponent();
         }
     }
 }

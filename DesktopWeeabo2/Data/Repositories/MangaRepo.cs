@@ -10,32 +10,30 @@ using System.Threading.Tasks;
 namespace DesktopWeeabo2.Data.Repositories
 {
 	class MangaRepo : IRepo<MangaModel>, IDisposable {
-		public void Add(MangaModel item) {
-			throw new NotImplementedException();
+		private readonly EntriesContext _db = new EntriesContext();
+
+		public async void Add(MangaModel item) {
+			_db.MangaItems.Add(item);
+			await _db.SaveChangesAsync();
 		}
 
-		public void Delete(int id) {
-			throw new NotImplementedException();
+		public async void Delete(int id) {
+			var item = await Get(id);
+			if (item == null) return;
+
+			_db.MangaItems.Remove(item);
+			await _db.SaveChangesAsync();
 		}
 
-		public void Dispose() {
-			throw new NotImplementedException();
+		public IEnumerable<MangaModel> FindSet(Func<MangaModel, bool> expression, Func<MangaModel, object> orderBy, bool isDescending = false) => isDescending ? _db.MangaItems.Where(expression).OrderByDescending(orderBy) : _db.MangaItems.Where(expression).OrderBy(orderBy);
+
+		public async Task<MangaModel> Get(int id) => await _db.MangaItems.FindAsync((int)id);
+
+		public async void Update(MangaModel dbItem, MangaModel newItem) {
+			_db.Entry(dbItem).CurrentValues.SetValues(newItem);
+			await _db.SaveChangesAsync();
 		}
 
-		public IEnumerable<MangaModel> FindSet(Func<MangaModel, bool> expression, Func<MangaModel, object> orderBy, bool isDescending) {
-			throw new NotImplementedException();
-		}
-
-		public Task<MangaModel> Get(int id) {
-			throw new NotImplementedException();
-		}
-
-		public void Update(MangaModel item) {
-			throw new NotImplementedException();
-		}
-
-		public void Update(MangaModel dbItem, MangaModel newItem) {
-			throw new NotImplementedException();
-		}
+		public void Dispose() => _db.Dispose();
 	}
 }

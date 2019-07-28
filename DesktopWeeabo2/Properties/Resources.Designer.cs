@@ -67,7 +67,7 @@ namespace DesktopWeeabo2.Properties {
         ///			total
         ///			hasNextPage
         ///		}
-        ///		media(id: $id, type: ANIME, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
+        ///		media(id: $id, type: {mediaTypeToReplace}, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
         ///			id
         ///			idMal
         ///			title { 
@@ -84,8 +84,7 @@ namespace DesktopWeeabo2.Properties {
         ///			description(asHtml: false) 
         ///			startDate{
         ///				year
-        ///				month
-        ///				d [rest of string was truncated]&quot;;.
+        ///	 [rest of string was truncated]&quot;;.
         /// </summary>
         public static string AnilistSearchQuery {
             get {
@@ -149,6 +148,22 @@ namespace DesktopWeeabo2.Properties {
         public static string CreateMangaTable {
             get {
                 return ResourceManager.GetString("CreateMangaTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This program doesn&apos;t collect or send any data. Only input/output type operations it does is:
+        ///    1. queries the Anilist database, when you do online searches;
+        ///    2. adds a new folder with a configuration and a database file in Documents folder;
+        ///    3. optionally backs up the database;
+        ///
+        ///You can review this program&apos;s code at &quot;https://github.com/janekos/DesktopWeeabo-2&quot;.
+        ///
+        ///If you got this program from somewhere other than this page &quot;https://github.com/janekos/DesktopWeeabo-2/releases&quot; then I strongly su [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string DisclaimerMessage {
+            get {
+                return ResourceManager.GetString("DisclaimerMessage", resourceCulture);
             }
         }
         

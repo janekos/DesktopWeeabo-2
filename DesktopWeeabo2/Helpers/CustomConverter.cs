@@ -26,7 +26,9 @@ namespace DesktopWeeabo2.Helpers
 				case "isButtonSelected":
 					return (value != null && parameters[1] != null && (string) value == parameters[1]);
 				case "isValueNull":
-					return (value == null) ? Visibility.Visible : Visibility.Hidden;
+					return (value == null) ? Visibility.Visible : Visibility.Collapsed;
+				case "isValueNotNull":
+					return (value == null) ? Visibility.Collapsed : Visibility.Visible;
 				case "isWhatViewingStatus":
 					return !(value == null || ((AnimeModel)value).ViewingStatus == null || !((AnimeModel)value).ViewingStatus.Equals(parameters[1]));
 				case "reverseBoolean":

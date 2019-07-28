@@ -6,13 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DesktopWeeabo2.Data {
     public static class InitAppData {
 
         public static void Init() {
             CheckFiles();
-            SetDataDir();
         }
 
 		public static async Task<bool> WakeDB() {
@@ -22,9 +22,11 @@ namespace DesktopWeeabo2.Data {
 			return true;
 		}
 
+		public static bool CheckRootDir() => Directory.Exists(GlobalConfig.AppDir);
+
 		private static void CheckFiles() {
-            if (!Directory.Exists(GlobalConfig.AppDir)) Directory.CreateDirectory(GlobalConfig.AppDir);
-            if (!File.Exists(GlobalConfig.AppDir + "\\entries.db")) InitDB();
+			if (!CheckRootDir()) Directory.CreateDirectory(GlobalConfig.AppDir);
+			if (!File.Exists(GlobalConfig.AppDir + "\\entries.db")) InitDB();
             if (!File.Exists(GlobalConfig.AppDir + "\\config.json")) GlobalConfig.SerializeConfig();
         }
 
@@ -44,7 +46,5 @@ namespace DesktopWeeabo2.Data {
 				db.Close();
             }
         }
-
-        private static void SetDataDir() => AppDomain.CurrentDomain.SetData("DataDirectory", GlobalConfig.AppDir);
 	}
 }

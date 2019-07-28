@@ -124,7 +124,7 @@
 			total
 			hasNextPage
 		}
-		media(id: $id, type: ANIME, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
+		media(id: $id, type: {mediaTypeToReplace}, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
 			id
 			idMal
 			title { 
@@ -226,6 +226,22 @@
 	'is_adult' integer,
 	'external_links' string
 )</value>
+  </data>
+  <data name="DisclaimerMessage" xml:space="preserve">
+    <value>This program doesn't collect or send any data. Only input/output type operations it does is:
+    1. queries the Anilist database, when you do online searches;
+    2. adds a new folder with a configuration and a database file in Documents folder;
+    3. optionally backs up the database;
+
+You can review this program's code at "https://github.com/janekos/DesktopWeeabo-2".
+
+If you got this program from somewhere other than this page "https://github.com/janekos/DesktopWeeabo-2/releases" then I strongly suggest deleting this exe and getting one from there.
+
+This program is free. If you paid for it then you got scammed.
+
+If you have any suggestions/comments/bug reports then feel free to make an issue in this program's github repository here "https://github.com/janekos/DesktopWeeabo-2".
+
+If you do not agree then press "Cancel".</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="load" type="System.Resources.ResXFileRef, System.Windows.Forms">

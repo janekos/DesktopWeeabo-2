@@ -23,70 +23,70 @@ namespace DesktopWeeabo2.CustomControls {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(AdvancedSearch), new FrameworkPropertyMetadata(typeof(AdvancedSearch)));
 		}
 
-		public bool ASIsVisible {
-			get { return (bool)GetValue(ASIsVisibleProperty); }
-			set { SetValue(ASIsVisibleProperty, value); }
+		public new bool IsVisible {
+			get { return (bool)GetValue(IsVisibleProperty); }
+			set { SetValue(IsVisibleProperty, value); }
 		}
-		public static readonly DependencyProperty ASIsVisibleProperty = DependencyProperty.Register("ASIsVisible", typeof(bool), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public new static readonly DependencyProperty IsVisibleProperty = DependencyProperty.Register("IsVisible", typeof(bool), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public bool ASIsDescending {
-			get { return (bool)GetValue(ASIsDescendingProperty); }
-			set { SetValue(ASIsDescendingProperty, value); }
+		public bool IsDescending {
+			get { return (bool)GetValue(IsDescendingProperty); }
+			set { SetValue(IsDescendingProperty, value); }
 		}
-		public static readonly DependencyProperty ASIsDescendingProperty = DependencyProperty.Register("ASIsDescending", typeof(bool), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty IsDescendingProperty = DependencyProperty.Register("IsDescending", typeof(bool), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public bool ASIsAdult {
-			get { return (bool)GetValue(ASIsAdultProperty); }
-			set { SetValue(ASIsAdultProperty, value); }
+		public bool IsAdult {
+			get { return (bool)GetValue(IsAdultProperty); }
+			set { SetValue(IsAdultProperty, value); }
 		}
-		public static readonly DependencyProperty ASIsAdultProperty = DependencyProperty.Register("ASIsAdult", typeof(bool), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty IsAdultProperty = DependencyProperty.Register("IsAdult", typeof(bool), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public SortObject ASSelectedSort {
-			get { return (SortObject)GetValue(ASSelectedSortProperty); }
-			set { SetValue(ASSelectedSortProperty, value); }
+		public SortObject SelectedSort {
+			get { return (SortObject)GetValue(SelectedSortProperty); }
+			set { SetValue(SelectedSortProperty, value); }
 		}
-		public static readonly DependencyProperty ASSelectedSortProperty = DependencyProperty.Register("ASSelectedSort", typeof(SortObject), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty SelectedSortProperty = DependencyProperty.Register("SelectedSort", typeof(SortObject), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public string ASSelectedGenres {
-			get { return (string)GetValue(ASSelectedGenresProperty); }
-			set { SetValue(ASSelectedGenresProperty, value); }
+		public string SelectedGenres {
+			get { return (string)GetValue(SelectedGenresProperty); }
+			set { SetValue(SelectedGenresProperty, value); }
 		}
-		public static readonly DependencyProperty ASSelectedGenresProperty = DependencyProperty.Register("ASSelectedGenres", typeof(string), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty SelectedGenresProperty = DependencyProperty.Register("SelectedGenres", typeof(string), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public string ASCurrentView {
-			get { return (string)GetValue(ASCurrentViewProperty); }
-			set { SetValue(ASCurrentViewProperty, value); }
+		public string CurrentView {
+			get { return (string)GetValue(CurrentViewProperty); }
+			set { SetValue(CurrentViewProperty, value); }
 		}
-		public static readonly DependencyProperty ASCurrentViewProperty = DependencyProperty.Register("ASCurrentView", typeof(string), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty CurrentViewProperty = DependencyProperty.Register("CurrentView", typeof(string), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public SortObject[] ASSortsList {
-			get { return (SortObject[])GetValue(ASSortsListProperty); }
-			set { SetValue(ASSortsListProperty, value); }
+		public SortObject[] SortsList {
+			get { return (SortObject[])GetValue(SortsListProperty); }
+			set { SetValue(SortsListProperty, value); }
 		}
-		public static readonly DependencyProperty ASSortsListProperty = DependencyProperty.Register("ASSortsList", typeof(SortObject[]), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty SortsListProperty = DependencyProperty.Register("SortsList", typeof(SortObject[]), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public GenreObject[] ASGenresList {
-			get { return (GenreObject[])GetValue(ASGenresListProperty); }
-			set { SetValue(ASGenresListProperty, value); }
+		public GenreObject[] GenresList {
+			get { return (GenreObject[])GetValue(GenresListProperty); }
+			set { SetValue(GenresListProperty, value); }
 		}
-		public static readonly DependencyProperty ASGenresListProperty = DependencyProperty.Register("ASGenresList", typeof(GenreObject[]), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty GenresListProperty = DependencyProperty.Register("GenresList", typeof(GenreObject[]), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public ICommand ASSetChecked {
-			get { return (ICommand)GetValue(ASSetCheckedProperty); }
-			set { SetValue(ASSetCheckedProperty, value); }
+		public ICommand SetChecked {
+			get { return (ICommand)GetValue(SetCheckedProperty); }
+			set { SetValue(SetCheckedProperty, value); }
 		}
-		public static readonly DependencyProperty ASSetCheckedProperty = DependencyProperty.Register("ASSetChecked", typeof(ICommand), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty SetCheckedProperty = DependencyProperty.Register("SetChecked", typeof(ICommand), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public ICommand ASHideComponent {
-			get { return (ICommand)GetValue(ASHideComponentProperty); }
-			set { SetValue(ASHideComponentProperty, value); }
+		public ICommand HideComponent {
+			get { return (ICommand)GetValue(HideComponentProperty); }
+			set { SetValue(HideComponentProperty, value); }
 		}
-		public static readonly DependencyProperty ASHideComponentProperty = DependencyProperty.Register("ASHideComponent", typeof(ICommand), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty HideComponentProperty = DependencyProperty.Register("HideComponent", typeof(ICommand), typeof(AdvancedSearch), new PropertyMetadata(null));
 
-		public ICommand ASClearFilter {
-			get { return (ICommand)GetValue(ASClearFilterProperty); }
-			set { SetValue(ASClearFilterProperty, value); }
+		public ICommand ClearFilter {
+			get { return (ICommand)GetValue(ClearFilterProperty); }
+			set { SetValue(ClearFilterProperty, value); }
 		}
-		public static readonly DependencyProperty ASClearFilterProperty = DependencyProperty.Register("ASClearFilter", typeof(ICommand), typeof(AdvancedSearch), new PropertyMetadata(null));
+		public static readonly DependencyProperty ClearFilterProperty = DependencyProperty.Register("ClearFilter", typeof(ICommand), typeof(AdvancedSearch), new PropertyMetadata(null));
 	}
 }
