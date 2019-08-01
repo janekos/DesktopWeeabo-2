@@ -1,15 +1,10 @@
 ﻿using DesktopWeeabo2.Properties;
-using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace DesktopWeeabo2.Data {
-    public static class InitAppData {
+	public static class InitAppData {
 
         public static void Init() {
             CheckFiles();

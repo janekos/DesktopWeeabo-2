@@ -1,16 +1,11 @@
 ﻿using DesktopWeeabo2.Helpers;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Models.Shared {
-    public abstract class BaseModel {
+	public abstract class BaseModel {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.ViewModels.Shared {
-    public class DelegateCommand : Command {
+	public class DelegateCommand : Command {
         private readonly Predicate<object> _canExecute;
         private readonly Action<object> _execute;
         private readonly Action _executeNoVar;

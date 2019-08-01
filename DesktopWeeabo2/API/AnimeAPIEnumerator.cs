@@ -2,16 +2,11 @@
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
 using DesktopWeeabo2.Models.Shared;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.API {
-	class AnimeAPIEnumerator : APIEnumerator<AnimeModel> {
+	public class AnimeAPIEnumerator : APIEnumerator<AnimeModel> {
 
 		public AnimeAPIEnumerator() {
 			Type = true;

@@ -1,16 +1,10 @@
 ﻿using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
-using DesktopWeeabo2.Models.Shared;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DesktopWeeabo2.Models.SearchModel;
 
 namespace DesktopWeeabo2.ViewModels.Shared {
-    public abstract class BaseItemViewModel : BaseViewModel {
+	public abstract class BaseItemViewModel : BaseViewModel {
 
 		protected bool DontTriggerSearchChanged = false;
         protected readonly object _CollectionLock = new object();

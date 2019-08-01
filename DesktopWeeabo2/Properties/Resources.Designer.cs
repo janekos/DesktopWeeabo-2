@@ -168,6 +168,50 @@ namespace DesktopWeeabo2.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to query ($malIds: [Int], $page: Int) {
+        ///	Page(page: $page, perPage: 50) {
+        ///		pageInfo { 
+        ///			total
+        ///			hasNextPage
+        ///		}
+        ///		media(idMal_in: $malIds, type: ANIME) {
+        ///			id
+        ///			idMal
+        ///			title { 
+        ///				english 
+        ///				romaji
+        ///				native
+        ///			}
+        ///			synonyms 
+        ///			genres
+        ///			type 
+        ///			averageScore
+        ///			format 
+        ///			status 
+        ///			description(asHtml: false) 
+        ///			startDate{
+        ///				year
+        ///				month
+        ///				day
+        ///			}
+        ///			endDate{
+        ///				year
+        ///				month
+        ///				day
+        ///			}
+        ///			episodes 
+        ///			duration
+        ///			volumes
+        ///			chapters
+        ///			coverImage{ l [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string GetAnimeByMALIds {
+            get {
+                return ResourceManager.GetString("GetAnimeByMALIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap load {

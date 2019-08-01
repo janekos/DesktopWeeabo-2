@@ -2,13 +2,10 @@
 using DesktopWeeabo2.Models.Shared;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.API.Shared {
-	abstract class APIEnumerator<T> where T : BaseModel {
+	public abstract class APIEnumerator<T> where T : BaseModel {
 
 		protected int _CurrentPage = 1;
 		protected string _SearchString;
@@ -76,9 +73,13 @@ namespace DesktopWeeabo2.API.Shared {
 
 		public APIEnumerator() { }
 
-        public async Task<T[]> GetCurrentSet() {
+		public async Task<T[]> GetByMalIdSet(int[] malIds) =>
+			GetSet(JObject.Parse(await APIQueries.GetByMALIds(StringHelpers.APIGetByMalIdsVariables(malIds))));
 
-            JObject result = JObject.Parse(await APIQueries.Search(StringHelpers.APIVariableStringGenerator(_SearchString, CurrentPage, _SortBy, _Genres, _IsAdult), _Type));
+		public async Task<T[]> GetCurrentSearchSet() =>
+			GetSet(JObject.Parse(await APIQueries.Search(StringHelpers.APISearchVariables(_SearchString, CurrentPage, _SortBy, _Genres, _IsAdult), _Type)));
+
+        protected T[] GetSet(JObject result) {
 
             if (result["data"].Type == JTokenType.Null) { throw new ArgumentException("Server returned nothing."); }
 

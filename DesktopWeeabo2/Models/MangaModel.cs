@@ -1,13 +1,8 @@
 ﻿using DesktopWeeabo2.Models.Shared;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Models {
-    [Table("manga_entries")]
+	[Table("manga_entries")]
     public class MangaModel : BaseModel {
 
         [Column("volumes")]

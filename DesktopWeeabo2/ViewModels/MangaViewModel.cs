@@ -1,16 +1,13 @@
 ﻿using DesktopWeeabo2.API;
-using DesktopWeeabo2.Data;
 using DesktopWeeabo2.Data.Services;
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -162,7 +159,7 @@ namespace DesktopWeeabo2.ViewModels {
 					MangaAPIEnumerator.IsAdult = IsAdult;
 					MangaAPIEnumerator.Genres = SearchModel.GenresList.Where(item => item.IsSelected).Select(item => item.Name).ToArray();
 					try {
-						var onlineItems = await MangaAPIEnumerator.GetCurrentSet();
+						var onlineItems = await MangaAPIEnumerator.GetCurrentSearchSet();
 						var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
 
 						var localItems = MangaService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id));

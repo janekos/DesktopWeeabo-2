@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace DesktopWeeabo2.ViewModels.Shared {
-    public abstract class Command : ICommand {
+	public abstract class Command : ICommand {
         private readonly Dispatcher _dispatcher;
 
         protected Command() {

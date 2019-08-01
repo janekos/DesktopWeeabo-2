@@ -8,7 +8,25 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <Border BorderThickness="2" BorderBrush="Black">
-    <StackPanel Width="200" HorizontalAlignment="Left">
+    <StackPanel HorizontalAlignment="Stretch">
+      <CheckBox IsChecked="{Binding DoesAppBackUp}">DoesAppBackUp</CheckBox>
+      <CheckBox IsChecked="{Binding IsLightMode}">IsLightMode</CheckBox>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.ColumnSpan="2">Import DW1 data</TextBlock>
+        <Label Grid.Row="1">Path to MainEntries.xml</Label>
+        <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding PathToDW1Data}" />
+        <Button Grid.Column="1" Grid.Row="1" Opacity="0" Command="{Binding ShowFileSelectorDialog}" HorizontalAlignment="Stretch" />
+        <Button Grid.Row="2" Command="{Binding ImportFromDW1}">Import</Button>
+      </Grid>
     </StackPanel>
   </Border>
 </UserControl>

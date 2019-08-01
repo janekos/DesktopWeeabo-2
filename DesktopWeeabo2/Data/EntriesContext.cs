@@ -1,14 +1,8 @@
 ﻿using DesktopWeeabo2.Models;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Core.Common;
-using System.Data.Entity.Core.EntityClient;
 using System.Data.SQLite;
 using System.Data.SQLite.EF6;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Data {
 	// amen
@@ -21,8 +15,10 @@ namespace DesktopWeeabo2.Data {
 		}
 	}
 
-	class EntriesContext : DbContext {
-		public EntriesContext() : base(new SQLiteConnection() { ConnectionString = @"data source=" + GlobalConfig.AppDir + @"\entries.db" }, true) { DbConfiguration.SetConfiguration(new SQLiteConfiguration()); Database.SetInitializer<EntriesContext>(null); }
+	public class EntriesContext : DbContext {
+		public EntriesContext() : base(new SQLiteConnection() { ConnectionString = @"data source=" + GlobalConfig.AppDir + @"\entries.db" }, true) {
+			DbConfiguration.SetConfiguration(new SQLiteConfiguration()); Database.SetInitializer<EntriesContext>(null);
+		}
 
         public DbSet<AnimeModel> AnimeItems { get; set; }
         public DbSet<MangaModel> MangaItems { get; set; }

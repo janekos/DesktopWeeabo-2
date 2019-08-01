@@ -23,7 +23,7 @@ namespace DesktopWeeabo2.Helpers {
 			return genreString.Length > 0 ? genreString : "All";
 		}
 
-		public static string APIVariableStringGenerator(string search = "", int page = 1, string sort = "TITLE_ROMAJI", string[] genres = null, bool isAdult = true) {
+		public static string APISearchVariables(string search = "", int page = 1, string sort = "TITLE_ROMAJI", string[] genres = null, bool isAdult = true) {
 			var json = new JObject(
 						new JProperty("page", page),
 						new JProperty("sort", sort)
@@ -31,8 +31,15 @@ namespace DesktopWeeabo2.Helpers {
 			if (!isAdult) json.Add(new JProperty("isAdult", false));
 			if (search.Length > 0) json.Add(new JProperty("search", search));
 			if (genres.Length > 0) json.Add(new JProperty("genres", new JArray(genres)));
-			return json.ToString();
+			return json.ToString(Formatting.None);
 		}
+
+		public static string APIGetByMalIdsVariables(int[] malIds) =>
+			new JObject(
+				new JProperty("page", 1),
+				new JProperty("malIds", malIds)
+			).ToString(Formatting.None);
+
 
 		public static string PrependAdditionalUrls(ExternalLink[] additionalUrls, JArray urls) {
 			for (int i = 0; i < additionalUrls.Length; i++) {

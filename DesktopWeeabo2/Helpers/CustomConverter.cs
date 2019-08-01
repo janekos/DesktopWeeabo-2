@@ -1,17 +1,11 @@
 ﻿using DesktopWeeabo2.Models;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace DesktopWeeabo2.Helpers
-{
-    class CustomConverter : IValueConverter {
+namespace DesktopWeeabo2.Helpers {
+	class CustomConverter : IValueConverter {
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
 			string[] parameters = ((string)parameter).Split('|');
 			switch (parameters[0]) {

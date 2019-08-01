@@ -1,11 +1,5 @@
 ﻿using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models.Shared;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Models {
 	public class GenreObject {

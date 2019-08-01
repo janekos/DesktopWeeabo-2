@@ -1,15 +1,10 @@
 ﻿using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models.Shared;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Models {
-    [Table("anime_entries")]
+	[Table("anime_entries")]
     public class AnimeModel : BaseModel {
 
         [Column("episodes")]
