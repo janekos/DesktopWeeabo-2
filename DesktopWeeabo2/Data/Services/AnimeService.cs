@@ -1,4 +1,5 @@
 ﻿using DesktopWeeabo2.Data.Repositories;
+using DesktopWeeabo2.Data.Repositories.Shared;
 using DesktopWeeabo2.Data.Services.Shared;
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
@@ -8,21 +9,25 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Data.Services {
 	public class AnimeService : IService<AnimeModel> {
+		private readonly IRepo<AnimeModel> _repo;
+
+		public AnimeService(IRepo<AnimeModel> repo) {
+			_repo = repo;
+		}
+
 		public async Task<DBResponse> AddOrUpdate(AnimeModel entity) {
 			try {
-				using (var repo = new AnimeRepo()) {
-					var dbEntity = await repo.Get(entity.Id);
-					if (dbEntity == null) {
-						repo.Add(entity);
-						return DBResponse.ADDED;
+				var dbEntity = await _repo.Get(entity.Id);
+				if (dbEntity == null) {
+					_repo.Add(entity);
+					return DBResponse.ADDED;
+				}
+				else {
+					if (ReflectionHelpers.CompareObjectValues(dbEntity, entity)) {
+						_repo.Update(dbEntity, entity);
+						return DBResponse.UPDATED;
 					}
-					else {
-						if (ReflectionHelpers.CompareObjectValues(dbEntity, entity)) {
-							repo.Update(dbEntity, entity);
-							return DBResponse.UPDATED;
-						}
-						return DBResponse.NOCHANGES;
-					}
+					return DBResponse.NOCHANGES;
 				}
 			}
 			catch (Exception) { return DBResponse.ERROR; }
@@ -30,10 +35,8 @@ namespace DesktopWeeabo2.Data.Services {
 
 		public DBResponse Delete(int id) {
 			try {
-				using (var repo = new AnimeRepo()) {
-					repo.Delete(id);
-					return DBResponse.DELETED;
-				}
+				_repo.Delete(id);
+				return DBResponse.DELETED;
 			}
 			catch (Exception) { return DBResponse.ERROR; }
 		}
@@ -54,19 +57,14 @@ namespace DesktopWeeabo2.Data.Services {
 
 		public AnimeModel[] GetBySearchModelAndCurrentView(SearchModel search, string currentView) {
 			string[] selectedGenres = search.GenresList.Where(genre => genre.IsSelected).Select(genre => genre.Name).ToArray();
-			using (var repo = new AnimeRepo()) {
-				return repo.FindSet(
-					item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView, item),
-					item => item.GetType().GetProperty(search.SelectedSort.LocalValue).GetValue(item),
-					search.IsDescending
-				).ToArray();
-			}
+			return _repo.FindSet(
+				item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView, item),
+				item => item.GetType().GetProperty(search.SelectedSort.LocalValue).GetValue(item),
+				search.IsDescending
+			).ToArray();
 		}
 
-		public AnimeModel[] GetCustom(Func<AnimeModel, bool> condition) {
-			using (var repo = new AnimeRepo()) {
-				return repo.FindSet(condition, item => item.Id).ToArray();
-			}
-		}
+		public AnimeModel[] GetCustom(Func<AnimeModel, bool> condition) =>
+			_repo.FindSet(condition, item => item.Id).ToArray();
 	}
 }

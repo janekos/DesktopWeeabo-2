@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Data.Repositories {
 	class AnimeRepo : IRepo<AnimeModel>, IDisposable {
-		private readonly EntriesContext _db = new EntriesContext();
+		private readonly EntriesContext _db;
+
+		public AnimeRepo(EntriesContext db) {
+			_db = db;
+		}
 
 		public async void Add(AnimeModel item) {
 			_db.AnimeItems.Add(item);

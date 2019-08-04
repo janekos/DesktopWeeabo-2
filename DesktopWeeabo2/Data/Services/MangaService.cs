@@ -1,4 +1,5 @@
 ﻿using DesktopWeeabo2.Data.Repositories;
+using DesktopWeeabo2.Data.Repositories.Shared;
 using DesktopWeeabo2.Data.Services.Shared;
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
@@ -8,32 +9,34 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Data.Services {
 	public class MangaService : IService<MangaModel> {
+		private readonly IRepo<MangaModel> _repo;
+
+		public MangaService(IRepo<MangaModel> repo) {
+			_repo = repo;
+		}
+
 		public async Task<DBResponse> AddOrUpdate(MangaModel entity) {
 			try {
-				using (var repo = new MangaRepo()) {
-					var dbEntity = await repo.Get(entity.Id);
-					if (dbEntity == null) {
-						repo.Add(entity);
-						return DBResponse.ADDED;
+				var dbEntity = await _repo.Get(entity.Id);
+				if (dbEntity == null) {
+					_repo.Add(entity);
+					return DBResponse.ADDED;
+				} else {
+					if (ReflectionHelpers.CompareObjectValues(dbEntity, entity)) {
+						_repo.Update(dbEntity, entity);
+						return DBResponse.UPDATED;
 					}
-					else {
-						if (ReflectionHelpers.CompareObjectValues(dbEntity, entity)) {
-							repo.Update(dbEntity, entity);
-							return DBResponse.UPDATED;
-						}
-						return DBResponse.NOCHANGES;
-					}
+					return DBResponse.NOCHANGES;
 				}
+
 			}
 			catch (Exception) { return DBResponse.ERROR; }
 		}
 
 		public DBResponse Delete(int id) {
 			try {
-				using (var repo = new MangaRepo()) {
-					repo.Delete(id);
-					return DBResponse.DELETED;
-				}
+				_repo.Delete(id);
+				return DBResponse.DELETED;
 			}
 			catch (Exception) { return DBResponse.ERROR; }
 		}
@@ -54,19 +57,15 @@ namespace DesktopWeeabo2.Data.Services {
 
 		public MangaModel[] GetBySearchModelAndCurrentView(SearchModel search, string currentView) {
 			string[] selectedGenres = search.GenresList.Where(genre => genre.IsSelected).Select(genre => genre.Name).ToArray();
-			using (var repo = new MangaRepo()) {
-				return repo.FindSet(
-					item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView, item),
-					item => item.GetType().GetProperty(search.SelectedSort.LocalValue).GetValue(item),
-					search.IsDescending
-				).ToArray();
-			}
+			return _repo.FindSet(
+				item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView, item),
+				item => item.GetType().GetProperty(search.SelectedSort.LocalValue).GetValue(item),
+				search.IsDescending
+			).ToArray();
+
 		}
 
-		public MangaModel[] GetCustom(Func<MangaModel, bool> condition) {
-			using (var repo = new MangaRepo()) {
-				return repo.FindSet(condition, item => item.Id).ToArray();
-			}
-		}
+		public MangaModel[] GetCustom(Func<MangaModel, bool> condition) =>
+			_repo.FindSet(condition, item => item.Id).ToArray();
 	}
 }

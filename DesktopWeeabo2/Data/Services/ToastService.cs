@@ -5,7 +5,7 @@ namespace DesktopWeeabo2.Services{
 		public static event Action<string, string> ToastMessageRecieved;
 
 		public static void ShowToast(string message, string messageType) {
-			ToastMessageRecieved(message, messageType);
+			ToastMessageRecieved?.Invoke(message, messageType);
 		}
 	}
 }

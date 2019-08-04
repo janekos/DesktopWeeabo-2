@@ -1,5 +1,6 @@
 ﻿using DesktopWeeabo2.API;
 using DesktopWeeabo2.Data.Services;
+using DesktopWeeabo2.Data.Services.Shared;
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
 using DesktopWeeabo2.Services;
@@ -13,10 +14,11 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace DesktopWeeabo2.ViewModels {
-	class MangaViewModel : BaseItemViewModel {
+	public class MangaViewModel : BaseItemViewModel {
+		private readonly IService<MangaModel> _mangaService;
+		private readonly MangaAPIEnumerator _mangaAPIEnumerator;
+
 		private bool LocalHelper = false;
-		private MangaService MangaService = new MangaService();
-		private MangaAPIEnumerator MangaAPIEnumerator = new MangaAPIEnumerator();
 		public ObservableCollection<MangaModel> MangaItems { get; set; } = new ObservableCollection<MangaModel>();
 
 		private MangaModel _SelectedItem = null;
@@ -61,7 +63,12 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		public MangaViewModel() : base() { BindingOperations.EnableCollectionSynchronization(MangaItems, _CollectionLock); }
+		public MangaViewModel(IService<MangaModel> mangaService, MangaAPIEnumerator mangaAPIEnumerator) : base() {
+			_mangaService = mangaService;
+			_mangaAPIEnumerator = mangaAPIEnumerator;
+
+			BindingOperations.EnableCollectionSynchronization(MangaItems, _CollectionLock);
+		}
 
 		protected override void Property_Changed(object sender, PropertyChangedEventArgs e) {
 			switch (e.PropertyName) {
@@ -86,7 +93,7 @@ namespace DesktopWeeabo2.ViewModels {
 				APIHasNextPage = false;
 				APICurrentPage = 1;
 				TotalAPIPages = 1;
-				MangaAPIEnumerator.CurrentPage = 1;
+				_mangaAPIEnumerator.CurrentPage = 1;
 			}
 			IsContentLoading = false;
 			PressedTransferButton = "";
@@ -98,7 +105,7 @@ namespace DesktopWeeabo2.ViewModels {
 				LocalHelper = true;
 				IsContentLoading = true;
 				lock (_CollectionLock) {
-					foreach (MangaModel item in MangaService.GetBySearchModelAndCurrentView(SearchModel, CurrentView)) {
+					foreach (MangaModel item in _mangaService.GetBySearchModelAndCurrentView(SearchModel, CurrentView)) {
 						MangaItems.Add(item);
 						TotalItems += 1;
 					}
@@ -155,15 +162,15 @@ namespace DesktopWeeabo2.ViewModels {
 				LocalHelper = true;
 				IsContentLoading = true;
 				await Task.Run(async () => {
-					MangaAPIEnumerator.SearchString = SearchText;
-					MangaAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
-					MangaAPIEnumerator.IsAdult = IsAdult;
-					MangaAPIEnumerator.Genres = SearchModel.GenresList.Where(item => item.IsSelected).Select(item => item.Name).ToArray();
+					_mangaAPIEnumerator.SearchString = SearchText;
+					_mangaAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
+					_mangaAPIEnumerator.IsAdult = IsAdult;
+					_mangaAPIEnumerator.Genres = SearchModel.GenresList.Where(item => item.IsSelected).Select(item => item.Name).ToArray();
 					try {
-						var onlineItems = await MangaAPIEnumerator.GetCurrentSearchSet();
+						var onlineItems = await _mangaAPIEnumerator.GetCurrentSearchSet();
 						var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
 
-						var localItems = MangaService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id));
+						var localItems = _mangaService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id));
 
 						for (int i = 0; i < localItems.Length; i++) {
 							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItems[i].Id);
@@ -181,10 +188,10 @@ namespace DesktopWeeabo2.ViewModels {
 							TotalItems += 1;
 						}
 
-						APIHasNextPage = MangaAPIEnumerator.HasNextPage;
-						TotalAPIItems = $" / {MangaAPIEnumerator.TotalItems}";
-						APICurrentPage = MangaAPIEnumerator.CurrentPage - 1;
-						TotalAPIPages = (int)Math.Ceiling(((decimal)MangaAPIEnumerator.TotalItems / 50));
+						APIHasNextPage = _mangaAPIEnumerator.HasNextPage;
+						TotalAPIItems = $" / {_mangaAPIEnumerator.TotalItems}";
+						APICurrentPage = _mangaAPIEnumerator.CurrentPage - 1;
+						TotalAPIPages = (int)Math.Ceiling(((decimal)_mangaAPIEnumerator.TotalItems / 50));
 					}
 					catch (ArgumentNullException ex) { ToastService.ShowToast(ex.Message, "danger"); }
 					catch (ArgumentOutOfRangeException ex) { ToastService.ShowToast(ex.Message, "danger"); }
@@ -203,7 +210,7 @@ namespace DesktopWeeabo2.ViewModels {
 					try {
 						SelectedItemReadingStatus = PressedTransferButton.Length > 0 ? PressedTransferButton : SelectedItemReadingStatus;
 						if (_SelectedItem.DateAdded == null) _SelectedItem.DateAdded = DateTime.Now;
-						var itemWorkResponse = await MangaService.AddOrUpdate(_SelectedItem);
+						var itemWorkResponse = await _mangaService.AddOrUpdate(_SelectedItem);
 
 						if (itemWorkResponse == DBResponse.ADDED) ToastService.ShowToast($"Succesfully saved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{SelectedItemReadingStatus}' view!", "success");
 						else if (itemWorkResponse == DBResponse.UPDATED) ToastService.ShowToast($"Succesfully updated '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}'!", "success");
@@ -229,7 +236,7 @@ namespace DesktopWeeabo2.ViewModels {
 			new Action(async () => {
 				await Task.Run(() => {
 					try {
-						var itemDeleteResponse = MangaService.Delete(_SelectedItem.Id);
+						var itemDeleteResponse = _mangaService.Delete(_SelectedItem.Id);
 						if (itemDeleteResponse == DBResponse.DELETED) ToastService.ShowToast($"Manga '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{SelectedItemReadingStatus}' view was deleted succesfully!", "success");
 						else throw new Exception($"Manga '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' doesn't exist in '{SelectedItemReadingStatus}' view.");
 

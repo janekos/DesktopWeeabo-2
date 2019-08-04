@@ -1,4 +1,5 @@
 ﻿using DesktopWeeabo2.API;
+using DesktopWeeabo2.Data.Services.Shared;
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
 using System;
@@ -8,10 +9,15 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace DesktopWeeabo2.Data.Services {
-	public static class IOService {
-		private static readonly int EntriesPerRequest = 50;
+	public class IOService {
+		private readonly IService<AnimeModel> _animeService;
+		private readonly int EntriesPerRequest = 50;
 
-		public static async void ImportDW1Data(string path) {
+		public IOService(IService<AnimeModel> animeService) {
+			_animeService = animeService;
+		}
+
+		public async void ImportDW1Data(string path) {
 			IEnumerable<XElement> entries = XElement.Load(path).Elements();
 			List<AnimeModel> persistableEntries = new List<AnimeModel>();
 			List<Task> requests = new List<Task>();
@@ -64,10 +70,8 @@ namespace DesktopWeeabo2.Data.Services {
 
 			await Task.WhenAll(requests);
 
-			var asd = new AnimeService();
-
 			foreach (AnimeModel a in persistableEntries) {
-				await asd.AddOrUpdate(a);
+				await _animeService.AddOrUpdate(a);
 			}
 		}
 	}

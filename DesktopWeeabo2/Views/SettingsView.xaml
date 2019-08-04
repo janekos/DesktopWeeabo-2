@@ -53,7 +53,7 @@
       </StackPanel>
       <TextBox Grid.Row="1"
                Text="{Binding Log}"
-               IsReadOnly="False"
+               IsReadOnly="True"
                HorizontalScrollBarVisibility="Disabled"
                VerticalScrollBarVisibility="Auto"
                TextWrapping="Wrap" />

@@ -5,9 +5,11 @@ using System.Windows.Forms;
 
 namespace DesktopWeeabo2.ViewModels {
 	public class SettingsViewModel : BaseViewModel {
-		private void LogLineReceivedFunc(string message) => Log = message;
+		private readonly IOService _ioService;
 
-		public SettingsViewModel() {
+		public SettingsViewModel(IOService ioService) {
+			_ioService = ioService;
+
 			LogService.LogLineReceived += LogLineReceivedFunc;
 		}
 
@@ -34,6 +36,8 @@ namespace DesktopWeeabo2.ViewModels {
 				RaisePropertyChanged("Log");
 			}
 		}
+
+		private void LogLineReceivedFunc(string message) => Log = message;
 
 		public DelegateCommand ClearLog => new DelegateCommand(new Action(() => {
 			LogService.LogMessage("a line");
@@ -63,7 +67,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}));
 
 		public DelegateCommand ImportFromDW1 => new DelegateCommand(new Action(() => {
-			if (!string.IsNullOrEmpty(PathToDW1Data)) IOService.ImportDW1Data(PathToDW1Data);
+			if (!string.IsNullOrEmpty(PathToDW1Data)) _ioService.ImportDW1Data(PathToDW1Data);
 		}));
 	}
 }

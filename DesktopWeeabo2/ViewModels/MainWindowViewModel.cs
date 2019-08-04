@@ -11,7 +11,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 
 namespace DesktopWeeabo2.ViewModels {
-	class MainWindowViewModel : BaseViewModel {
+	public class MainWindowViewModel : BaseViewModel {
 		public string IntroMessage {
 			get {
 				string[] veryFunnyMessages = new string[]{
@@ -123,11 +123,19 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		public MainWindowViewModel() {
+		public readonly AnimeViewModel _animeViewModel;
+		public readonly MangaViewModel _mangaViewModel;
+		public readonly SettingsViewModel _settingsViewModel;
+
+		public MainWindowViewModel(AnimeViewModel animeViewModel, MangaViewModel mangaViewModel, SettingsViewModel settingsViewModel) {
+			_animeViewModel = animeViewModel;
+			_mangaViewModel = mangaViewModel;
+			_settingsViewModel = settingsViewModel;
+
 			ViewModels = new ObservableCollection<BaseViewModel>(){
-				new AnimeViewModel(),
-				new MangaViewModel(),
-				new SettingsViewModel()
+				_animeViewModel,
+				_mangaViewModel,
+				_settingsViewModel
 			};
 			ViewModelsView = CollectionViewSource.GetDefaultView(ViewModels);
 

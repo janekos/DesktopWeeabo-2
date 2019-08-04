@@ -7,6 +7,8 @@ using System.Windows.Data;
 namespace DesktopWeeabo2.Helpers {
 	class MultiValueCustomConverter : IMultiValueConverter {
 		public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
+			if (values[0] == DependencyProperty.UnsetValue) return null;
+			
 			string[] parameters = (
 				parameter == null 
 					? (values[values.Length - 1] != null
