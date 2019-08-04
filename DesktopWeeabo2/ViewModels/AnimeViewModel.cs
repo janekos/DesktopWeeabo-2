@@ -2,6 +2,7 @@
 using DesktopWeeabo2.Data.Services;
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
+using DesktopWeeabo2.Services;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.ObjectModel;

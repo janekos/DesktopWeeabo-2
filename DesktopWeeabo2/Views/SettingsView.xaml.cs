@@ -2,12 +2,10 @@
 using System.Windows.Controls;
 
 namespace DesktopWeeabo2.Views {
-	public partial class SettingsView : UserControl
-    {
-        public SettingsView()
-        {
+	public partial class SettingsView : UserControl {
+		public SettingsView() {
 			DataContext = new SettingsViewModel();
-            InitializeComponent();
-        }
-    }
+			InitializeComponent();
+		}
+	}
 }

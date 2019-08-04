@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DesktopWeeabo2.Helpers {
+namespace DesktopWeeabo2.Services{
 	public class ToastService {
 		public static event Action<string, string> ToastMessageRecieved;
 

@@ -5,6 +5,15 @@ using System.Windows.Forms;
 
 namespace DesktopWeeabo2.ViewModels {
 	public class SettingsViewModel : BaseViewModel {
+		private void LogLineReceivedFunc(string message) => Log = message;
+
+		public SettingsViewModel() {
+			LogService.LogLineReceived += LogLineReceivedFunc;
+		}
+
+		~SettingsViewModel() {
+			LogService.LogLineReceived -= LogLineReceivedFunc;
+		}
 
 		public bool DoesAppBackUp { get; set;}
 		public bool IsLightMode { get; set;}
@@ -17,6 +26,19 @@ namespace DesktopWeeabo2.ViewModels {
 				RaisePropertyChanged("PathToDW1Data");
 			}
 		}
+
+		public string Log {
+			get { return LogService.LogContent; }
+			set {
+				LogService.LogContent = value != null ? LogService.LogContent + $"{value}{Environment.NewLine}" : "";
+				RaisePropertyChanged("Log");
+			}
+		}
+
+		public DelegateCommand ClearLog => new DelegateCommand(new Action(() => {
+			LogService.LogMessage("a line");
+			//Log = null;
+		}));
 
 		public DelegateCommand ShowFileSelectorDialog => new DelegateCommand(new Action(() => {
 			OpenFileDialog fileDialog = new OpenFileDialog {

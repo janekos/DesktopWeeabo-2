@@ -1,5 +1,7 @@
 ﻿using DesktopWeeabo2.Data;
+using DesktopWeeabo2.Data.Services;
 using DesktopWeeabo2.Helpers;
+using DesktopWeeabo2.Services;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.ObjectModel;
@@ -180,6 +182,7 @@ namespace DesktopWeeabo2.ViewModels {
 		public DelegateCommand ChangeView => new DelegateCommand(
 		new Action<object>(
 		(e) => {
+			LogService.LogMessage($"Changed view to: {e}");
 			if (ViewModelsView != null) {
 				CurrentGlobalView = e as string;
 				switch (e) {
