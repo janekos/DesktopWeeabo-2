@@ -28,7 +28,6 @@ namespace DesktopWeeabo2.API {
 
 		static async private Task<string> ExecuteRequest(Dictionary<string, string> variables) {
 			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-			var a = new FormUrlEncodedContent(variables);
 			HttpResponseMessage response = await client.PostAsync("https://graphql.anilist.co", new FormUrlEncodedContent(variables));
 			return await response.Content.ReadAsStringAsync();
 		}

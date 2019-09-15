@@ -10,13 +10,10 @@ namespace DesktopWeeabo2.Helpers {
 		public static string CleanDescription(string desc) => Regex.Replace(Regex.Replace(desc, @"<[^>]*>", ""), @"\t|\n|\r", "");
 
 		public static string GetFirstNotNullItemTitle(BaseModel item) =>
-			!string.IsNullOrWhiteSpace(item.TitleEnglish)
-				? item.TitleEnglish
-				: (!string.IsNullOrWhiteSpace(item.TitleRomaji)
-					? item.TitleRomaji
-					: (!string.IsNullOrWhiteSpace(item.TitleNative)
-						? item.TitleNative
-						: "No title present"));
+			item.TitleEnglish
+			?? item.TitleRomaji
+			?? item.TitleNative
+			?? "Title missing";
 
 		public static string GenreHelper(GenreObject[] genreList) {
 			string genreString = string.Join(", ", genreList.Where(g => g.IsSelected).Select(g => g.Name).ToArray());
@@ -42,12 +39,13 @@ namespace DesktopWeeabo2.Helpers {
 
 
 		public static string PrependAdditionalUrls(ExternalLink[] additionalUrls, JArray urls) {
-			for (int i = 0; i < additionalUrls.Length; i++) {
+			foreach (ExternalLink additionalUrl in additionalUrls) {
 				urls.Insert(0, new JObject(
-					new JProperty("site", additionalUrls[i].Site),
-					new JProperty("url", additionalUrls[i].Url)
+					new JProperty("site", additionalUrl.Site),
+					new JProperty("url", additionalUrl.Url)
 				));
 			}
+
 			return urls.ToString(Formatting.None);
 		}
 	}

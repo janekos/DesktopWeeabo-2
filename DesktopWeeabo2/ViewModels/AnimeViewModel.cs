@@ -1,5 +1,4 @@
 ﻿using DesktopWeeabo2.API;
-using DesktopWeeabo2.Data.Services;
 using DesktopWeeabo2.Data.Services.Shared;
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Models;
@@ -19,7 +18,7 @@ namespace DesktopWeeabo2.ViewModels {
 		private readonly AnimeAPIEnumerator _animeAPIEnumerator;
 
 		private bool LocalHelper = false;
-		public ObservableCollection<AnimeModel> AnimeItems { get; set; } = new ObservableCollection<AnimeModel>();
+		public ObservableRangeCollection<AnimeModel> AnimeItems { get; set; } = new ObservableRangeCollection<AnimeModel>();
 
 		private AnimeModel _SelectedItem = null;
 		public AnimeModel SelectedItem {
@@ -105,10 +104,8 @@ namespace DesktopWeeabo2.ViewModels {
 				LocalHelper = true;
 				IsContentLoading = true;
 				lock (_CollectionLock) {
-					foreach (AnimeModel item in _animeService.GetBySearchModelAndCurrentView(SearchModel, CurrentView)) {
-						AnimeItems.Add(item);
-						TotalItems += 1;
-					}
+					AnimeItems.AddRange(_animeService.GetBySearchModelAndCurrentView(SearchModel, CurrentView));
+					TotalItems = AnimeItems.Count;
 				};
 				LocalHelper = false;
 				IsContentLoading = false;
@@ -173,24 +170,20 @@ namespace DesktopWeeabo2.ViewModels {
 					try {
 						var onlineItems = await _animeAPIEnumerator.GetCurrentSearchSet();
 						var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
-
-						var localItems = _animeService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id));
-
-						for (int i = 0; i < localItems.Length; i++) {
-							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItems[i].Id);
-							currentItem.DateAdded = localItems[i].DateAdded;
-							currentItem.RewatchCount = localItems[i].RewatchCount;
-							currentItem.PersonalScore = localItems[i].PersonalScore;
-							currentItem.ViewingStatus = localItems[i].ViewingStatus;
-							currentItem.WatchPriority = localItems[i].WatchPriority;
-							currentItem.PersonalReview = localItems[i].PersonalReview;
-							currentItem.CurrentEpisode = localItems[i].CurrentEpisode;
+						
+						foreach(AnimeModel localItem in _animeService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id))) {
+							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItem.Id);
+							currentItem.DateAdded = localItem.DateAdded;
+							currentItem.RewatchCount = localItem.RewatchCount;
+							currentItem.PersonalScore = localItem.PersonalScore;
+							currentItem.ViewingStatus = localItem.ViewingStatus;
+							currentItem.WatchPriority = localItem.WatchPriority;
+							currentItem.PersonalReview = localItem.PersonalReview;
+							currentItem.CurrentEpisode = localItem.CurrentEpisode;
 						}
 
-						for (int i = 0; i < onlineItems.Length; i++) {
-							AnimeItems.Add(onlineItems[i]);
-							TotalItems += 1;
-						}
+						AnimeItems.AddRange(onlineItems);
+						TotalItems = AnimeItems.Count;
 
 						APIHasNextPage = _animeAPIEnumerator.HasNextPage;
 						TotalAPIItems = $" / {_animeAPIEnumerator.TotalItems}";

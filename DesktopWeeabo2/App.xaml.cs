@@ -4,7 +4,6 @@ using DesktopWeeabo2.Data.Repositories.Shared;
 using DesktopWeeabo2.Data.Services;
 using DesktopWeeabo2.Data.Services.Shared;
 using DesktopWeeabo2.Models;
-using DesktopWeeabo2.Services;
 using DesktopWeeabo2.ViewModels;
 using System.Windows;
 using Unity;

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Data.Repositories {
-	class MangaRepo : IRepo<MangaModel>, IDisposable {
+	class MangaRepo : IRepo<MangaModel> {
 		private readonly EntriesContext _db;
 
 		public MangaRepo(EntriesContext db) {
@@ -27,7 +27,9 @@ namespace DesktopWeeabo2.Data.Repositories {
 		}
 
 		public IEnumerable<MangaModel> FindSet(Func<MangaModel, bool> expression, Func<MangaModel, object> orderBy, bool isDescending = false) =>
-			isDescending ? _db.MangaItems.Where(expression).OrderByDescending(orderBy) : _db.MangaItems.Where(expression).OrderBy(orderBy);
+			isDescending
+				? _db.MangaItems.Where(expression).OrderByDescending(orderBy)
+				: _db.MangaItems.Where(expression).OrderBy(orderBy);
 
 		public async Task<MangaModel> Get(int id) => await _db.MangaItems.FindAsync((int)id);
 
@@ -35,7 +37,5 @@ namespace DesktopWeeabo2.Data.Repositories {
 			_db.Entry(dbItem).CurrentValues.SetValues(newItem);
 			await _db.SaveChangesAsync();
 		}
-
-		public void Dispose() => _db.Dispose();
 	}
 }

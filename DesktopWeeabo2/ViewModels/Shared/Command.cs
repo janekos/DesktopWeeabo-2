@@ -10,13 +10,9 @@ namespace DesktopWeeabo2.ViewModels.Shared {
         private readonly Dispatcher _dispatcher;
 
         protected Command() {
-            if (Application.Current != null) {
-                _dispatcher = Application.Current.Dispatcher;
-            }
-            else {
-                //this is useful for unit tests where there is no application running
-                _dispatcher = Dispatcher.CurrentDispatcher;
-            }
+			_dispatcher = Application.Current != null
+				? Application.Current.Dispatcher
+				: Dispatcher.CurrentDispatcher;
 
             Debug.Assert(_dispatcher != null);
         }

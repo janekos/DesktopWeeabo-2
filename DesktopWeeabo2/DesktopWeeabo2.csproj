@@ -132,6 +132,7 @@
     <Compile Include="Helpers\Enums.cs" />
     <Compile Include="Helpers\MultiValueCustomConverter.cs" />
     <Compile Include="Helpers\CustomConverter.cs" />
+    <Compile Include="Helpers\ObservableRangeCollection.cs" />
     <Compile Include="Helpers\Reflection.cs" />
     <Compile Include="Helpers\StringHelpers.cs" />
     <Compile Include="Data\Services\ToastService.cs" />

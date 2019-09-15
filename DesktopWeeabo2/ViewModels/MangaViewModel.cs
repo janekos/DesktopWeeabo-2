@@ -19,7 +19,7 @@ namespace DesktopWeeabo2.ViewModels {
 		private readonly MangaAPIEnumerator _mangaAPIEnumerator;
 
 		private bool LocalHelper = false;
-		public ObservableCollection<MangaModel> MangaItems { get; set; } = new ObservableCollection<MangaModel>();
+		public ObservableRangeCollection<MangaModel> MangaItems { get; set; } = new ObservableRangeCollection<MangaModel>();
 
 		private MangaModel _SelectedItem = null;
 		public MangaModel SelectedItem {
@@ -105,10 +105,8 @@ namespace DesktopWeeabo2.ViewModels {
 				LocalHelper = true;
 				IsContentLoading = true;
 				lock (_CollectionLock) {
-					foreach (MangaModel item in _mangaService.GetBySearchModelAndCurrentView(SearchModel, CurrentView)) {
-						MangaItems.Add(item);
-						TotalItems += 1;
-					}
+					MangaItems.AddRange(_mangaService.GetBySearchModelAndCurrentView(SearchModel, CurrentView));
+					TotalItems = MangaItems.Count;
 				};
 				LocalHelper = false;
 				IsContentLoading = false;
@@ -170,23 +168,20 @@ namespace DesktopWeeabo2.ViewModels {
 						var onlineItems = await _mangaAPIEnumerator.GetCurrentSearchSet();
 						var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
 
-						var localItems = _mangaService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id));
+						foreach(MangaModel localItem in _mangaService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id))) {
+							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItem.Id);
+							currentItem.DateAdded = localItem.DateAdded;
+							currentItem.RereadCount = localItem.RereadCount;
+							currentItem.ReadPriority = localItem.ReadPriority;
+							currentItem.PersonalScore = localItem.PersonalScore;
+							currentItem.ReadingStatus = localItem.ReadingStatus;
+							currentItem.PersonalReview = localItem.PersonalReview;
+							currentItem.CurrentChapter = localItem.CurrentChapter;
 
-						for (int i = 0; i < localItems.Length; i++) {
-							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItems[i].Id);
-							currentItem.DateAdded = localItems[i].DateAdded;
-							currentItem.RereadCount = localItems[i].RereadCount;
-							currentItem.PersonalScore = localItems[i].PersonalScore;
-							currentItem.ReadingStatus = localItems[i].ReadingStatus;
-							currentItem.ReadPriority = localItems[i].ReadPriority;
-							currentItem.PersonalReview = localItems[i].PersonalReview;
-							currentItem.CurrentChapter = localItems[i].CurrentChapter;
 						}
 
-						for (int i = 0; i < onlineItems.Length; i++) {
-							MangaItems.Add(onlineItems[i]);
-							TotalItems += 1;
-						}
+						MangaItems.AddRange(onlineItems);
+						TotalItems = MangaItems.Count;
 
 						APIHasNextPage = _mangaAPIEnumerator.HasNextPage;
 						TotalAPIItems = $" / {_mangaAPIEnumerator.TotalItems}";
