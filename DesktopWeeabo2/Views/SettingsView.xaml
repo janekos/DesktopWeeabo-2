@@ -40,6 +40,10 @@
         <Button Grid.Row="2"
                 Command="{Binding ImportFromDW1}">Import</Button>
       </Grid>
+      <Button Width="120"
+              HorizontalAlignment="Left"
+              Content="Update saved entries"
+              Command="{Binding UpdateEntries}"/>
     </StackPanel>
     <Grid Grid.Row="1">
       <Grid.RowDefinitions>

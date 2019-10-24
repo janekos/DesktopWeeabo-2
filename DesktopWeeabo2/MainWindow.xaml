@@ -8,6 +8,7 @@
         xmlns:ViewModels="clr-namespace:DesktopWeeabo2.ViewModels"
         xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
         xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
+        xmlns:enum="clr-namespace:DesktopWeeabo2.Core.Enums;assembly=DesktopWeeabo2.Core"
         xmlns:properties="clr-namespace:DesktopWeeabo2.Properties"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
@@ -48,7 +49,7 @@
                          Height="40"
                          FontSize="20"
                          Command="{Binding ChangeView}"
-                         CommandParameter="{x:Static help:GlobalView.ANIMEVIEW}"
+                         CommandParameter="{x:Static enum:GlobalView.ANIMEVIEW}"
                          CurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
                          IsSelectedParameter="isButtonSelected|Animeview" />
     <cc:SelectableButton Content="Manga"
@@ -59,7 +60,7 @@
                          Height="40"
                          FontSize="20"
                          Command="{Binding ChangeView}"
-                         CommandParameter="{x:Static help:GlobalView.MANGAVIEW}"
+                         CommandParameter="{x:Static enum:GlobalView.MANGAVIEW}"
                          CurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
                          IsSelectedParameter="isButtonSelected|Mangaview" />
     <cc:SelectableButton Content="Settings"
@@ -70,7 +71,7 @@
                          Height="40"
                          FontSize="20"
                          Command="{Binding ChangeView}"
-                         CommandParameter="{x:Static help:GlobalView.SETTINGSVIEW}"
+                         CommandParameter="{x:Static enum:GlobalView.SETTINGSVIEW}"
                          CurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
                          IsSelectedParameter="isButtonSelected|Settingsview" />
     <Border x:Name="Toast"

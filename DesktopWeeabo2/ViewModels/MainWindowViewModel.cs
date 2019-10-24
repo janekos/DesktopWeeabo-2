@@ -1,7 +1,7 @@
-﻿using DesktopWeeabo2.Data;
-using DesktopWeeabo2.Data.Services;
-using DesktopWeeabo2.Helpers;
-using DesktopWeeabo2.Services;
+﻿using DesktopWeeabo2.Core.Enums;
+using DesktopWeeabo2.Data;
+using DesktopWeeabo2.Infrastructure.Database;
+using DesktopWeeabo2.Infrastructure.DomainServices;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.ObjectModel;
@@ -61,8 +61,8 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		private string _CurrentGlobalView = GlobalView.ANIMEVIEW;
-		public string CurrentGlobalView {
+		private GlobalView _CurrentGlobalView = GlobalView.ANIMEVIEW;
+		public GlobalView CurrentGlobalView {
 			get { return _CurrentGlobalView; }
 			set {
 				if (_CurrentGlobalView != value) {
@@ -172,7 +172,7 @@ namespace DesktopWeeabo2.ViewModels {
 
 		private async void InitApp() {
 			InitAppData.Init();
-			await InitAppData.WakeDB();
+			await DbActions.WakeDB();
 			IsLoading = false;
 		}
 
@@ -192,7 +192,7 @@ namespace DesktopWeeabo2.ViewModels {
 		(e) => {
 			LogService.LogMessage($"Changed view to: {e}");
 			if (ViewModelsView != null) {
-				CurrentGlobalView = e as string;
+				CurrentGlobalView = (GlobalView)e;
 				switch (e) {
 					case GlobalView.ANIMEVIEW:
 						ViewModelsView.MoveCurrentToPosition(0);

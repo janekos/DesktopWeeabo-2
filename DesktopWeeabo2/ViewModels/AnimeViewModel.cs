@@ -1,11 +1,11 @@
-﻿using DesktopWeeabo2.API;
-using DesktopWeeabo2.Data.Services.Shared;
+﻿using DesktopWeeabo2.Core.Enums;
+using DesktopWeeabo2.Core.Interfaces.Services;
+using DesktopWeeabo2.Core.Models;
 using DesktopWeeabo2.Helpers;
-using DesktopWeeabo2.Models;
-using DesktopWeeabo2.Services;
+using DesktopWeeabo2.Infrastructure.API;
+using DesktopWeeabo2.Infrastructure.DomainServices;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
@@ -14,7 +14,7 @@ using System.Windows.Data;
 
 namespace DesktopWeeabo2.ViewModels {
 	public class AnimeViewModel : BaseItemViewModel {
-		private readonly IService<AnimeModel> _animeService;
+		private readonly IAnimeService _animeService;
 		private readonly AnimeAPIEnumerator _animeAPIEnumerator;
 
 		private bool LocalHelper = false;
@@ -36,7 +36,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		public string SelectedItemTitle { get { return _SelectedItem == null ? null : StringHelpers.GetFirstNotNullItemTitle(_SelectedItem); } }
+		public string SelectedItemTitle { get { return _SelectedItem?.Title.GetFirstNonNullTitle(); } }
 
 		public string SelectedItemPersonalReview {
 			get { return _SelectedItem?.PersonalReview; }
@@ -62,7 +62,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		public AnimeViewModel(IService<AnimeModel> animeService, AnimeAPIEnumerator animeAPIEnumerator) : base() {
+		public AnimeViewModel(IAnimeService animeService, AnimeAPIEnumerator animeAPIEnumerator) : base() {
 			_animeService = animeService;
 			_animeAPIEnumerator = animeAPIEnumerator;
 
@@ -142,7 +142,7 @@ namespace DesktopWeeabo2.ViewModels {
 				if (CurrentView.Equals(e as string)) return;
 
 				DontTriggerSearchChanged = true;
-				if ((SelectedSort.VisibleIn == SortLocation.ANIME || SelectedSort.VisibleIn == SortLocation.LOCAL) && (e as string) == StatusView.ONLINE) SelectedSort = SearchModel.SortsList[0];
+				if ((SelectedSort.VisibleIn == SortLocation.ANIME || SelectedSort.VisibleIn == SortLocation.LOCAL) && (string)e == StatusView.ONLINE) SelectedSort = SearchModel.SortsList[0];
 				DontTriggerSearchChanged = false;
 
 				CurrentView = e as string;
@@ -209,8 +209,8 @@ namespace DesktopWeeabo2.ViewModels {
 						if (_SelectedItem.DateAdded == null) _SelectedItem.DateAdded = DateTime.Now;
 						var itemWorkResponse = await _animeService.AddOrUpdate(_SelectedItem);
 
-						if (itemWorkResponse == DBResponse.ADDED) ToastService.ShowToast($"Succesfully saved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view!", "success");
-						else if (itemWorkResponse == DBResponse.UPDATED) ToastService.ShowToast($"Succesfully updated '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}'!", "success");
+						if (itemWorkResponse == DBResponse.ADDED) ToastService.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view!", "success");
+						else if (itemWorkResponse == DBResponse.UPDATED) ToastService.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", "success");
 						else if (itemWorkResponse == DBResponse.ERROR) throw new Exception("Repo returned ERROR");
 
 						if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
@@ -231,11 +231,11 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public DelegateCommand DeleteItemFromDb => new DelegateCommand(
 			new Action(async () => {
-				await Task.Run(() => {
+				await Task.Run(async () => {
 					try {
-						var itemDeleteResponse = _animeService.Delete(_SelectedItem.Id);
-						if (itemDeleteResponse == DBResponse.DELETED) ToastService.ShowToast($"Anime '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", "success");
-						else throw new Exception($"Anime '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
+						var itemDeleteResponse = await _animeService.Delete(_SelectedItem.Id);
+						if (itemDeleteResponse == DBResponse.DELETED) ToastService.ShowToast($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", "success");
+						else throw new Exception($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
 
 						if (CurrentView == StatusView.ONLINE) {
 							SelectedItemViewingStatus = null;

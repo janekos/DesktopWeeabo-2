@@ -1,12 +1,11 @@
-﻿using DesktopWeeabo2.API;
-using DesktopWeeabo2.Data.Services;
-using DesktopWeeabo2.Data.Services.Shared;
+﻿using DesktopWeeabo2.Core.Enums;
+using DesktopWeeabo2.Core.Interfaces.Services;
+using DesktopWeeabo2.Core.Models;
 using DesktopWeeabo2.Helpers;
-using DesktopWeeabo2.Models;
-using DesktopWeeabo2.Services;
+using DesktopWeeabo2.Infrastructure.API;
+using DesktopWeeabo2.Infrastructure.DomainServices;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
@@ -15,7 +14,7 @@ using System.Windows.Data;
 
 namespace DesktopWeeabo2.ViewModels {
 	public class MangaViewModel : BaseItemViewModel {
-		private readonly IService<MangaModel> _mangaService;
+		private readonly IMangaService _mangaService;
 		private readonly MangaAPIEnumerator _mangaAPIEnumerator;
 
 		private bool LocalHelper = false;
@@ -37,7 +36,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		public string SelectedItemTitle { get { return _SelectedItem == null ? null : StringHelpers.GetFirstNotNullItemTitle(_SelectedItem); } }
+		public string SelectedItemTitle { get { return _SelectedItem == null ? null : _SelectedItem.Title.GetFirstNonNullTitle(); } }
 
 		public string SelectedItemPersonalReview {
 			get { return _SelectedItem?.PersonalReview; }
@@ -63,7 +62,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		public MangaViewModel(IService<MangaModel> mangaService, MangaAPIEnumerator mangaAPIEnumerator) : base() {
+		public MangaViewModel(IMangaService mangaService, MangaAPIEnumerator mangaAPIEnumerator) : base() {
 			_mangaService = mangaService;
 			_mangaAPIEnumerator = mangaAPIEnumerator;
 
@@ -207,8 +206,8 @@ namespace DesktopWeeabo2.ViewModels {
 						if (_SelectedItem.DateAdded == null) _SelectedItem.DateAdded = DateTime.Now;
 						var itemWorkResponse = await _mangaService.AddOrUpdate(_SelectedItem);
 
-						if (itemWorkResponse == DBResponse.ADDED) ToastService.ShowToast($"Succesfully saved '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{SelectedItemReadingStatus}' view!", "success");
-						else if (itemWorkResponse == DBResponse.UPDATED) ToastService.ShowToast($"Succesfully updated '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}'!", "success");
+						if (itemWorkResponse == DBResponse.ADDED) ToastService.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{SelectedItemReadingStatus}' view!", "success");
+						else if (itemWorkResponse == DBResponse.UPDATED) ToastService.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", "success");
 						else if (itemWorkResponse == DBResponse.ERROR) throw new Exception("Repo returned ERROR");
 
 						if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
@@ -229,11 +228,11 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public DelegateCommand DeleteItemFromDb => new DelegateCommand(
 			new Action(async () => {
-				await Task.Run(() => {
+				await Task.Run(async () => {
 					try {
-						var itemDeleteResponse = _mangaService.Delete(_SelectedItem.Id);
-						if (itemDeleteResponse == DBResponse.DELETED) ToastService.ShowToast($"Manga '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' in '{SelectedItemReadingStatus}' view was deleted succesfully!", "success");
-						else throw new Exception($"Manga '{StringHelpers.GetFirstNotNullItemTitle(_SelectedItem)}' doesn't exist in '{SelectedItemReadingStatus}' view.");
+						var itemDeleteResponse = await _mangaService.Delete(_SelectedItem.Id);
+						if (itemDeleteResponse == DBResponse.DELETED) ToastService.ShowToast($"Manga '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{SelectedItemReadingStatus}' view was deleted succesfully!", "success");
+						else throw new Exception($"Manga '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{SelectedItemReadingStatus}' view.");
 
 						if (CurrentView == StatusView.ONLINE) {
 							SelectedItemReadingStatus = null;

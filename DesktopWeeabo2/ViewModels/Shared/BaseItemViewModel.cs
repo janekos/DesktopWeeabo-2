@@ -1,5 +1,6 @@
-﻿using DesktopWeeabo2.Helpers;
-using DesktopWeeabo2.Models;
+﻿using DesktopWeeabo2.Core.Enums;
+using DesktopWeeabo2.Core.Models;
+using DesktopWeeabo2.Helpers;
 using System;
 using System.ComponentModel;
 
@@ -115,7 +116,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 		}
 
 		protected string _CurrentView { get; set; } = StatusView.ONLINE;
-		public string CurrentView{
+		public string CurrentView {
             get { return _CurrentView; }
             set { if (_CurrentView != value) { _CurrentView = value; RaisePropertyChanged("CurrentView"); }}
         }

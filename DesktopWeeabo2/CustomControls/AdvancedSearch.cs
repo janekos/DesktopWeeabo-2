@@ -1,4 +1,4 @@
-﻿using DesktopWeeabo2.Models;
+﻿using DesktopWeeabo2.Core.Models;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

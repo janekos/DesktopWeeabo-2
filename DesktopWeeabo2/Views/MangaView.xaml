@@ -5,23 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DesktopWeeabo2.Views"
              xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
+             xmlns:enum="clr-namespace:DesktopWeeabo2.Core.Enums;assembly=DesktopWeeabo2.Core"
              xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
              x:Name="MangaViewControl"
              mc:Ignorable="d"
              d:DesignHeight="730"
              d:DesignWidth="1004">
-    <UserControl.Resources>
-        <help:CustomConverter x:Key="CustomConverter" />
-        <help:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
-    </UserControl.Resources>
-    <Grid Background="White">
+  <UserControl.Resources>
+    <help:CustomConverter x:Key="CustomConverter" />
+    <help:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
+  </UserControl.Resources>
+  <Grid Background="White">
     <cc:SelectableButton Content="Online"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Top"
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.ONLINE}"
+                         CommandParameter="{x:Static enum:StatusView.ONLINE}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Online" />
     <cc:SelectableButton Content="To read"
@@ -31,7 +32,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.TOREAD}"
+                         CommandParameter="{x:Static enum:StatusView.TOREAD}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Toread" />
     <cc:SelectableButton Content="Red"
@@ -41,7 +42,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.RED}"
+                         CommandParameter="{x:Static enum:StatusView.RED}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Red" />
     <cc:SelectableButton Content="Reading"
@@ -51,7 +52,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.READING}"
+                         CommandParameter="{x:Static enum:StatusView.READING}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Reading" />
     <cc:SelectableButton Content="Dropped"
@@ -61,7 +62,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.DROPPEDMANGA}"
+                         CommandParameter="{x:Static enum:StatusView.DROPPEDMANGA}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Droppedmanga" />
     <Button  Content="Search"
@@ -256,11 +257,11 @@
             <StackPanel Name="Titles"
                         Margin="10,0,10,0">
               <cc:MultiInfoBlockWrapper>
-                <cc:SelectableInfoBlock DynamicItem="{Binding TitleEnglish}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleEnglish}"
                                         StaticText="English: " />
-                <cc:SelectableInfoBlock DynamicItem="{Binding TitleRomaji}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleRomaji}"
                                         StaticText="Romaji: " />
-                <cc:SelectableInfoBlock DynamicItem="{Binding TitleNative}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleNative}"
                                         StaticText="Native: " />
               </cc:MultiInfoBlockWrapper>
               <cc:SelectableInfoBlock DynamicItem="{Binding Synonyms}"
@@ -269,7 +270,7 @@
                                       HasBorder="True"
                                       StaticText="Synonyms: " />
               <cc:MultiInfoBlockWrapper Visibility="{Binding Path=DataContext.SelectedItemReadingStatus, ElementName=MangaViewControl, Converter={StaticResource CustomConverter}, ConverterParameter=isValueNotNull}">
-                  <cc:InfoBlock DynamicItem="{Binding DateAdded}"
+                <cc:InfoBlock DynamicItem="{Binding DateAdded}"
                               StaticText="Date added: " />
                 <cc:SelectableInfoBlock IsEditable="True"
                                         Pattern="^[1-9][0-9]?$|^100$"
@@ -334,12 +335,12 @@
                      FontWeight="DemiBold"
                      Content="External links"
                      HorizontalAlignment="Center" />
-              <ItemsControl ItemsSource="{Binding GetExternalLinksList}">
+              <ItemsControl ItemsSource="{Binding ExternalLinks}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <cc:SelectableInfoBlock MinWidth="82"
                                             DynamicItem="{Binding Url}"
-                                            StaticText="{Binding GetSite}" />
+                                            StaticText="{Binding Site}" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
@@ -363,7 +364,7 @@
                                  Grid.Column="0"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.TOREAD}"
+                                 CommandParameter="{x:Static enum:StatusView.TOREAD}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Toread" />
@@ -371,7 +372,7 @@
                                  Grid.Column="1"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.RED}"
+                                 CommandParameter="{x:Static enum:StatusView.RED}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Red" />
@@ -379,7 +380,7 @@
                                  Grid.Column="2"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.READING}"
+                                 CommandParameter="{x:Static enum:StatusView.READING}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Reading" />
@@ -387,7 +388,7 @@
                                  Grid.Column="3"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.DROPPEDMANGA}"
+                                 CommandParameter="{x:Static enum:StatusView.DROPPEDMANGA}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Droppedmanga" />
@@ -395,7 +396,7 @@
                                  Grid.Column="4"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.DELETE}"
+                                 CommandParameter="{x:Static enum:StatusView.DELETE}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Delete" />

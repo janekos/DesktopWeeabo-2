@@ -1,4 +1,4 @@
-﻿using DesktopWeeabo2.Models;
+﻿using DesktopWeeabo2.Core.Models;
 using System;
 using System.Globalization;
 using System.Windows;

@@ -1,9 +1,10 @@
-﻿using DesktopWeeabo2.Data;
-using DesktopWeeabo2.Data.Repositories;
-using DesktopWeeabo2.Data.Repositories.Shared;
-using DesktopWeeabo2.Data.Services;
-using DesktopWeeabo2.Data.Services.Shared;
-using DesktopWeeabo2.Models;
+﻿
+using DesktopWeeabo2.Core.Interfaces.Repositories;
+using DesktopWeeabo2.Core.Interfaces.Services;
+using DesktopWeeabo2.Infrastructure.Database;
+using DesktopWeeabo2.Infrastructure.DomainServices;
+using DesktopWeeabo2.Infrastructure.Repositories;
+using DesktopWeeabo2.Infrastructure.Services;
 using DesktopWeeabo2.ViewModels;
 using System.Windows;
 using Unity;
@@ -18,12 +19,12 @@ namespace DesktopWeeabo2 {
 
 			container.RegisterType<EntriesContext>(new ContainerControlledTransientManager());
 
-			container.RegisterType<IRepo<AnimeModel>, AnimeRepo>(new ContainerControlledTransientManager());
-			container.RegisterType<IRepo<MangaModel>, MangaRepo>(new ContainerControlledTransientManager());
+			container.RegisterType<IAnimeRepository, AnimeRepository>(new ContainerControlledTransientManager());
+			container.RegisterType<IMangaRepository, MangaRepository>(new ContainerControlledTransientManager());
 
-			container.RegisterType<IService<AnimeModel>, AnimeService>(new ContainerControlledTransientManager());
-			container.RegisterType<IService<MangaModel>, MangaService>(new ContainerControlledTransientManager());
-			container.RegisterSingleton<IOService>();
+			container.RegisterType<IAnimeService, AnimeService>(new ContainerControlledTransientManager());
+			container.RegisterType<IMangaService, MangaService>(new ContainerControlledTransientManager());
+			container.RegisterType<IHandleIO, IOService>(new ContainerControlledTransientManager());
 
 			container.RegisterSingleton<MainWindowViewModel>();
 			container.RegisterSingleton<AnimeViewModel>();

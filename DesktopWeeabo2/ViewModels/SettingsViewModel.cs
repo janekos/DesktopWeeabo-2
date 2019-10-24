@@ -1,4 +1,5 @@
-﻿using DesktopWeeabo2.Data.Services;
+﻿using DesktopWeeabo2.Infrastructure.DomainServices;
+using DesktopWeeabo2.Infrastructure.Services;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Windows.Forms;
@@ -6,6 +7,7 @@ using System.Windows.Forms;
 namespace DesktopWeeabo2.ViewModels {
 	public class SettingsViewModel : BaseViewModel {
 		private readonly IOService _ioService;
+		private bool AreUpdatesRunning = false;
 
 		public SettingsViewModel(IOService ioService) {
 			_ioService = ioService;
@@ -66,8 +68,15 @@ namespace DesktopWeeabo2.ViewModels {
 				}
 		}));
 
-		public DelegateCommand ImportFromDW1 => new DelegateCommand(new Action(() => {
+		public DelegateCommand ImportFromDW1 => new DelegateCommand(() => {
 			if (!string.IsNullOrEmpty(PathToDW1Data)) _ioService.ImportDW1Data(PathToDW1Data);
-		}));
+		});
+
+		public DelegateCommand UpdateEntries => new DelegateCommand(() => {
+			if(!AreUpdatesRunning) {
+				AreUpdatesRunning = true;
+				_ioService.UpdateDbEntries();
+			}
+		});
 	}
 }

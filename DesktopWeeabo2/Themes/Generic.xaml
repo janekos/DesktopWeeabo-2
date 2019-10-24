@@ -2,7 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:DesktopWeeabo2.CustomControls"
                     x:Class="DesktopWeeabo2.Helpers.CustomControlHelpers"
-                    xmlns:help="clr-namespace:DesktopWeeabo2.Helpers">
+                    xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
+                    xmlns:enum="clr-namespace:DesktopWeeabo2.Core.Enums;assembly=DesktopWeeabo2.Core">
+
   <help:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
   <help:CustomConverter x:Key="CustomConverter" />
   <!--selectablebutton-->
@@ -531,49 +533,49 @@
                             Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                     <Style.Triggers>
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.TOWATCH}">
+                                   Value="{x:Static enum:StatusView.TOWATCH}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource ChangeConfirmer}" />
                       </DataTrigger>
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.WATCHING}">
+                                   Value="{x:Static enum:StatusView.WATCHING}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource ChangeConfirmer}" />
                       </DataTrigger>
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.TOREAD}">
+                                   Value="{x:Static enum:StatusView.TOREAD}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource ChangeConfirmer}" />
                       </DataTrigger>
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.READING}">
+                                   Value="{x:Static enum:StatusView.READING}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource ChangeConfirmer}" />
                       </DataTrigger>
                       <!--watchedordroppedorred-->
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.VIEWED}">
+                                   Value="{x:Static enum:StatusView.VIEWED}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                       </DataTrigger>
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.DROPPEDANIME}">
+                                   Value="{x:Static enum:StatusView.DROPPEDANIME}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                       </DataTrigger>
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.DROPPEDMANGA}">
+                                   Value="{x:Static enum:StatusView.DROPPEDMANGA}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                       </DataTrigger>
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.RED}">
+                                   Value="{x:Static enum:StatusView.RED}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                       </DataTrigger>
                       <!--delete-->
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static help:StatusView.DELETE}">
+                                   Value="{x:Static enum:StatusView.DELETE}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource DeleteConfirmer}" />
                       </DataTrigger>

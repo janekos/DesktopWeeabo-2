@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:DesktopWeeabo2.Views"
              xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
+             xmlns:enum="clr-namespace:DesktopWeeabo2.Core.Enums;assembly=DesktopWeeabo2.Core"
              xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
              x:Name="AnimeViewControl"
              mc:Ignorable="d"
@@ -21,7 +22,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.ONLINE}"
+                         CommandParameter="{x:Static enum:StatusView.ONLINE}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Online" />
     <cc:SelectableButton Content="To watch"
@@ -31,7 +32,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.TOWATCH}"
+                         CommandParameter="{x:Static enum:StatusView.TOWATCH}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Towatch" />
     <cc:SelectableButton Content="Viewed"
@@ -41,7 +42,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.VIEWED}"
+                         CommandParameter="{x:Static enum:StatusView.VIEWED}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Viewed" />
     <cc:SelectableButton Content="Watching"
@@ -51,7 +52,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.WATCHING}"
+                         CommandParameter="{x:Static enum:StatusView.WATCHING}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Watching" />
     <cc:SelectableButton Content="Dropped"
@@ -61,7 +62,7 @@
                          Width="60"
                          Height="28"
                          Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static help:StatusView.DROPPEDANIME}"
+                         CommandParameter="{x:Static enum:StatusView.DROPPEDANIME}"
                          CurrentView="{Binding CurrentView}"
                          IsSelectedParameter="isButtonSelected|Droppedanime" />
     <Button  Content="Search"
@@ -256,11 +257,11 @@
             <StackPanel Name="Titles"
                         Margin="10,0,10,0">
               <cc:MultiInfoBlockWrapper>
-                <cc:SelectableInfoBlock DynamicItem="{Binding TitleEnglish}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleEnglish}"
                                         StaticText="English: " />
-                <cc:SelectableInfoBlock DynamicItem="{Binding TitleRomaji}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleRomaji}"
                                         StaticText="Romaji: " />
-                <cc:SelectableInfoBlock DynamicItem="{Binding TitleNative}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleNative}"
                                         StaticText="Native: " />
               </cc:MultiInfoBlockWrapper>
               <cc:SelectableInfoBlock DynamicItem="{Binding Synonyms}"
@@ -321,9 +322,9 @@
                               StaticText="Start date: " />
                 <cc:InfoBlock DynamicItem="{Binding EndDate}"
                               StaticText="End date: " />
-                <cc:InfoBlock DynamicItem="{Binding GetNextAiringEpisodeNumber}"
+                <cc:InfoBlock DynamicItem="{Binding NextAiringEpisode.Episode}"
                               StaticText="Next episode: " />
-                <cc:InfoBlock DynamicItem="{Binding GetNextAiringEpisodeDate}"
+                <cc:InfoBlock DynamicItem="{Binding NextAiringEpisode.AiringAt}"
                               StaticText="Next airing: " />
               </cc:MultiInfoBlockWrapper>
               <cc:SelectableInfoBlock DynamicItem="{Binding Genres}"
@@ -342,12 +343,12 @@
                      FontWeight="DemiBold"
                      Content="External links"
                      HorizontalAlignment="Center" />
-              <ItemsControl ItemsSource="{Binding GetExternalLinksList}">
+              <ItemsControl ItemsSource="{Binding ExternalLinks}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
                     <cc:SelectableInfoBlock MinWidth="82"
                                             DynamicItem="{Binding Url}"
-                                            StaticText="{Binding GetSite}" />
+                                            StaticText="{Binding Site}" />
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
@@ -371,7 +372,7 @@
                                  Grid.Column="0"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.TOWATCH}"
+                                 CommandParameter="{x:Static enum:StatusView.TOWATCH}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Towatch" />
@@ -379,7 +380,7 @@
                                  Grid.Column="1"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.VIEWED}"
+                                 CommandParameter="{x:Static enum:StatusView.VIEWED}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Viewed" />
@@ -387,7 +388,7 @@
                                  Grid.Column="2"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.WATCHING}"
+                                 CommandParameter="{x:Static enum:StatusView.WATCHING}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Watching" />
@@ -395,7 +396,7 @@
                                  Grid.Column="3"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.DROPPEDANIME}"
+                                 CommandParameter="{x:Static enum:StatusView.DROPPEDANIME}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Droppedanime" />
@@ -403,7 +404,7 @@
                                  Grid.Column="4"
                                  BorderThickness="1,1,1,2"
                                  Command="{Binding TriggerViewStatusWasChanged}"
-                                 CommandParameter="{x:Static help:StatusView.DELETE}"
+                                 CommandParameter="{x:Static enum:StatusView.DELETE}"
                                  SelectedItem="{Binding SelectedItem}"
                                  PressedTransferButton="{Binding PressedTransferButton}"
                                  IsEnabledParameter="isSwitcherButtonEnabled|Delete" />
