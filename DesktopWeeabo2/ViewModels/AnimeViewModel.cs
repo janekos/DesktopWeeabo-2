@@ -6,6 +6,7 @@ using DesktopWeeabo2.Infrastructure.API;
 using DesktopWeeabo2.Infrastructure.DomainServices;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
@@ -98,13 +99,14 @@ namespace DesktopWeeabo2.ViewModels {
 			PressedTransferButton = "";
 		}
 
-		protected async override void AddLocalItemsToView() {
-			await Task.Run(() => {
+		protected override void AddLocalItemsToView() {
+			Task.Run(() => {
 				if (LocalHelper) return;
 				LocalHelper = true;
 				IsContentLoading = true;
 				lock (_CollectionLock) {
-					AnimeItems.AddRange(_animeService.GetBySearchModelAndCurrentView(SearchModel, CurrentView));
+					var items = _animeService.GetBySearchModelAndCurrentView(SearchModel, CurrentView);
+					AnimeItems.AddRange(items);
 					TotalItems = AnimeItems.Count;
 				};
 				LocalHelper = false;

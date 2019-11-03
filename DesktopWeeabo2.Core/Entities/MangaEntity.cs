@@ -29,7 +29,7 @@ namespace DesktopWeeabo2.Core.Entities {
 		[Column("current_chapter")]
 		public int? CurrentChapter { get; set; }
 
-		public static explicit operator MangaEntity(MangaModel model) {
+		public static implicit operator MangaEntity(MangaModel model) {
 			return new MangaEntity() {
 				Id = model.Id,
 				IdMal = model.IdMal,

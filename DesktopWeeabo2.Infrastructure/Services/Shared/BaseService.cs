@@ -18,24 +18,41 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 		}
 
 		public async Task<DBResponse> AddOrUpdate(T model) {
-			var entity = Cast(await repo.Get(model.Id));
+			var entity = await repo.Get(model.Id);
 
 			if (entity == null) {
-				await repo.Add(Cast(model));
+				await repo.Add((U) Cast(model));
 				return DBResponse.ADDED;
-			} else {
-				await repo.Update(Cast(model));
-
 			}
-
+			if (entity != null) {
+				await repo.Update(entity, (U) Cast(model));
+				return DBResponse.UPDATED;
+			}
 
 			return DBResponse.NOCHANGES;
 		}
 
 		public async Task<DBResponse> AddOrUpdateRange(IEnumerable<T> entities) {
-			var rowsChanged = await repo.AddRange(entities.Cast<U>());
+			var allIds = entities.Select(e => e.Id);
+			var existingIds = repo.Find(e => allIds.Contains(e.Id)).Select(e => e.Id);
+			if (existingIds.Count() > 0) {
 
-			return rowsChanged > 0 ? DBResponse.UPDATED : DBResponse.NOCHANGES;
+				foreach (U entity in entities.Where(e => existingIds.Contains(e.Id)).Select(e => (U) Cast(e))) {
+					await repo.Update(await repo.Get(entity.Id), entity);
+				}
+
+				await repo.AddRange(entities.Where(e => !existingIds.Contains(e.Id)).Select(e => (U) Cast(e)));
+
+				return DBResponse.UPDATED;
+			}
+
+			if (entities.Count() > 0) {
+				await repo.AddRange(entities.Cast<U>());
+
+				return DBResponse.ADDED;
+			}
+
+			return DBResponse.NOCHANGES;
 		}
 
 		public async Task<DBResponse> Delete(int id) {
@@ -50,11 +67,11 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 				expression: item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView, item),
 				orderBy: item => item.GetType().GetProperty(search.SelectedSort.LocalValue).GetValue(item),
 				isDescending: search.IsDescending
-			).Cast<T>();
+			).Select(e => (T)Cast(e));
 		}
 
 		public IEnumerable<T> GetCustom(Func<U, bool> condition) =>
-			repo.Find(condition, item => item.Id).Cast<T>();
+			repo.Find(condition, item => item.Id).Select(e => (T) Cast(e));
 
 		protected virtual bool IsAdultCondition(SearchModel search, U item) =>
 			throw new NotSupportedException("This function has to be overriden");

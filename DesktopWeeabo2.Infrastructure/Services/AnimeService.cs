@@ -32,5 +32,6 @@ namespace DesktopWeeabo2.Infrastructure.Services {
 			item.ViewingStatus.Equals(currentView);
 
 		protected override AnimeEntity Cast(AnimeModel model) => (AnimeEntity)model;
+		protected override AnimeModel Cast(AnimeEntity model) => (AnimeModel) model;
 	}
 }

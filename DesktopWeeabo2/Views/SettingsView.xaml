@@ -8,59 +8,99 @@
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition />
-      <RowDefinition />
-    </Grid.RowDefinitions>
-    <StackPanel HorizontalAlignment="Stretch">
-      <CheckBox IsChecked="{Binding DoesAppBackUp}">DoesAppBackUp</CheckBox>
-      <CheckBox IsChecked="{Binding IsLightMode}">IsLightMode</CheckBox>
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition />
-          <RowDefinition />
-          <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition />
-          <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <TextBlock Grid.ColumnSpan="2">Import DW1 data</TextBlock>
-        <Label Grid.Row="1">Path to MainEntries.xml</Label>
-        <TextBox Grid.Column="1"
-                 Grid.Row="1"
-                 IsReadOnly="True"
-                 Text="{Binding PathToDW1Data}" />
-        <Button Grid.Column="1"
-                Grid.Row="1"
-                Opacity="0"
-                Command="{Binding ShowFileSelectorDialog}"
-                HorizontalAlignment="Stretch" />
-        <Button Grid.Row="2"
-                Command="{Binding ImportFromDW1}">Import</Button>
-      </Grid>
-      <Button Width="120"
-              HorizontalAlignment="Left"
+  <UserControl.Resources>
+    <Style TargetType="Separator">
+      <Setter Property="Margin" Value="0,10,0,10" />
+    </Style>
+    <Style TargetType="CheckBox">
+      <Setter Property="Margin" Value="0,0,0,8" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+    <!--<Style TargetType="Button">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="Padding" Value="7,0,7,0" />
+    </Style>-->
+    <Style TargetType="TextBlock">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="Margin" Value="0,0,10,0" />
+    </Style>
+    <Style TargetType="TextBlock" x:Key="Header">
+      <Setter Property="FontSize" Value="18" />
+      <Setter Property="Margin" Value="0,15,0,5" />
+      <Setter Property="Foreground" Value="Gray" />
+    </Style>
+    <Style TargetType="Border" x:Key="HeaderBorder">
+      <Setter Property="BorderBrush" Value="LightGray" />
+      <Setter Property="BorderThickness" Value="0,0,0,2" />
+      <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+    <Style TargetType="TabControl">
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style TargetType="TabItem">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="TabItem">
+            <ToggleButton Content="{TemplateBinding Header}"
+                    Width="100"
+                    FontSize="16"
+                    Padding="4,0,4,0"
+                    Cursor="Hand"
+                    IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                    Height="30" />
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </UserControl.Resources>
+  <TabControl>
+    <TabItem Header="Parameters">
+      <StackPanel HorizontalAlignment="Stretch">
+        <Border Style="{StaticResource HeaderBorder}">
+          <TextBlock Style="{StaticResource Header}">General</TextBlock>
+        </Border>
+        <CheckBox IsChecked="{Binding DoesAppBackUp}">Backups enabled</CheckBox>
+        <CheckBox IsChecked="{Binding IsLightMode}">Dark mode</CheckBox>
+        <Border Style="{StaticResource HeaderBorder}">
+          <TextBlock Style="{StaticResource Header}">Import from DesktopWeeabo 1</TextBlock>
+        </Border>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+          <TextBlock>Path to MainEntries.xml</TextBlock>
+          <Grid>
+            <TextBox IsReadOnly="True"
+                   Text="{Binding PathToDW1Data}" Width="200" />
+            <Button Opacity="0"
+                  Command="{Binding ShowFileSelectorDialog}" Width="200" />
+          </Grid>
+        </StackPanel>
+        <Button HorizontalAlignment="Left"
+              Command="{Binding ImportFromDW1}">Import</Button>
+        <Border Style="{StaticResource HeaderBorder}">
+          <TextBlock Style="{StaticResource Header}">Entry updates</TextBlock>
+        </Border>
+        <CheckBox IsChecked="{Binding DoesUpdateOnStartup}">Application updates saved entries on startup</CheckBox>
+        <Button HorizontalAlignment="Left"
               Content="Update saved entries"
               Command="{Binding UpdateEntries}"/>
-    </StackPanel>
-    <Grid Grid.Row="1">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="25px" />
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
-      <StackPanel Orientation="Horizontal">
-        <Label>Log</Label>
-        <Button Command="{Binding ClearLog}">Clear log</Button>
-        <Button Command="{Binding ToBottom}">To bottom</Button>
       </StackPanel>
-      <TextBox Grid.Row="1"
-               Text="{Binding Log}"
-               IsReadOnly="True"
-               HorizontalScrollBarVisibility="Disabled"
-               VerticalScrollBarVisibility="Auto"
-               TextWrapping="Wrap" />
-    </Grid>
-  </Grid>
+    </TabItem>
+    <TabItem Header="Statistics">Coming soon...</TabItem>
+    <TabItem Header="Logs">
+      <StackPanel VerticalAlignment="Stretch">
+        <Border Style="{StaticResource HeaderBorder}">
+          <TextBlock Style="{StaticResource Header}">Log</TextBlock>
+        </Border>
+        <StackPanel Orientation="Horizontal">
+          <Button Command="{Binding ClearLog}">Clear log</Button>
+          <Button Command="{Binding ToBottom}">To bottom</Button>
+        </StackPanel>
+        <TextBox Text="{Binding Log}"
+                 IsReadOnly="True"
+                 HorizontalScrollBarVisibility="Disabled"
+                 VerticalAlignment="Stretch"
+                 VerticalScrollBarVisibility="Auto"
+                 TextWrapping="Wrap" />
+      </StackPanel>
+    </TabItem>
+  </TabControl>
 </UserControl>

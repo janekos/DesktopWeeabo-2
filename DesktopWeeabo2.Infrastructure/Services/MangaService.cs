@@ -32,5 +32,6 @@ namespace DesktopWeeabo2.Infrastructure.Services {
 			item.ReadingStatus.Equals(currentView);
 
 		protected override MangaEntity Cast(MangaModel model) => (MangaEntity)model;
+		protected override MangaModel Cast(MangaEntity model) => (MangaModel) model;
 	}
 }

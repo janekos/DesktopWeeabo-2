@@ -16,108 +16,49 @@
     <help:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
   </UserControl.Resources>
   <Grid Background="White">
-    <cc:SelectableButton Content="Online"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.ONLINE}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Online" />
-    <cc:SelectableButton Content="To read"
-                         HorizontalAlignment="Left"
-                         Margin="60,0,0,0"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.TOREAD}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Toread" />
-    <cc:SelectableButton Content="Red"
-                         HorizontalAlignment="Left"
-                         Margin="120,0,0,0"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.RED}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Red" />
-    <cc:SelectableButton Content="Reading"
-                         HorizontalAlignment="Left"
-                         Margin="180,0,0,0"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.READING}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Reading" />
-    <cc:SelectableButton Content="Dropped"
-                         HorizontalAlignment="Left"
-                         Margin="240,0,0,0"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.DROPPEDMANGA}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Droppedmanga" />
-    <Button  Content="Search"
-             HorizontalAlignment="Left"
-             Padding="5,0,5,0"
-             Height="28"
-             Margin="316,0,0,0"
-             Command="{Binding TriggerSearch}"
-             FontSize="14"
-             VerticalAlignment="Top" />
-    <TextBox HorizontalAlignment="Left"
-             Height="28"
-             Padding="5,0,5,0"
-             Margin="369,0,0,0"
-             TextWrapping="Wrap"
-             Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"
-             VerticalAlignment="Top"
-             Width="300"
-             FontSize="18" />
-    <Button Content="Advanced"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            FontSize="16"
-            Margin="670,1,0,0"
-            Foreground="#FF0066CC"
-            Cursor="Hand"
-            Command="{Binding TriggerAdvancedWasClicked}">
-      <Button.Style>
-        <Style TargetType="Button">
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="{x:Type Button}">
-                <Border Background="{TemplateBinding Background}">
-                  <TextBlock Text="{TemplateBinding Content}"
-                             Margin="4,2"
-                             TextDecorations="Underline" />
-                </Border>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-          <Style.Triggers>
-            <Trigger Property="IsMouseOver"
-                     Value="True">
-              <Setter Property="Background"
-                      Value="Red" />
-            </Trigger>
-            <Trigger Property="IsMouseOver"
-                     Value="False">
-              <Setter Property="Background"
-                      Value="{x:Null}" />
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </Button.Style>
-    </Button>
+    <StackPanel Orientation="Horizontal"
+                Height="28"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left">
+      <cc:SelectableButton Content="Online"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.ONLINE}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Online" />
+      <cc:SelectableButton Content="To read"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.TOREAD}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Toread" />
+      <cc:SelectableButton Content="Red"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.RED}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Red" />
+      <cc:SelectableButton Content="Reading"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.READING}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Reading" />
+      <cc:SelectableButton Content="Dropped"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.DROPPEDMANGA}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Droppedmanga" />
+      <Separator Width="30"
+                 Opacity="0" />
+      <Button  Content="Search"
+               Command="{Binding TriggerSearch}"
+               FontSize="14" />
+      <TextBox Padding="5,0,5,0"
+               TextWrapping="Wrap"
+               Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"
+               Width="300"
+               FontSize="18" />
+      <Button Content="Advanced"
+              Command="{Binding TriggerAdvancedWasClicked}" />
+    </StackPanel>
+
     <TextBlock HorizontalAlignment="Right"
                TextWrapping="Wrap"
                VerticalAlignment="Top"

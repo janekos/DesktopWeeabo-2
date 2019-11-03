@@ -62,7 +62,7 @@ namespace DesktopWeeabo2.Helpers {
 					return null;
 				case "isButtonSelected":
 					if (values[0] != null && parameters[1] != null) {
-						return (values[0].GetType() == typeof(string) && (string)values[0] != null && ((string)values[0]).Equals(parameters[1]))
+						return (values[0].GetType() == typeof(string) && ((string) values[0]).ToLower().Equals(parameters[1].ToLower()))
 							|| (values[0].GetType() == typeof(AnimeModel) && ((AnimeModel)values[0]).ViewingStatus != null && ((AnimeModel)values[0]).ViewingStatus.Equals(parameters[1]))
 							|| (values[0].GetType() == typeof(MangaModel) && ((MangaModel)values[0]).ReadingStatus != null && ((MangaModel)values[0]).ReadingStatus.Equals(parameters[1]));
 					}

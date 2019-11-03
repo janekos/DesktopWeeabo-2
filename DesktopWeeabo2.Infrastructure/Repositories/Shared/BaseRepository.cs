@@ -25,8 +25,8 @@ namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
 			return await _db.SaveChangesAsync();
 		}
 
-		public async Task<int> Update(T item) {
-			_db.Entry(item).CurrentValues.SetValues(item);
+		public async Task<int> Update(T dbItem, T item) {
+			_db.Entry(dbItem).CurrentValues.SetValues(item);
 			return await _db.SaveChangesAsync();
 		}
 

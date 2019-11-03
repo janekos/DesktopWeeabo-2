@@ -16,108 +16,47 @@
     <help:MultiValueCustomConverter x:Key="MultiValueCustomConverter" />
   </UserControl.Resources>
   <Grid Background="White">
-    <cc:SelectableButton Content="Online"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.ONLINE}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Online" />
-    <cc:SelectableButton Content="To watch"
-                         HorizontalAlignment="Left"
-                         Margin="60,0,0,0"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.TOWATCH}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Towatch" />
-    <cc:SelectableButton Content="Viewed"
-                         HorizontalAlignment="Left"
-                         Margin="120,0,0,0"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.VIEWED}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Viewed" />
-    <cc:SelectableButton Content="Watching"
-                         HorizontalAlignment="Left"
-                         Margin="180,0,0,0"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.WATCHING}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Watching" />
-    <cc:SelectableButton Content="Dropped"
-                         HorizontalAlignment="Left"
-                         Margin="240,0,0,0"
-                         VerticalAlignment="Top"
-                         Width="60"
-                         Height="28"
-                         Command="{Binding ChangeItemSource}"
-                         CommandParameter="{x:Static enum:StatusView.DROPPEDANIME}"
-                         CurrentView="{Binding CurrentView}"
-                         IsSelectedParameter="isButtonSelected|Droppedanime" />
-    <Button  Content="Search"
-             HorizontalAlignment="Left"
-             Padding="5,0,5,0"
-             Height="28"
-             Margin="316,0,0,0"
-             Command="{Binding TriggerSearch}"
-             FontSize="14"
-             VerticalAlignment="Top" />
-    <TextBox HorizontalAlignment="Left"
-             Height="28"
-             Padding="5,0,5,0"
-             Margin="369,0,0,0"
-             TextWrapping="Wrap"
-             Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"
-             VerticalAlignment="Top"
-             Width="300"
-             FontSize="18" />
-    <Button Content="Advanced"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            FontSize="16"
-            Margin="670,1,0,0"
-            Foreground="#FF0066CC"
-            Cursor="Hand"
-            Command="{Binding TriggerAdvancedWasClicked}">
-      <Button.Style>
-        <Style TargetType="Button">
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="{x:Type Button}">
-                <Border Background="{TemplateBinding Background}">
-                  <TextBlock Text="{TemplateBinding Content}"
-                             Margin="4,2"
-                             TextDecorations="Underline" />
-                </Border>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-          <Style.Triggers>
-            <Trigger Property="IsMouseOver"
-                     Value="True">
-              <Setter Property="Background"
-                      Value="Red" />
-            </Trigger>
-            <Trigger Property="IsMouseOver"
-                     Value="False">
-              <Setter Property="Background"
-                      Value="{x:Null}" />
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </Button.Style>
-    </Button>
+    <StackPanel Orientation="Horizontal"
+                Height="28"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Left">
+      <cc:SelectableButton Content="Online"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.ONLINE}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Online" />
+      <cc:SelectableButton Content="To watch"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.TOWATCH}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Towatch" />
+      <cc:SelectableButton Content="Viewed"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.VIEWED}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Viewed" />
+      <cc:SelectableButton Content="Watching"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.WATCHING}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Watching" />
+      <cc:SelectableButton Content="Dropped"
+                           Command="{Binding ChangeItemSource}"
+                           CommandParameter="{x:Static enum:StatusView.DROPPEDANIME}"
+                           CurrentView="{Binding CurrentView}"
+                           IsSelectedParameter="isButtonSelected|Droppedanime" />
+      <Separator Width="30" Opacity="0" />
+      <Button  Content="Search"
+               Command="{Binding TriggerSearch}" />
+      <TextBox Padding="5,0,5,0"
+               TextWrapping="Wrap"
+               Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=500}"
+               Width="300"
+               FontSize="18" />
+      <Button Content="Advanced"
+              Command="{Binding TriggerAdvancedWasClicked}" />
+    </StackPanel>
+
     <TextBlock HorizontalAlignment="Right"
                TextWrapping="Wrap"
                VerticalAlignment="Top"
@@ -244,7 +183,7 @@
                     HorizontalAlignment="Stretch" />
       <Grid Grid.Column="2">
         <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      VerticalAlignment="Bottom">
+                      VerticalAlignment="Top">
           <StackPanel Background="GhostWhite"
                       DataContext="{Binding Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <Image Source="{Binding CoverImage}"
@@ -270,7 +209,7 @@
                                       HasBorder="True"
                                       StaticText="Synonyms: " />
               <cc:MultiInfoBlockWrapper Visibility="{Binding Path=DataContext.SelectedItemViewingStatus, ElementName=AnimeViewControl, Converter={StaticResource CustomConverter}, ConverterParameter=isValueNotNull}">
-                  <cc:InfoBlock DynamicItem="{Binding DateAdded}"
+                <cc:InfoBlock DynamicItem="{Binding DateAdded}"
                               StaticText="Date added: " />
                 <cc:SelectableInfoBlock IsEditable="True"
                                         Pattern="^[1-9][0-9]?$|^100$"

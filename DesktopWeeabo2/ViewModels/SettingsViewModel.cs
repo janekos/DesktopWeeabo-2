@@ -21,6 +21,7 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public bool DoesAppBackUp { get; set;}
 		public bool IsLightMode { get; set;}
+		public bool DoesUpdateOnStartup { get; set;}
 
 		private string _PathToDW1Data { get; set; }
 		public string PathToDW1Data {

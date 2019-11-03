@@ -12,9 +12,8 @@ using Unity.Lifetime;
 
 namespace DesktopWeeabo2 {
 	public partial class App : Application {
-		protected override void OnStartup(StartupEventArgs e) {
-			base.OnStartup(e);
 
+		private void Application_Startup(object sender, StartupEventArgs e) {
 			IUnityContainer container = new UnityContainer();
 
 			container.RegisterType<EntriesContext>(new ContainerControlledTransientManager());
@@ -30,7 +29,7 @@ namespace DesktopWeeabo2 {
 			container.RegisterSingleton<AnimeViewModel>();
 			container.RegisterSingleton<MangaViewModel>();
 			container.RegisterSingleton<SettingsViewModel>();
-			
+
 			container.Resolve<MainWindow>().Show();
 		}
 	}

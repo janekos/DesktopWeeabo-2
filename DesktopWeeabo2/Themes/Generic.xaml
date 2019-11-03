@@ -14,24 +14,7 @@
         <ControlTemplate TargetType="{x:Type local:SelectableButton}">
           <Button Content="{TemplateBinding Content}"
                   Command="{TemplateBinding Command}"
-                  CommandParameter="{TemplateBinding CommandParameter}"
-                  Cursor="Hand">
-            <Button.Style>
-              <Style TargetType="Button">
-                <Style.Triggers>
-                  <Trigger Property="IsCancel"
-                           Value="true">
-                    <Setter Property="Background"
-                            Value="LightCyan" />
-                  </Trigger>
-                  <Trigger Property="IsCancel"
-                           Value="false">
-                    <Setter Property="Background"
-                            Value="Beige" />
-                  </Trigger>
-                </Style.Triggers>
-              </Style>
-            </Button.Style>
+                  CommandParameter="{TemplateBinding CommandParameter}">
             <Button.IsCancel>
               <MultiBinding Converter="{StaticResource MultiValueCustomConverter}"
                             TargetNullValue="false">
@@ -682,7 +665,7 @@
                 <Label Content="descending"
                        Grid.Row="2"
                        Grid.Column="0" />
-                <ToggleButton Grid.Column="1"
+                <CheckBox Grid.Column="1"
                               Grid.Row="2"
                               HorizontalAlignment="Left"
                               IsChecked="{Binding IsDescending, RelativeSource={RelativeSource TemplatedParent}}"
@@ -690,7 +673,7 @@
                 <Label Content="Is adult"
                        Grid.Row="3"
                        Grid.Column="0" />
-                <ToggleButton Grid.Column="1"
+                <CheckBox Grid.Column="1"
                               Grid.Row="3"
                               HorizontalAlignment="Left"
                               IsChecked="{Binding IsAdult, RelativeSource={RelativeSource TemplatedParent}}"

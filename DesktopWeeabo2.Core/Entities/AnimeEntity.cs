@@ -38,7 +38,7 @@ namespace DesktopWeeabo2.Core.Entities {
 		[Column("current_episode")]
 		public int? CurrentEpisode { get; set; }
 
-		public static explicit operator AnimeEntity(AnimeModel model) {
+		public static implicit operator AnimeEntity(AnimeModel model) {
 			return new AnimeEntity {
 				Id = model.Id,
 				IdMal = model.IdMal,
