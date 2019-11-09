@@ -837,7 +837,7 @@
                   <TextBlock TextAlignment="Center"
                              FontSize="11">
                     <Run Text="{Binding JobProgressCurrent, RelativeSource={RelativeSource TemplatedParent}}" />
-                    <Run Text=" / "/>
+                    <Run Text=" / " />
                     <Run Text="{Binding JobProgressMaximum, RelativeSource={RelativeSource TemplatedParent}}" />
                   </TextBlock>
                 </Grid>

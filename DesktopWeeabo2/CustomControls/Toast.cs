@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DesktopWeeabo2.CustomControls {
+
 	public class Toast : Control {
+
 		static Toast() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(Toast), new FrameworkPropertyMetadata(typeof(Toast)));
 		}
@@ -27,7 +18,7 @@ namespace DesktopWeeabo2.CustomControls {
 		public static readonly DependencyProperty ToastMessageTypeProperty = DependencyProperty.Register("ToastMessageType", typeof(string), typeof(Toast), new PropertyMetadata(OnMessageTypeChanged));
 
 		private static void OnMessageTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-			SetToastAppearanceByMessageType(d as Toast, (string)e.NewValue);
+			SetToastAppearanceByMessageType(d as Toast, (string) e.NewValue);
 		}
 
 		public string ToastMessage {

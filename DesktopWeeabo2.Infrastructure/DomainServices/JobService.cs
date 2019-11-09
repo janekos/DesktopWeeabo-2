@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Infrastructure.DomainServices {
+
 	public class JobService {
 		private static bool IsJobRunning = false;
 
 		public static event Action<string, int> JobStarted;
+
 		public static event Action JobEnded;
+
 		public static event Action<int> JobProgressChanged;
 
 		public static void StartJob(string jobDescription, int jobLength) {
@@ -20,7 +19,8 @@ namespace DesktopWeeabo2.Infrastructure.DomainServices {
 		}
 
 		public static void NotifyJobProgressChange(int progress) {
-			if(IsJobRunning) JobProgressChanged?.Invoke(progress);
+			if (IsJobRunning)
+				JobProgressChanged?.Invoke(progress);
 		}
 
 		public static void EndJob() {

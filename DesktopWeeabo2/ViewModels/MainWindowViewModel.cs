@@ -6,11 +6,8 @@ using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace DesktopWeeabo2.ViewModels {
 
@@ -120,7 +117,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		#endregion
+		#endregion job dialog
 
 		#region consent page
 
@@ -134,7 +131,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		#endregion
+		#endregion consent page
 
 		#region toast
 
@@ -158,7 +155,7 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		#endregion
+		#endregion toast
 
 		public readonly AnimeViewModel _animeViewModel;
 		public readonly MangaViewModel _mangaViewModel;
@@ -176,8 +173,10 @@ namespace DesktopWeeabo2.ViewModels {
 			};
 			ViewModelsView = CollectionViewSource.GetDefaultView(ViewModels);
 
-			if (InitAppData.CheckRootDir()) InitApp();
-			else ConsentBoxVisibility = Visibility.Visible;
+			if (InitAppData.CheckRootDir())
+				InitApp();
+			else
+				ConsentBoxVisibility = Visibility.Visible;
 
 			ToastService.ToastMessageRecieved += (message, messageType) => {
 				ToastMessage = message;

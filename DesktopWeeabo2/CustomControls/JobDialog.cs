@@ -2,7 +2,9 @@
 using System.Windows.Controls;
 
 namespace DesktopWeeabo2.CustomControls {
+
 	public class JobDialog : Control {
+
 		static JobDialog() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(JobDialog), new FrameworkPropertyMetadata(typeof(JobDialog)));
 		}
