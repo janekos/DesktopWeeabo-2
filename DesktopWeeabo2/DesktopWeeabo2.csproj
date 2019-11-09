@@ -107,11 +107,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CustomControls\AdvancedSearch.cs" />
+    <Compile Include="CustomControls\JobDialog.cs" />
     <Compile Include="CustomControls\MultiInfoBlockWrapper.cs" />
     <Compile Include="CustomControls\ChangeConfirmer.cs" />
     <Compile Include="CustomControls\InfoBlock.cs" />
     <Compile Include="CustomControls\SelectableInfoBlock.cs" />
     <Compile Include="CustomControls\SelectableButton.cs" />
+    <Compile Include="CustomControls\Toast.cs" />
     <Compile Include="CustomControls\WrapPanelItem.cs" />
     <Compile Include="Data\GlobalConfig.cs" />
     <Compile Include="Data\InitAppData.cs" />

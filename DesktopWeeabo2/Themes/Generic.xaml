@@ -762,4 +762,90 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <!--toast-->
+  <Style TargetType="{x:Type local:Toast}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:Toast}">
+          <Border x:Name="Toast"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Top"
+                  BorderThickness="2"
+                  Margin="0,10,10,0"
+                  CornerRadius="6"
+                  MinHeight="53"
+                  Opacity="0"
+                  BorderBrush="{Binding Path=ToastBorderColor, RelativeSource={RelativeSource TemplatedParent}}"
+                  Background="{Binding Path=ToastBackgroundColor, RelativeSource={RelativeSource TemplatedParent}}"
+                  IsHitTestVisible="False">
+            <TextBlock Text="{Binding Path=ToastMessage, RelativeSource={RelativeSource TemplatedParent}, NotifyOnTargetUpdated=True}"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Foreground="{Binding Path=ToastTextColor, RelativeSource={RelativeSource TemplatedParent}}"
+                       Margin="20, 5"
+                       FontSize="16"
+                       Name="ToastBlock" />
+            <Border.Triggers>
+              <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                <BeginStoryboard Name="ShowToast">
+                  <Storyboard FillBehavior="Stop"
+                              AutoReverse="True"
+                              Duration="0:0:2">
+                    <DoubleAnimation Storyboard.TargetName="Toast"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="1"
+                                     Duration="0:0:.3" />
+                  </Storyboard>
+                </BeginStoryboard>
+              </EventTrigger>
+            </Border.Triggers>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type local:JobDialog}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:JobDialog}">
+          <Grid HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Visibility="{Binding IsJobRunning, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CustomConverter}, ConverterParameter=isValueTrue, RelativeSource={RelativeSource TemplatedParent}}">
+            <Grid.Background>
+              <SolidColorBrush Color="Black"
+                               Opacity="0.2" />
+            </Grid.Background>
+            <Border Background="White"
+                    BorderBrush="Red"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    BorderThickness="2">
+              <StackPanel Margin="10">
+                <TextBlock Text="{Binding JobDescription, RelativeSource={RelativeSource TemplatedParent}}"
+                           TextAlignment="Center"
+                           Margin="0,0,0,10"
+                           MaxWidth="350"
+                           TextWrapping="Wrap"
+                           FontSize="14" />
+                <Grid>
+                  <ProgressBar Maximum="{Binding JobProgressMaximum, RelativeSource={RelativeSource TemplatedParent}}"
+                               Minimum="{Binding JobProgressMinimum, RelativeSource={RelativeSource TemplatedParent}}"
+                               Value="{Binding JobProgressCurrent, RelativeSource={RelativeSource TemplatedParent}}"
+                               Height="15"
+                               Width="350" />
+                  <TextBlock TextAlignment="Center"
+                             FontSize="11">
+                    <Run Text="{Binding JobProgressCurrent, RelativeSource={RelativeSource TemplatedParent}}" />
+                    <Run Text=" / "/>
+                    <Run Text="{Binding JobProgressMaximum, RelativeSource={RelativeSource TemplatedParent}}" />
+                  </TextBlock>
+                </Grid>
+              </StackPanel>
+            </Border>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

@@ -72,6 +72,7 @@
     <Compile Include="API\MangaAPIEnumerator.cs" />
     <Compile Include="API\Shared\APIEnumerator.cs" />
     <Compile Include="Database\DbActions.cs" />
+    <Compile Include="DomainServices\JobService.cs" />
     <Compile Include="DomainServices\LogService.cs" />
     <Compile Include="DomainServices\ToastService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

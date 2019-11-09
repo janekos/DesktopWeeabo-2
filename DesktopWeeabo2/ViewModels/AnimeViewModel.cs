@@ -92,7 +92,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		protected override void RenewView(bool isActionOnline = false) {
-			if (!isActionOnline) {
+		if (!isActionOnline) {
 				AnimeItems.Clear();
 				TotalItems = 0;
 				SelectedItem = null;
