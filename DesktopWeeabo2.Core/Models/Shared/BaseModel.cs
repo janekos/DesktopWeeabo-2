@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 
 namespace DesktopWeeabo2.Core.Models.Shared {
+
 	public abstract class BaseModel {
 		public int Id { get; set; }
 
@@ -43,7 +44,8 @@ namespace DesktopWeeabo2.Core.Models.Shared {
 				string title = Title.GetFirstNonNullTitle();
 				if (title.Length > 40) {
 					title = title.Substring(0, 40);
-					if (char.IsWhiteSpace(title[39])) title = title.Substring(0, 39);
+					if (char.IsWhiteSpace(title[39]))
+						title = title.Substring(0, 39);
 					return $"{title}...";
 				}
 				return title;

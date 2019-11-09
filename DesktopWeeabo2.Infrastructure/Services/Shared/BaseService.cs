@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Infrastructure.Services.Shared {
+
 	public abstract class BaseService<T, U> : IDefineServices<T, U> where T : BaseModel where U : BaseEntity {
 		private readonly IDefineRepositories<U> repo;
 
@@ -36,7 +37,6 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 			var allIds = entities.Select(e => e.Id);
 			var existingIds = repo.Find(e => allIds.Contains(e.Id)).Select(e => e.Id);
 			if (existingIds.Count() > 0) {
-
 				foreach (U entity in entities.Where(e => existingIds.Contains(e.Id)).Select(e => (U) Cast(e))) {
 					await repo.Update(await repo.Get(entity.Id), entity);
 				}
@@ -67,7 +67,7 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 				expression: item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView, item),
 				orderBy: item => item.GetType().GetProperty(search.SelectedSort.LocalValue).GetValue(item),
 				isDescending: search.IsDescending
-			).Select(e => (T)Cast(e));
+			).Select(e => (T) Cast(e));
 		}
 
 		public IEnumerable<T> GetCustom(Func<U, bool> condition) =>

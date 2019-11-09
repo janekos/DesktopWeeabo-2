@@ -6,7 +6,6 @@ using DesktopWeeabo2.Infrastructure.API;
 using DesktopWeeabo2.Infrastructure.DomainServices;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
@@ -14,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace DesktopWeeabo2.ViewModels {
+
 	public class AnimeViewModel : BaseItemViewModel {
 		private readonly IAnimeService _animeService;
 		private readonly AnimeAPIEnumerator _animeAPIEnumerator;
@@ -22,6 +22,7 @@ namespace DesktopWeeabo2.ViewModels {
 		public ObservableRangeCollection<AnimeModel> AnimeItems { get; set; } = new ObservableRangeCollection<AnimeModel>();
 
 		private AnimeModel _SelectedItem = null;
+
 		public AnimeModel SelectedItem {
 			get { return _SelectedItem; }
 			set {
@@ -42,7 +43,8 @@ namespace DesktopWeeabo2.ViewModels {
 		public string SelectedItemPersonalReview {
 			get { return _SelectedItem?.PersonalReview; }
 			set {
-				if (_SelectedItem.PersonalReview != value) _SelectedItem.PersonalReview = value;
+				if (_SelectedItem.PersonalReview != value)
+					_SelectedItem.PersonalReview = value;
 				RaisePropertyChanged("SelectedItemPersonalReview");
 			}
 		}
@@ -50,7 +52,8 @@ namespace DesktopWeeabo2.ViewModels {
 		public int? SelectedItemPersonalScore {
 			get { return (_SelectedItem == null || _SelectedItem.PersonalScore == null) ? 0 : _SelectedItem.PersonalScore; }
 			set {
-				if (_SelectedItem.PersonalScore != value) _SelectedItem.PersonalScore = value;
+				if (_SelectedItem.PersonalScore != value)
+					_SelectedItem.PersonalScore = value;
 				RaisePropertyChanged("SelectedItemPersonalScore");
 			}
 		}
@@ -58,7 +61,8 @@ namespace DesktopWeeabo2.ViewModels {
 		public string SelectedItemViewingStatus {
 			get { return _SelectedItem?.ViewingStatus; }
 			set {
-				if (_SelectedItem != null && _SelectedItem?.ViewingStatus != value) _SelectedItem.ViewingStatus = value;
+				if (_SelectedItem != null && _SelectedItem?.ViewingStatus != value)
+					_SelectedItem.ViewingStatus = value;
 				RaisePropertyChanged("SelectedItemViewingStatus");
 			}
 		}
@@ -75,10 +79,13 @@ namespace DesktopWeeabo2.ViewModels {
 				case "SearchChanged":
 					if (!DontTriggerSearchChanged) {
 						RenewView();
-						if (_CurrentView.Equals(StatusView.ONLINE)) AddOnlineItemsToView.Execute(null);
-						else AddLocalItemsToView();
+						if (_CurrentView.Equals(StatusView.ONLINE))
+							AddOnlineItemsToView.Execute(null);
+						else
+							AddLocalItemsToView();
 					}
 					break;
+
 				default:
 					break;
 			}
@@ -101,7 +108,8 @@ namespace DesktopWeeabo2.ViewModels {
 
 		protected override void AddLocalItemsToView() {
 			Task.Run(() => {
-				if (LocalHelper) return;
+				if (LocalHelper)
+					return;
 				LocalHelper = true;
 				IsContentLoading = true;
 				lock (_CollectionLock) {
@@ -113,11 +121,13 @@ namespace DesktopWeeabo2.ViewModels {
 				IsContentLoading = false;
 			});
 		}
-		
+
 		public DelegateCommand TriggerSearch => new DelegateCommand(new Action(() => {
 			RenewView();
-			if (CurrentView.Equals(StatusView.ONLINE)) AddOnlineItemsToView.Execute(null);
-			else AddLocalItemsToView();
+			if (CurrentView.Equals(StatusView.ONLINE))
+				AddOnlineItemsToView.Execute(null);
+			else
+				AddLocalItemsToView();
 		}));
 
 		public DelegateCommand ClearFilterTriggered => new DelegateCommand(new Action(() => {
@@ -136,15 +146,18 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public DelegateCommand TriggerAdvancedWasClicked => new DelegateCommand(new Action(() => {
 			IsAdvancedVisible = !IsAdvancedVisible;
-			if (IsAdvancedVisible) SelectedGenres = StringHelpers.GenreHelper(SearchModel.GenresList);
+			if (IsAdvancedVisible)
+				SelectedGenres = StringHelpers.GenreHelper(SearchModel.GenresList);
 		}));
 
 		public DelegateCommand ChangeItemSource => new DelegateCommand(
 			new Action<object>((e) => {
-				if (CurrentView.Equals(e as string)) return;
+				if (CurrentView.Equals(e as string))
+					return;
 
 				DontTriggerSearchChanged = true;
-				if ((SelectedSort.VisibleIn == SortLocation.ANIME || SelectedSort.VisibleIn == SortLocation.LOCAL) && (string)e == StatusView.ONLINE) SelectedSort = SearchModel.SortsList[0];
+				if ((SelectedSort.VisibleIn == SortLocation.ANIME || SelectedSort.VisibleIn == SortLocation.LOCAL) && (string) e == StatusView.ONLINE)
+					SelectedSort = SearchModel.SortsList[0];
 				DontTriggerSearchChanged = false;
 
 				CurrentView = e as string;
@@ -152,16 +165,16 @@ namespace DesktopWeeabo2.ViewModels {
 
 				if (!e.Equals(StatusView.ONLINE)) {
 					AddLocalItemsToView();
-				}
-				else if(e.Equals(StatusView.ONLINE) && SearchText.Length > 0) {
+				} else if (e.Equals(StatusView.ONLINE) && SearchText.Length > 0) {
 					AddOnlineItemsToView.Execute(null);
-				} 
+				}
 			})
 		);
 
 		public DelegateCommand AddOnlineItemsToView => new DelegateCommand(
 			new Action(async () => {
-				if (LocalHelper) return;
+				if (LocalHelper)
+					return;
 				LocalHelper = true;
 				IsContentLoading = true;
 				await Task.Run(async () => {
@@ -172,8 +185,8 @@ namespace DesktopWeeabo2.ViewModels {
 					try {
 						var onlineItems = await _animeAPIEnumerator.GetCurrentSearchSet();
 						var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
-						
-						foreach(AnimeModel localItem in _animeService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id))) {
+
+						foreach (AnimeModel localItem in _animeService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id))) {
 							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItem.Id);
 							currentItem.DateAdded = localItem.DateAdded;
 							currentItem.RewatchCount = localItem.RewatchCount;
@@ -190,12 +203,8 @@ namespace DesktopWeeabo2.ViewModels {
 						APIHasNextPage = _animeAPIEnumerator.HasNextPage;
 						TotalAPIItems = $" / {_animeAPIEnumerator.TotalItems}";
 						APICurrentPage = _animeAPIEnumerator.CurrentPage - 1;
-						TotalAPIPages = (int)Math.Ceiling(((decimal)_animeAPIEnumerator.TotalItems / 50));
-					}
-					catch (ArgumentNullException ex) { ToastService.ShowToast(ex.Message, "danger"); }
-					catch (ArgumentOutOfRangeException ex) { ToastService.ShowToast(ex.Message, "danger"); }
-					catch (HttpRequestException) { ToastService.ShowToast("The server isn't responding.", "danger"); }
-
+						TotalAPIPages = (int) Math.Ceiling(((decimal) _animeAPIEnumerator.TotalItems / 50));
+					} catch (ArgumentNullException ex) { ToastService.ShowToast(ex.Message, "danger"); } catch (ArgumentOutOfRangeException ex) { ToastService.ShowToast(ex.Message, "danger"); } catch (HttpRequestException) { ToastService.ShowToast("The server isn't responding.", "danger"); }
 				});
 				LocalHelper = false;
 				IsContentLoading = false;
@@ -204,27 +213,29 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public DelegateCommand SaveItemToDb => new DelegateCommand(
 			new Action<object>((e) => {
-				if (e.ToString().Equals("PersonalEditStart")) return;
+				if (e.ToString().Equals("PersonalEditStart"))
+					return;
 				Task.Run(async () => {
 					try {
 						SelectedItemViewingStatus = PressedTransferButton.Length > 0 ? PressedTransferButton : SelectedItemViewingStatus;
-						if (_SelectedItem.DateAdded == null) _SelectedItem.DateAdded = DateTime.Now;
+						if (_SelectedItem.DateAdded == null)
+							_SelectedItem.DateAdded = DateTime.Now;
 						var itemWorkResponse = await _animeService.AddOrUpdate(_SelectedItem);
 
-						if (itemWorkResponse == DBResponse.ADDED) ToastService.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view!", "success");
-						else if (itemWorkResponse == DBResponse.UPDATED) ToastService.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", "success");
-						else if (itemWorkResponse == DBResponse.ERROR) throw new Exception("Repo returned ERROR");
+						if (itemWorkResponse == DBResponse.ADDED)
+							ToastService.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view!", "success");
+						else if (itemWorkResponse == DBResponse.UPDATED)
+							ToastService.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", "success");
+						else if (itemWorkResponse == DBResponse.ERROR)
+							throw new Exception("Repo returned ERROR");
 
 						if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
 							RenewView(true);
-						}
-						else {
+						} else {
 							RenewView();
 							AddLocalItemsToView();
 						}
-
-					}
-					catch (Exception ex) {
+					} catch (Exception ex) {
 						ToastService.ShowToast($"Something went wrong: {ex.Message}.", "danger");
 					}
 				});
@@ -236,20 +247,19 @@ namespace DesktopWeeabo2.ViewModels {
 				await Task.Run(async () => {
 					try {
 						var itemDeleteResponse = await _animeService.Delete(_SelectedItem.Id);
-						if (itemDeleteResponse == DBResponse.DELETED) ToastService.ShowToast($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", "success");
-						else throw new Exception($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
+						if (itemDeleteResponse == DBResponse.DELETED)
+							ToastService.ShowToast($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", "success");
+						else
+							throw new Exception($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
 
 						if (CurrentView == StatusView.ONLINE) {
 							SelectedItemViewingStatus = null;
 							RenewView(true);
-						}
-						else {
+						} else {
 							RenewView();
 							AddLocalItemsToView();
 						}
-
-					}
-					catch (Exception ex) {
+					} catch (Exception ex) {
 						ToastService.ShowToast($"Something went wrong: {ex.Message}.", "danger");
 					}
 				});

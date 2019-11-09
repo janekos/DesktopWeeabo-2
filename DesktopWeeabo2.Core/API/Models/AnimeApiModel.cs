@@ -3,7 +3,9 @@ using DesktopWeeabo2.Core.API.Models.Shared;
 using Newtonsoft.Json;
 
 namespace DesktopWeeabo2.Core.API.Models {
+
 	public class AnimeApiModel : BaseApiModel {
+
 		[JsonProperty("episodes")]
 		public int? Episodes { get; set; }
 

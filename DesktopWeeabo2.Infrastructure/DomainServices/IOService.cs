@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace DesktopWeeabo2.Infrastructure.DomainServices {
+
 	public class IOService : IHandleIO {
 		private readonly IAnimeService _animeService;
 		private readonly int EntriesPerRequest = 50;
@@ -33,15 +34,25 @@ namespace DesktopWeeabo2.Infrastructure.DomainServices {
 
 						entry.DateAdded = DateTime.Now;
 
-
 						var viewingStatus = currEntry.Element("viewingstatus").Value;
 
 						switch (viewingStatus) {
-							case "Watched": viewingStatus = StatusView.VIEWED; break;
-							case "Dropped": viewingStatus = StatusView.DROPPEDANIME; break;
-							case "Watching": viewingStatus = StatusView.WATCHING; break;
+							case "Watched":
+								viewingStatus = StatusView.VIEWED;
+								break;
+
+							case "Dropped":
+								viewingStatus = StatusView.DROPPEDANIME;
+								break;
+
+							case "Watching":
+								viewingStatus = StatusView.WATCHING;
+								break;
+
 							default:
-							case "To Watch": viewingStatus = StatusView.TOWATCH; break;
+							case "To Watch":
+								viewingStatus = StatusView.TOWATCH;
+								break;
 						}
 
 						entry.ViewingStatus = viewingStatus;
@@ -51,12 +62,15 @@ namespace DesktopWeeabo2.Infrastructure.DomainServices {
 						string dropReason = currEntry.Element("dropreason").Value;
 						bool isDropReasonEmpty = string.IsNullOrEmpty(dropReason);
 
-						if (!isReviewEmpty && isDropReasonEmpty) entry.PersonalReview = review;
-						else if (isReviewEmpty && !isDropReasonEmpty) entry.PersonalReview = dropReason;
-						else if (!isReviewEmpty && !isDropReasonEmpty) entry.PersonalReview = $"--- DW1 REVIEW ---\n\n{review}\n\n--- DW1 DROP REASON ---\n\n{dropReason}";
+						if (!isReviewEmpty && isDropReasonEmpty)
+							entry.PersonalReview = review;
+						else if (isReviewEmpty && !isDropReasonEmpty)
+							entry.PersonalReview = dropReason;
+						else if (!isReviewEmpty && !isDropReasonEmpty)
+							entry.PersonalReview = $"--- DW1 REVIEW ---\n\n{review}\n\n--- DW1 DROP REASON ---\n\n{dropReason}";
 
 						if (double.TryParse(currEntry.Element("personal_score").Value, out double personalScore) && personalScore != -1)
-							entry.PersonalScore = (int)(personalScore * 10);
+							entry.PersonalScore = (int) (personalScore * 10);
 
 						if (int.TryParse(currEntry.Element("currepisode").Value, out int currentEpisode))
 							entry.CurrentEpisode = currentEpisode;

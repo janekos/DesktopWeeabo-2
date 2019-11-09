@@ -7,11 +7,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Core.Interfaces.Services.Shared {
-	public interface IDefineServices<T, U> where T : BaseModel where U : BaseEntity{
+
+	public interface IDefineServices<T, U> where T : BaseModel where U : BaseEntity {
+
 		Task<DBResponse> AddOrUpdate(T entity);
+
 		Task<DBResponse> AddOrUpdateRange(IEnumerable<T> entities);
+
 		Task<DBResponse> Delete(int id);
+
 		IEnumerable<T> GetBySearchModelAndCurrentView(SearchModel search, string currentView);
+
 		IEnumerable<T> GetCustom(Func<U, bool> condition);
 	}
 }

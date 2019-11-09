@@ -2,15 +2,17 @@
 using DesktopWeeabo2.Core.Models.Shared;
 
 namespace DesktopWeeabo2.Core.Models {
+
 	public class GenreObject {
 		public string Name { get; }
 		public bool IsSelected { get; set; }
 
-		public GenreObject(string name) { Name = name; }
+		public GenreObject(string name) {
+			Name = name;
+		}
 	}
 
 	public class SortObject {
-
 		public string SortName { get; }
 		public string APIValue { get; }
 		public string LocalValue { get; }
@@ -25,7 +27,8 @@ namespace DesktopWeeabo2.Core.Models {
 	}
 
 	public class SearchModel {
-		public SortObject[] InitSortsList () => new SortObject[] {
+
+		public SortObject[] InitSortsList() => new SortObject[] {
 			new SortObject("Id",             "ID",            nameof(BaseModel.Id),                   SortLocation.ONLINE),
 			new SortObject("Score",          "SCORE",         nameof(BaseModel.AverageScore),         SortLocation.ONLINE),
 			new SortObject("Status",         "STATUS",        nameof(BaseModel.Status),               SortLocation.ONLINE),
@@ -40,7 +43,7 @@ namespace DesktopWeeabo2.Core.Models {
 			new SortObject("Read priority",  "",              nameof(MangaModel.ReadPriority),        SortLocation.MANGA),
 		};
 
-		public GenreObject[] InitGenresList () => new GenreObject[] {
+		public GenreObject[] InitGenresList() => new GenreObject[] {
 			new GenreObject("Action"),
 			new GenreObject("Adventure"),
 			new GenreObject("Comedy"),

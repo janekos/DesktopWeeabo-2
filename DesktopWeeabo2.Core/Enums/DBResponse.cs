@@ -1,4 +1,5 @@
 ﻿namespace DesktopWeeabo2.Core.Enums {
+
 	public enum DBResponse {
 		ADDED,
 		UPDATED,

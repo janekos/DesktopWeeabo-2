@@ -7,8 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
-	public abstract class BaseRepository<T> : IDefineRepositories<T> where T : BaseEntity {
 
+	public abstract class BaseRepository<T> : IDefineRepositories<T> where T : BaseEntity {
 		private readonly EntriesContext _db;
 
 		public BaseRepository(EntriesContext db) {
@@ -32,18 +32,17 @@ namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
 
 		public async Task<int> Delete(int id) {
 			var item = await Get(id);
-			if (item == null) return 0;
+			if (item == null)
+				return 0;
 
 			_db.Set<T>().Remove(item);
 			return await _db.SaveChangesAsync();
 		}
 
 		public async Task<T> Get(int id) =>
-			 await _db.Set<T>().FindAsync((int)id);
-
+			 await _db.Set<T>().FindAsync((int) id);
 
 		public IEnumerable<T> Find(Func<T, bool> expression) {
-
 			return _db.Set<T>().Where(expression);
 		}
 

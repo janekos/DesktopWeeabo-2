@@ -1,4 +1,5 @@
 ﻿namespace DesktopWeeabo2.Core.Models.Complex {
+
 	public class Title {
 		public string TitleEnglish { get; set; }
 

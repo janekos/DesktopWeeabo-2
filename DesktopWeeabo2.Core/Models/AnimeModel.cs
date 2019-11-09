@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 
 namespace DesktopWeeabo2.Core.Models {
+
 	public class AnimeModel : BaseModel {
 		public int? Episodes { get; set; }
 
@@ -33,7 +34,7 @@ namespace DesktopWeeabo2.Core.Models {
 
 			if (apiModel.NextAiringEpisode != null) {
 				nextAiringEpisode = new Complex.NextAiringEpisode {
-					AiringAt = DateTimeOffset.FromUnixTimeSeconds((long)apiModel.NextAiringEpisode.AiringAt).UtcDateTime,
+					AiringAt = DateTimeOffset.FromUnixTimeSeconds((long) apiModel.NextAiringEpisode.AiringAt).UtcDateTime,
 					Episode = apiModel.NextAiringEpisode.Episode
 				};
 			}
@@ -70,7 +71,7 @@ namespace DesktopWeeabo2.Core.Models {
 
 			Complex.NextAiringEpisode nextAiringEpisode = null;
 
-			if(entity.NextAiringEpisodeAiringAt != null && entity.NextAiringEpisodeEpisode != null) {
+			if (entity.NextAiringEpisodeAiringAt != null && entity.NextAiringEpisodeEpisode != null) {
 				nextAiringEpisode = new Complex.NextAiringEpisode {
 					AiringAt = entity.NextAiringEpisodeAiringAt,
 					Episode = entity.NextAiringEpisodeEpisode
@@ -90,7 +91,7 @@ namespace DesktopWeeabo2.Core.Models {
 				DateAdded = entity.DateAdded,
 				StartDate = entity.StartDate,
 				CoverImage = entity.CoverImage,
-				Type = (ContentType)entity.Type,
+				Type = (ContentType) entity.Type,
 				Description = entity.Description,
 				AverageScore = entity.AverageScore,
 				RewatchCount = entity.RewatchCount,
@@ -98,8 +99,8 @@ namespace DesktopWeeabo2.Core.Models {
 				PersonalScore = entity.PersonalScore,
 				ViewingStatus = entity.ViewingStatus,
 				WatchPriority = entity.WatchPriority,
-				Format = (ContentFormat)entity.Format,
-				Status = (ContentStatus)entity.Status,
+				Format = (ContentFormat) entity.Format,
+				Status = (ContentStatus) entity.Status,
 				NextAiringEpisode = nextAiringEpisode,
 				PersonalReview = entity.PersonalReview,
 				CurrentEpisode = entity.CurrentEpisode

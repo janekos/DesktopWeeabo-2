@@ -3,8 +3,8 @@ using DesktopWeeabo2.Core.Models.Shared;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Infrastructure.API.Shared {
-	public abstract class APIEnumerator<T> where T : BaseModel {
 
+	public abstract class APIEnumerator<T> where T : BaseModel {
 		protected int _CurrentPage = 1;
 		protected string _SearchString;
 		protected bool _Type;
@@ -24,6 +24,7 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 				}
 			}
 		}
+
 		public int CurrentPage {
 			get { return _CurrentPage; }
 			set {
@@ -32,6 +33,7 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 				}
 			}
 		}
+
 		public bool Type {
 			get { return _Type; }
 			set {
@@ -41,6 +43,7 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 				}
 			}
 		}
+
 		public bool IsAdult {
 			get { return _IsAdult; }
 			set {
@@ -50,6 +53,7 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 				}
 			}
 		}
+
 		public string SortBy {
 			get { return _SortBy; }
 			set {
@@ -59,6 +63,7 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 				}
 			}
 		}
+
 		public string[] Genres {
 			get { return _Genres; }
 			set {
@@ -69,7 +74,8 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 			}
 		}
 
-		public APIEnumerator() { }
+		public APIEnumerator() {
+		}
 
 		public async Task<T[]> GetByMalIdSet(int[] malIds) =>
 			GetItems(await APIQueries.GetByMALIds(ApiUtils.APIGetByMalIdsVariables(malIds)));

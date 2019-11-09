@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 
 namespace DesktopWeeabo2.Core.API.Models {
+
 	public class MangaApiModel : BaseApiModel {
+
 		[JsonProperty("volumes")]
 		public int? Volumes { get; set; }
 

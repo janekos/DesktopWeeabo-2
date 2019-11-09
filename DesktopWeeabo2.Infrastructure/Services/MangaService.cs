@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace DesktopWeeabo2.Infrastructure.Services {
+
 	public class MangaService : BaseService<MangaModel, MangaEntity>, IMangaService {
+
 		public MangaService(IMangaRepository repo)
 			: base(repo) { }
 
@@ -31,7 +33,8 @@ namespace DesktopWeeabo2.Infrastructure.Services {
 		protected override bool IsCorrectView(string currentView, MangaEntity item) =>
 			item.ReadingStatus.Equals(currentView);
 
-		protected override MangaEntity Cast(MangaModel model) => (MangaEntity)model;
+		protected override MangaEntity Cast(MangaModel model) => (MangaEntity) model;
+
 		protected override MangaModel Cast(MangaEntity model) => (MangaModel) model;
 	}
 }

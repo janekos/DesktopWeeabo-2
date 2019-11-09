@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace DesktopWeeabo2.Infrastructure.Services {
+
 	public class AnimeService : BaseService<AnimeModel, AnimeEntity>, IAnimeService {
+
 		public AnimeService(IAnimeRepository repo)
 			: base(repo) { }
 
@@ -31,7 +33,8 @@ namespace DesktopWeeabo2.Infrastructure.Services {
 		protected override bool IsCorrectView(string currentView, AnimeEntity item) =>
 			item.ViewingStatus.Equals(currentView);
 
-		protected override AnimeEntity Cast(AnimeModel model) => (AnimeEntity)model;
+		protected override AnimeEntity Cast(AnimeModel model) => (AnimeEntity) model;
+
 		protected override AnimeModel Cast(AnimeEntity model) => (AnimeModel) model;
 	}
 }

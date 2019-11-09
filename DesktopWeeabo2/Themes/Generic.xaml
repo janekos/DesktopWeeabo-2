@@ -666,18 +666,18 @@
                        Grid.Row="2"
                        Grid.Column="0" />
                 <CheckBox Grid.Column="1"
-                              Grid.Row="2"
-                              HorizontalAlignment="Left"
-                              IsChecked="{Binding IsDescending, RelativeSource={RelativeSource TemplatedParent}}"
-                              Margin="0,5,0,0" />
+                          Grid.Row="2"
+                          HorizontalAlignment="Left"
+                          IsChecked="{Binding IsDescending, RelativeSource={RelativeSource TemplatedParent}}"
+                          Margin="0,5,0,0" />
                 <Label Content="Is adult"
                        Grid.Row="3"
                        Grid.Column="0" />
                 <CheckBox Grid.Column="1"
-                              Grid.Row="3"
-                              HorizontalAlignment="Left"
-                              IsChecked="{Binding IsAdult, RelativeSource={RelativeSource TemplatedParent}}"
-                              Margin="0,5,0,0" />
+                          Grid.Row="3"
+                          HorizontalAlignment="Left"
+                          IsChecked="{Binding IsAdult, RelativeSource={RelativeSource TemplatedParent}}"
+                          Margin="0,5,0,0" />
                 <Label Content="Selected genres"
                        Grid.Row="4"
                        VerticalAlignment="Center"

@@ -3,7 +3,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace DesktopWeeabo2.Helpers {
+
 	public static class StringHelpers {
+
 		public static string CleanDescription(string desc) =>
 			Regex.Replace(Regex.Replace(desc, @"<[^>]*>", string.Empty), @"\t", string.Empty);
 
@@ -12,6 +14,6 @@ namespace DesktopWeeabo2.Helpers {
 			return genreString.Length > 0
 				? genreString
 				: "All";
-		}		
+		}
 	}
 }

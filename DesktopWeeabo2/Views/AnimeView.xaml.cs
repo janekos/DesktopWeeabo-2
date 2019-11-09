@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using Unity;
 
 namespace DesktopWeeabo2.Views {
+
 	public partial class AnimeView : UserControl {
 
 		[Dependency]
@@ -11,7 +12,7 @@ namespace DesktopWeeabo2.Views {
 		}
 
 		public AnimeView() {
-            InitializeComponent();
-        }
+			InitializeComponent();
+		}
 	}
 }

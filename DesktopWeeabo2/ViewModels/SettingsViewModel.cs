@@ -1,10 +1,10 @@
 ﻿using DesktopWeeabo2.Infrastructure.DomainServices;
-using DesktopWeeabo2.Infrastructure.Services;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Windows.Forms;
 
 namespace DesktopWeeabo2.ViewModels {
+
 	public class SettingsViewModel : BaseViewModel {
 		private readonly IOService _ioService;
 		private bool AreUpdatesRunning = false;
@@ -19,11 +19,12 @@ namespace DesktopWeeabo2.ViewModels {
 			LogService.LogLineReceived -= LogLineReceivedFunc;
 		}
 
-		public bool DoesAppBackUp { get; set;}
-		public bool IsLightMode { get; set;}
-		public bool DoesUpdateOnStartup { get; set;}
+		public bool DoesAppBackUp { get; set; }
+		public bool IsLightMode { get; set; }
+		public bool DoesUpdateOnStartup { get; set; }
 
 		private string _PathToDW1Data { get; set; }
+
 		public string PathToDW1Data {
 			get { return _PathToDW1Data; }
 			set {
@@ -70,11 +71,12 @@ namespace DesktopWeeabo2.ViewModels {
 		}));
 
 		public DelegateCommand ImportFromDW1 => new DelegateCommand(() => {
-			if (!string.IsNullOrEmpty(PathToDW1Data)) _ioService.ImportDW1Data(PathToDW1Data);
+			if (!string.IsNullOrEmpty(PathToDW1Data))
+				_ioService.ImportDW1Data(PathToDW1Data);
 		});
 
 		public DelegateCommand UpdateEntries => new DelegateCommand(() => {
-			if(!AreUpdatesRunning) {
+			if (!AreUpdatesRunning) {
 				AreUpdatesRunning = true;
 				_ioService.UpdateDbEntries();
 			}

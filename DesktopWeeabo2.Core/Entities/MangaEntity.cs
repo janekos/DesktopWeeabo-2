@@ -1,16 +1,13 @@
 ﻿using DesktopWeeabo2.Core.Entities.Shared;
 using DesktopWeeabo2.Core.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Core.Entities {
+
 	[Table("manga_entries")]
 	public class MangaEntity : BaseEntity {
+
 		[Column("volumes")]
 		public int? Volumes { get; set; }
 
@@ -33,12 +30,12 @@ namespace DesktopWeeabo2.Core.Entities {
 			return new MangaEntity() {
 				Id = model.Id,
 				IdMal = model.IdMal,
-				Type = (int)model.Type,
+				Type = (int) model.Type,
 				IsAdult = model.IsAdult,
 				Volumes = model.Volumes,
 				Chapters = model.Chapters,
-				Format = (int)model.Format,
-				Status = (int)model.Status,
+				Format = (int) model.Format,
+				Status = (int) model.Status,
 				DateAdded = model.DateAdded,
 				CoverImage = model.CoverImage,
 				Description = model.Description,

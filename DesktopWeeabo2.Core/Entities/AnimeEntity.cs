@@ -5,8 +5,10 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DesktopWeeabo2.Core.Entities {
+
 	[Table("anime_entries")]
 	public class AnimeEntity : BaseEntity {
+
 		[Column("episodes")]
 		public int? Episodes { get; set; }
 
@@ -26,6 +28,7 @@ namespace DesktopWeeabo2.Core.Entities {
 		public int? NextAiringEpisodeEpisode { get; set; }
 
 		/*custom vars*/
+
 		[Column("viewing_status")]
 		public string ViewingStatus { get; set; }
 
@@ -42,13 +45,13 @@ namespace DesktopWeeabo2.Core.Entities {
 			return new AnimeEntity {
 				Id = model.Id,
 				IdMal = model.IdMal,
-				Type = (int)model.Type,
+				Type = (int) model.Type,
 				IsAdult = model.IsAdult,
 				EndDate = model.EndDate,
 				Episodes = model.Episodes,
 				Duration = model.Duration,
-				Format = (int)model.Format,
-				Status = (int)model.Status,
+				Format = (int) model.Format,
+				Status = (int) model.Status,
 				DateAdded = model.DateAdded,
 				StartDate = model.StartDate,
 				CoverImage = model.CoverImage,

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 
 namespace DesktopWeeabo2.Core.Models {
+
 	public class MangaModel : BaseModel {
 		public int? Volumes { get; set; }
 
@@ -18,7 +19,7 @@ namespace DesktopWeeabo2.Core.Models {
 		public int? ReadPriority { get; set; }
 
 		public int? RereadCount { get; set; }
-		
+
 		public int? CurrentChapter { get; set; }
 
 		public static implicit operator MangaModel(MangaApiModel apiModel) {
@@ -60,7 +61,7 @@ namespace DesktopWeeabo2.Core.Models {
 				Chapters = entity.Chapters,
 				DateAdded = entity.DateAdded,
 				CoverImage = entity.CoverImage,
-				Type = (ContentType)entity.Type,
+				Type = (ContentType) entity.Type,
 				Description = entity.Description,
 				RereadCount = entity.RereadCount,
 				AverageScore = entity.AverageScore,
@@ -68,8 +69,8 @@ namespace DesktopWeeabo2.Core.Models {
 				ExternalLinks = JsonConvert.DeserializeObject<List<ExternalLink>>(entity.ExternalLinks),
 				PersonalScore = entity.PersonalScore,
 				ReadingStatus = entity.ReadingStatus,
-				Format = (ContentFormat)entity.Format,
-				Status = (ContentStatus)entity.Status,
+				Format = (ContentFormat) entity.Format,
+				Status = (ContentStatus) entity.Status,
 				PersonalReview = entity.PersonalReview,
 				CurrentChapter = entity.CurrentChapter
 			};

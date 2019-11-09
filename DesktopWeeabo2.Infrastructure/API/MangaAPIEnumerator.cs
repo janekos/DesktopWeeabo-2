@@ -8,28 +8,30 @@ using System;
 using System.Collections.Generic;
 
 namespace DesktopWeeabo2.Infrastructure.API {
+
 	public class MangaAPIEnumerator : APIEnumerator<MangaModel> {
 
-        public MangaAPIEnumerator() {
+		public MangaAPIEnumerator() {
 			Type = false;
 		}
 
 		protected override MangaModel[] GetItems(string result) {
-
 			var apiResult = JsonConvert.DeserializeObject<ApiReturnValue<MangaApiModel>>(result);
 
-			if (apiResult.Data == null) throw new ArgumentException("Server returned nothing.");
+			if (apiResult.Data == null)
+				throw new ArgumentException("Server returned nothing.");
 
 			HasNextPage = apiResult.Data.Page?.PageInfo?.HasNextPage ?? false;
 			TotalItems = apiResult.Data.Page?.PageInfo?.Total ?? 0;
 
-			if (HasNextPage) CurrentPage = CurrentPage + 1;
+			if (HasNextPage)
+				CurrentPage = CurrentPage + 1;
 
 			var returnable = apiResult.Data.Page.Media;
 
 			AdjustResult(returnable);
-			
-			return Array.ConvertAll(returnable, r => (MangaModel)r);
+
+			return Array.ConvertAll(returnable, r => (MangaModel) r);
 		}
 
 		private void AdjustResult(IEnumerable<MangaApiModel> apiModelList) {
@@ -47,5 +49,5 @@ namespace DesktopWeeabo2.Infrastructure.API {
 				});
 			}
 		}
-    }
+	}
 }

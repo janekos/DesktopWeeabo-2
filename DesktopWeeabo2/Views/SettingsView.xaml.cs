@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using Unity;
 
 namespace DesktopWeeabo2.Views {
+
 	public partial class SettingsView : UserControl {
 
 		[Dependency]

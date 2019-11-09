@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace DesktopWeeabo2.Core.API.Models.Shared {
+
 	public abstract class BaseApiModel {
 
 		[JsonProperty("id")]

@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace DesktopWeeabo2.Infrastructure.DomainServices{
+namespace DesktopWeeabo2.Infrastructure.DomainServices {
+
 	public class LogService {
 		public static string LogContent { get; set; }
 

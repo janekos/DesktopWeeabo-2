@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace DesktopWeeabo2.Core.Enums {
 
-namespace DesktopWeeabo2.Core.Enums {
 	public static class StatusView {
 		public const string ONLINE = "Online";
 		public const string TOWATCH = "Towatch";

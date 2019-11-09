@@ -11,7 +11,9 @@ using System.Windows.Data;
 using System.Windows.Media;
 
 namespace DesktopWeeabo2.ViewModels {
+
 	public class MainWindowViewModel : BaseViewModel {
+
 		public string IntroMessage {
 			get {
 				string[] veryFunnyMessages = new string[]{
@@ -29,6 +31,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private Visibility _ConsentBoxVisibility = Visibility.Collapsed;
+
 		public Visibility ConsentBoxVisibility {
 			get { return _ConsentBoxVisibility; }
 			set {
@@ -40,6 +43,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private bool _IsLoading = true;
+
 		public bool IsLoading {
 			get { return _IsLoading; }
 			set {
@@ -51,6 +55,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private string _ToastMessage = "";
+
 		public string ToastMessage {
 			get { return _ToastMessage; }
 			set {
@@ -62,6 +67,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private GlobalView _CurrentGlobalView = GlobalView.ANIMEVIEW;
+
 		public GlobalView CurrentGlobalView {
 			get { return _CurrentGlobalView; }
 			set {
@@ -73,6 +79,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private string _ToastBorderColor = Brushes.Transparent.ToString();
+
 		public string ToastBorderColor {
 			get { return _ToastBorderColor; }
 			set {
@@ -84,6 +91,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private string _ToastBackgroundColor = Brushes.Transparent.ToString();
+
 		public string ToastBackgroundColor {
 			get { return _ToastBackgroundColor; }
 			set {
@@ -95,6 +103,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private string _ToastTextColor = Brushes.Transparent.ToString();
+
 		public string ToastTextColor {
 			get { return _ToastTextColor; }
 			set {
@@ -106,6 +115,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private ICollectionView _ViewModelsView;
+
 		public ICollectionView ViewModelsView {
 			get { return _ViewModelsView; }
 			set {
@@ -115,6 +125,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private ObservableCollection<BaseViewModel> _ViewModels;
+
 		public ObservableCollection<BaseViewModel> ViewModels {
 			get { return _ViewModels; }
 			set {
@@ -139,8 +150,10 @@ namespace DesktopWeeabo2.ViewModels {
 			};
 			ViewModelsView = CollectionViewSource.GetDefaultView(ViewModels);
 
-			if (InitAppData.CheckRootDir()) InitApp();
-			else ConsentBoxVisibility = Visibility.Visible;
+			if (InitAppData.CheckRootDir())
+				InitApp();
+			else
+				ConsentBoxVisibility = Visibility.Visible;
 
 			ToastService.ToastMessageRecieved += (message, messageType) => {
 				switch (messageType) {
@@ -149,16 +162,19 @@ namespace DesktopWeeabo2.ViewModels {
 						ToastBorderColor = "#faf2cc";
 						ToastTextColor = "#8a6d3b";
 						break;
+
 					case "danger":
 						ToastBackgroundColor = "#f2dede";
 						ToastBorderColor = "#ebcccc";
 						ToastTextColor = "#a94442";
 						break;
+
 					case "success":
 						ToastBackgroundColor = "#dff0d8";
 						ToastBorderColor = "#d0e9c6";
 						ToastTextColor = "#3c763d";
 						break;
+
 					case "info":
 						ToastBackgroundColor = "#d9edf7";
 						ToastBorderColor = "#bcdff1";
@@ -192,17 +208,20 @@ namespace DesktopWeeabo2.ViewModels {
 		(e) => {
 			LogService.LogMessage($"Changed view to: {e}");
 			if (ViewModelsView != null) {
-				CurrentGlobalView = (GlobalView)e;
+				CurrentGlobalView = (GlobalView) e;
 				switch (e) {
 					case GlobalView.ANIMEVIEW:
 						ViewModelsView.MoveCurrentToPosition(0);
 						break;
+
 					case GlobalView.MANGAVIEW:
 						ViewModelsView.MoveCurrentToPosition(1);
 						break;
+
 					case GlobalView.SETTINGSVIEW:
 						ViewModelsView.MoveCurrentToPosition(2);
 						break;
+
 					default:
 						ViewModelsView.MoveCurrentToPosition(0);
 						break;

@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Core.API {
+
 	public static class APIQueries {
 		private static readonly HttpClient client = new HttpClient();
 		private static string AnilistSearchQuery = Resources.ResourceManager.GetString("AnilistSearchQuery");

@@ -29,14 +29,21 @@
       <Views:SettingsView />
     </DataTemplate>
     <help:CustomConverter x:Key="CustomConverter" />
-    <Style TargetType="cc:SelectableButton" x:Key="btn_menu">
-      <Setter Property="Height" Value="40"/>
-      <Setter Property="Width" Value="107" />
-      <Setter Property="FontSize" Value="30" />
+    <Style TargetType="cc:SelectableButton"
+           x:Key="btn_menu">
+      <Setter Property="Height"
+              Value="40" />
+      <Setter Property="Width"
+              Value="107" />
+      <Setter Property="FontSize"
+              Value="30" />
     </Style>
   </Window.Resources>
   <Grid>
-    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal" Margin="10,5,0,0">
+    <StackPanel VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal"
+                Margin="10,5,0,0">
       <Label Content="LOGO"
              Height="40"
              Width="107"

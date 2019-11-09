@@ -3,6 +3,7 @@ using System.Windows;
 using Unity;
 
 namespace DesktopWeeabo2 {
+
 	public partial class MainWindow : Window {
 
 		[Dependency]
@@ -10,8 +11,8 @@ namespace DesktopWeeabo2 {
 			set { DataContext = value; }
 		}
 
-        public MainWindow() {
-        	InitializeComponent();
-        }
+		public MainWindow() {
+			InitializeComponent();
+		}
 	}
 }

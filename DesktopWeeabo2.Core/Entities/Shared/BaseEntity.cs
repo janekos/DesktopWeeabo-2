@@ -3,7 +3,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DesktopWeeabo2.Core.Entities.Shared {
+
 	public abstract class BaseEntity {
+
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.None)]
 		[Column("id")]
@@ -31,6 +33,7 @@ namespace DesktopWeeabo2.Core.Entities.Shared {
 		public bool? IsAdult { get; set; }
 
 		/*problem kids*/
+
 		[Column("genres")]
 		public string Genres { get; set; }
 
@@ -53,6 +56,7 @@ namespace DesktopWeeabo2.Core.Entities.Shared {
 		public string ExternalLinks { get; set; }
 
 		/*custom vars*/
+
 		[Column("personal_score")]
 		public int? PersonalScore { get; set; }
 

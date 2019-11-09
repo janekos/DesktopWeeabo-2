@@ -1,5 +1,4 @@
-﻿
-using DesktopWeeabo2.Core.Interfaces.Repositories;
+﻿using DesktopWeeabo2.Core.Interfaces.Repositories;
 using DesktopWeeabo2.Core.Interfaces.Services;
 using DesktopWeeabo2.Infrastructure.Database;
 using DesktopWeeabo2.Infrastructure.DomainServices;
@@ -11,6 +10,7 @@ using Unity;
 using Unity.Lifetime;
 
 namespace DesktopWeeabo2 {
+
 	public partial class App : Application {
 
 		private void Application_Startup(object sender, StartupEventArgs e) {
