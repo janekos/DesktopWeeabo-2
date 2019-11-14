@@ -1,0 +1,192 @@
+﻿<Window x:Class="DesktopWeeabo2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopWeeabo2"
+        xmlns:Views="clr-namespace:DesktopWeeabo2.Views"
+        xmlns:ViewModels="clr-namespace:DesktopWeeabo2.ViewModels"
+        xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
+        xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
+        xmlns:enum="clr-namespace:DesktopWeeabo2.Core.Enums;assembly=DesktopWeeabo2.Core"
+        xmlns:properties="clr-namespace:DesktopWeeabo2.Properties"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        mc:Ignorable="d"
+        x:Name="MainWIndow"
+        Title="DesktopWeeabo 2"
+        Width="1024"
+        Height="800"
+        MinWidth="1024"
+        MinHeight="800">
+  <Window.Resources>
+    <DataTemplate DataType="{x:Type ViewModels:AnimeViewModel}">
+      <Views:AnimeView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModels:MangaViewModel}">
+      <Views:MangaView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type ViewModels:SettingsViewModel}">
+      <Views:SettingsView />
+    </DataTemplate>
+    <help:CustomConverter x:Key="CustomConverter" />
+    <Style TargetType="cc:SelectableButton"
+           x:Key="btn_menu">
+      <Setter Property="Height"
+              Value="40" />
+      <Setter Property="Width"
+              Value="107" />
+      <Setter Property="FontSize"
+              Value="30" />
+    </Style>
+  </Window.Resources>
+  <Grid>
+    <StackPanel VerticalAlignment="Top"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal"
+                Margin="10,5,0,0">
+      <Label Content="LOGO"
+             Height="40"
+             Width="107"
+             TextBlock.TextAlignment="Center"
+             FontSize="24"
+             BorderBrush="Black"
+             BorderThickness="2" />
+      <cc:SelectableButton Content="Anime"
+                           Style="{StaticResource btn_menu}"
+                           Command="{Binding ChangeView}"
+                           CommandParameter="{x:Static enum:GlobalView.ANIMEVIEW}"
+                           CurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
+                           IsSelectedParameter="isButtonSelected|Animeview" />
+      <cc:SelectableButton Content="Manga"
+                           Style="{StaticResource btn_menu}"
+                           Command="{Binding ChangeView}"
+                           CommandParameter="{x:Static enum:GlobalView.MANGAVIEW}"
+                           CurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
+                           IsSelectedParameter="isButtonSelected|Mangaview" />
+      <cc:SelectableButton Content="Settings"
+                           Style="{StaticResource btn_menu}"
+                           Command="{Binding ChangeView}"
+                           CommandParameter="{x:Static enum:GlobalView.SETTINGSVIEW}"
+                           CurrentView="{Binding CurrentGlobalView, Mode=OneWay}"
+                           IsSelectedParameter="isButtonSelected|Settingsview" />
+    </StackPanel>
+    <cc:Toast ToastMessage="{Binding ToastMessage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+              ToastMessageType="{Binding ToastMessageType, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+    <cc:JobDialog IsJobRunning="{Binding IsJobRunning, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                  JobDescription="{Binding JobDescription, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                  JobProgressMaximum="{Binding JobProgressMaximum, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                  JobProgressMinimum="0"
+                  JobProgressCurrent="{Binding JobProgressCurrent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                  JobStage="{Binding JobStage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                  Panel.ZIndex="11" />
+    <ContentPresenter Panel.ZIndex="10"
+                      Content="{Binding ViewModelsView.CurrentItem}"
+                      Margin="10,58,9.6,10.4" />
+    <Grid Name="StartingLoader"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          Panel.ZIndex="100"
+          Opacity="1"
+          Background="white">
+      <Grid.Style>
+        <Style TargetType="Grid">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding IsLoading, UpdateSourceTrigger=PropertyChanged}"
+                         Value="False">
+              <DataTrigger.EnterActions>
+                <BeginStoryboard>
+                  <Storyboard>
+                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                      <EasingDoubleKeyFrame KeyTime="0:0:1.8"
+                                            Value="1" />
+                      <EasingDoubleKeyFrame KeyTime="0:0:2"
+                                            Value="0" />
+                    </DoubleAnimationUsingKeyFrames>
+                  </Storyboard>
+                </BeginStoryboard>
+              </DataTrigger.EnterActions>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ElementName=StartingLoader, Path=Opacity}"
+                         Value="0">
+              <Setter Property="Visibility"
+                      Value="Collapsed" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Grid.Style>
+      <Grid HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+          <RowDefinition />
+          <RowDefinition />
+        </Grid.RowDefinitions>
+        <Image Height="60"
+               Grid.Row="0"
+               Margin="20"
+               Width="60"
+               Stretch="UniformToFill"
+               gif:ImageBehavior.AutoStart="True"
+               gif:ImageBehavior.AnimatedSource="Resources/load.gif"
+               gif:ImageBehavior.RepeatBehavior="Forever" />
+        <TextBlock Grid.Row="1"
+                   TextAlignment="Center"
+                   Text="{Binding IntroMessage, Mode=OneTime}"
+                   FontSize="18"
+                   FontStyle="Italic" />
+      </Grid>
+    </Grid>
+
+    <Grid Name="ConsentBox"
+          Visibility="{Binding ConsentBoxVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          Panel.ZIndex="1080"
+          Background="white">
+      <Grid HorizontalAlignment="Center"
+            Width="600"
+            Height="Auto"
+            VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="2*" />
+          <ColumnDefinition Width="1*" />
+          <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.ColumnSpan="3"
+                   TextAlignment="Center"
+                   Text="DISCLAIMER"
+                   FontStyle="Italic"
+                   FontSize="25" />
+        <TextBox Grid.Row="1"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 Grid.ColumnSpan="3"
+                 Margin="0,20,0,30"
+                 TextAlignment="Center"
+                 Text="{x:Static properties:Resources.DisclaimerMessage}"
+                 FontSize="14" />
+        <Button Grid.Row="2"
+                Width="80px"
+                Command="{Binding GiveConsent}"
+                CommandParameter="ACCEPT"
+                HorizontalAlignment="Right"
+                FontSize="20"
+                Content="Okay" />
+        <Button Grid.Column="2"
+                Grid.Row="2"
+                Command="{Binding GiveConsent}"
+                CommandParameter="DENY"
+                HorizontalAlignment="Left"
+                FontSize="20"
+                Width="80px"
+                Content="Cancel" />
+      </Grid>
+    </Grid>
+  </Grid>
+</Window>
