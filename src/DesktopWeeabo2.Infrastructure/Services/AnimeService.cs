@@ -20,9 +20,9 @@ namespace DesktopWeeabo2.Infrastructure.Services {
 
 		protected override bool ContainsSearchTextCondition(SearchModel search, AnimeEntity item) =>
 			!string.IsNullOrWhiteSpace(search.SearchText)
-				? (item.TitleEnglish.ToLower().Contains(search.SearchText.ToLower())
-					|| item.TitleNative.ToLower().Contains(search.SearchText.ToLower())
-					|| item.TitleRomaji.ToLower().Contains(search.SearchText.ToLower()))
+				? ((item.TitleEnglish?.ToLower().Contains(search.SearchText.ToLower()) ?? false)
+					|| (item.TitleNative?.ToLower().Contains(search.SearchText.ToLower()) ?? false)
+					|| (item.TitleRomaji?.ToLower().Contains(search.SearchText.ToLower()) ?? false))
 				: true;
 
 		protected override bool ContainsGenre(IEnumerable<string> selectedGenres, AnimeEntity item) =>

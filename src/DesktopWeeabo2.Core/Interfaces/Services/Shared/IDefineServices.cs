@@ -12,12 +12,14 @@ namespace DesktopWeeabo2.Core.Interfaces.Services.Shared {
 
 		Task<DBResponse> AddOrUpdate(T entity);
 
-		Task<DBResponse> AddOrUpdateRange(IEnumerable<T> entities, UpdateMethod updateMethod = UpdateMethod.ALL, Action<object> onActionCallback = null);
+		Task<DBResponse> AddOrUpdateRange(IEnumerable<T> entities, Action<object> onActionCallback = null);
 
 		Task<DBResponse> Delete(int id);
 
 		IEnumerable<T> GetBySearchModelAndCurrentView(SearchModel search, string currentView);
 
 		IEnumerable<T> GetCustom(Func<U, bool> condition);
+
+		IEnumerable<T> GetAll();
 	}
 }

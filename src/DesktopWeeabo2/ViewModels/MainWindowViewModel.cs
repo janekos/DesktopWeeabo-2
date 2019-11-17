@@ -1,7 +1,7 @@
 ﻿using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Data;
 using DesktopWeeabo2.Infrastructure.Database;
-using DesktopWeeabo2.Infrastructure.DomainServices;
+using DesktopWeeabo2.Infrastructure.Events;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.ObjectModel;
@@ -188,18 +188,18 @@ namespace DesktopWeeabo2.ViewModels {
 			else
 				ConsentBoxVisibility = Visibility.Visible;
 
-			ToastService.ToastMessageRecieved += (message, messageType) => {
+			ToastEvent.ToastMessageRecieved += (message, messageType) => {
 				ToastMessage = message;
 				ToastMessageType = messageType;
 			};
 
-			JobService.JobStarted += (description, progressMax) => {
+			JobEvent.JobStarted += (description, progressMax) => {
 				IsJobRunning = true;
 				JobDescription = description;
 				JobProgressMaximum = progressMax;
 			};
 
-			JobService.JobProgressChanged += (progress, stage, isIncremental) => {
+			JobEvent.JobProgressChanged += (progress, stage, isIncremental) => {
 				JobProgressCurrent = isIncremental
 					? (JobProgressCurrent + progress)
 					: progress;
@@ -209,7 +209,7 @@ namespace DesktopWeeabo2.ViewModels {
 					JobStage = stage;
 			};
 			
-			JobService.JobEnded += () => IsJobRunning = false;
+			JobEvent.JobEnded += () => IsJobRunning = false;
 		}
 
 		private async void InitApp() {
@@ -232,7 +232,7 @@ namespace DesktopWeeabo2.ViewModels {
 		public DelegateCommand ChangeView => new DelegateCommand(
 		new Action<object>(
 		(e) => {
-			LogService.LogMessage($"Changed view to: {e}");
+			LogEvent.LogMessage($"Changed view to: {e}");
 
 			if (ViewModelsView != null) {
 				CurrentGlobalView = (GlobalView) e;

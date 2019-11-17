@@ -1,6 +1,7 @@
 ﻿using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Models;
 using DesktopWeeabo2.Helpers;
+using DesktopWeeabo2.Infrastructure.Events;
 using System;
 using System.ComponentModel;
 
@@ -9,6 +10,8 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 	public abstract class BaseItemViewModel : BaseViewModel {
 		protected bool DontTriggerSearchChanged = false;
 		protected readonly object _CollectionLock = new object();
+
+		#region search model
 
 		public SearchModel SearchModel { get; set; } = new SearchModel();
 
@@ -66,17 +69,9 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 			}
 		}
 
-		private string _SelectedGenres { get; set; }
+		#endregion search model
 
-		public string SelectedGenres {
-			get { return _SelectedGenres; }
-			set {
-				if (_SelectedGenres != value) {
-					_SelectedGenres = value;
-					RaisePropertyChanged("SelectedGenres");
-				}
-			}
-		}
+		#region api vars
 
 		protected bool _APIHasNextPage { get; set; } = false;
 
@@ -92,20 +87,6 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 			set { if (_APICurrentPage != value) { _APICurrentPage = value; RaisePropertyChanged("APICurrentPage"); } }
 		}
 
-		protected bool _IsAdvancedVisible { get; set; } = false;
-
-		public bool IsAdvancedVisible {
-			get { return _IsAdvancedVisible; }
-			set { if (_IsAdvancedVisible != value) { _IsAdvancedVisible = value; RaisePropertyChanged("IsAdvancedVisible"); } }
-		}
-
-		protected int _TotalItems { get; set; } = 0;
-
-		public int TotalItems {
-			get { return _TotalItems; }
-			set { if (_TotalItems != value) { _TotalItems = value; RaisePropertyChanged("TotalItems"); } }
-		}
-
 		protected string _TotalAPIItems { get; set; } = "";
 
 		public string TotalAPIItems {
@@ -118,6 +99,34 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 		public int TotalAPIPages {
 			get { return _TotalAPIPages; }
 			set { if (_TotalAPIPages != value) { _TotalAPIPages = value; RaisePropertyChanged("TotalAPIPages"); } }
+		}
+
+		protected bool _IsAdvancedVisible { get; set; } = false;
+
+		#endregion api vars
+
+		private string _SelectedGenres { get; set; }
+
+		public string SelectedGenres {
+			get { return _SelectedGenres; }
+			set {
+				if (_SelectedGenres != value) {
+					_SelectedGenres = value;
+					RaisePropertyChanged("SelectedGenres");
+				}
+			}
+		}
+
+		public bool IsAdvancedVisible {
+			get { return _IsAdvancedVisible; }
+			set { if (_IsAdvancedVisible != value) { _IsAdvancedVisible = value; RaisePropertyChanged("IsAdvancedVisible"); } }
+		}
+
+		protected int _TotalItems { get; set; } = 0;
+
+		public int TotalItems {
+			get { return _TotalItems; }
+			set { if (_TotalItems != value) { _TotalItems = value; RaisePropertyChanged("TotalItems"); } }
 		}
 
 		protected bool _IsContentLoading { get; set; } = false;
@@ -145,23 +154,17 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 			PropertyChanged += Property_Changed;
 		}
 
-		protected virtual void Property_Changed(object sender, PropertyChangedEventArgs e) {
-			throw new NotImplementedException("Property_Changed has to be implemented in ViewModel.");
-		}
-
-		protected virtual void RenewView(bool isOnline = false) {
-			throw new NotImplementedException("RenewView has to be implemented in ViewModel.");
-		}
-
-		protected virtual void AddLocalItemsToView() {
-			throw new NotImplementedException("AddLocalItems has to be implemented in ViewModel.");
-		}
-
 		public DelegateCommand TriggerViewStatusWasChanged => new DelegateCommand(new Action<object>(e => PressedTransferButton = e as string));
 
 		public DelegateCommand SetChecked => new DelegateCommand(new Action(() => {
 			SelectedGenres = Utilities.GenreHelper(SearchModel.GenresList);
 			RaisePropertyChanged("SearchChanged");
 		}));
+
+		protected abstract void Property_Changed(object sender, PropertyChangedEventArgs e);
+
+		protected abstract void RenewView(bool isOnline = false);
+
+		protected abstract void AddLocalItemsToView();
 	}
 }

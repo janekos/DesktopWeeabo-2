@@ -2,7 +2,6 @@
 using DesktopWeeabo2.Core.Interfaces.Repositories;
 using DesktopWeeabo2.Core.Interfaces.Services;
 using DesktopWeeabo2.Infrastructure.Database;
-using DesktopWeeabo2.Infrastructure.DomainServices;
 using DesktopWeeabo2.Infrastructure.Jobs;
 using DesktopWeeabo2.Infrastructure.Repositories;
 using DesktopWeeabo2.Infrastructure.Services;
@@ -18,16 +17,16 @@ namespace DesktopWeeabo2 {
 		private void Application_Startup(object sender, StartupEventArgs e) {
 			IUnityContainer container = new UnityContainer();
 
-			container.RegisterType<EntriesContext>(new ContainerControlledTransientManager());
+			container.RegisterType<EntriesContext>(new TransientLifetimeManager());
 
-			container.RegisterType<IAnimeRepository, AnimeRepository>(new ContainerControlledTransientManager());
-			container.RegisterType<IMangaRepository, MangaRepository>(new ContainerControlledTransientManager());
+			container.RegisterType<IAnimeRepository, AnimeRepository>(new TransientLifetimeManager());
+			container.RegisterType<IMangaRepository, MangaRepository>(new TransientLifetimeManager());
 
-			container.RegisterType<IAnimeService, AnimeService>(new ContainerControlledTransientManager());
-			container.RegisterType<IMangaService, MangaService>(new ContainerControlledTransientManager());
-			container.RegisterType<IHandleIO, IOService>(new ContainerControlledTransientManager());
+			container.RegisterType<IAnimeService, AnimeService>(new TransientLifetimeManager());
+			container.RegisterType<IMangaService, MangaService>(new TransientLifetimeManager());
 
-			container.RegisterType<IRunJobs<DWOneImportJob>, DWOneImportJob>(new ContainerControlledTransientManager());
+			container.RegisterType<IRunJobs<DWOneImportJob>, DWOneImportJob>(new TransientLifetimeManager());
+			container.RegisterType<IRunJobs<UpdateDbEntries>, UpdateDbEntries>(new TransientLifetimeManager());
 
 			container.RegisterSingleton<MainWindowViewModel>();
 			container.RegisterSingleton<AnimeViewModel>();

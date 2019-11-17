@@ -1,4 +1,5 @@
-﻿using DesktopWeeabo2.Core.Entities.Shared;
+﻿using DesktopWeeabo2.Core.Entities;
+using DesktopWeeabo2.Core.Entities.Shared;
 using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Interfaces.Repositories.Shared;
 using DesktopWeeabo2.Core.Interfaces.Services.Shared;
@@ -19,7 +20,7 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 		}
 
 		public async Task<DBResponse> AddOrUpdate(T model) {
-			var entity = await repo.Get(model.Id);
+			var entity = repo.Get(model.Id);
 
 			if (entity == null) {
 				await repo.Add((U) Cast(model));
@@ -30,32 +31,32 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 			}
 		}
 
-		public async Task<DBResponse> AddOrUpdateRange(IEnumerable<T> entities, UpdateMethod updateMethod = UpdateMethod.ALL, Action<object> onActionCallback = null) {
-			var allIds = entities.Select(e => e.Id);
-			var existingIds = repo.Find(e => allIds.Contains(e.Id)).Select(e => e.Id);
-			
+		public async Task<DBResponse> AddOrUpdateRange(IEnumerable<T> entities, Action<object> onActionCallback = null) {
+			var allIds = entities.Select(e => e.Id).ToList();
+			var existingIds = repo.Find(e => allIds.Contains(e.Id)).Select(e => e.Id).ToList();
+
 			if (existingIds.Count() > 0) {
 				// update existing entites
-				var dbEntities = repo.Find(e => existingIds.Contains(e.Id));
-				var entitiesToUpdate = entities.Where(e => existingIds.Contains(e.Id)).Select(e => (U) Cast(e));
+				IEnumerable<U> dbEntities = repo.Find(e => existingIds.Contains(e.Id), isNoTracking: false);
+				List<U> entitiesToUpdate = entities.Where(e => existingIds.Contains(e.Id)).Select(e => (U) Cast(e)).ToList();
 
-				ServiceUtilities.UpdateByMethod(dbEntities, entitiesToUpdate, updateMethod);
+				CopyPersonalVariablesToNewEntites(dbEntities, ref entitiesToUpdate);
 				
-				await repo.UpdateRange(dbEntities, entitiesToUpdate);
 				onActionCallback(entitiesToUpdate.Count());
+				await repo.UpdateRange(dbEntities, entitiesToUpdate);
 
 				// add new entites
 				var entitiesToAdd = entities.Where(e => !existingIds.Contains(e.Id)).Select(e => (U) Cast(e));
-				await repo.AddRange(entitiesToAdd);
 				onActionCallback(entitiesToAdd.Count());
+				await repo.AddRange(entitiesToAdd);
 
-				return DBResponse.UPDATED;
+				return DBResponse.UPDATED; 
 			}
 
 			if (entities.Count() > 0) {
 
-				await repo.AddRange(entities.Select(e => (U) Cast(e)));
 				onActionCallback(entities.Count());
+				await repo.AddRange(entities.Select(e => (U) Cast(e)));
 
 				return DBResponse.ADDED;
 			}
@@ -81,6 +82,9 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 		public IEnumerable<T> GetCustom(Func<U, bool> condition) =>
 			repo.Find(condition, item => item.Id).Select(e => (T) Cast(e));
 
+		public IEnumerable<T> GetAll() =>
+			repo.GetAll().Select(e => (T) Cast(e));
+
 		protected abstract bool IsAdultCondition(SearchModel search, U item);
 
 		protected abstract bool ContainsSearchTextCondition(SearchModel search, U item);
@@ -92,5 +96,62 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 		protected abstract U Cast(T model);
 
 		protected abstract T Cast(U model);
+
+		private void CopyPersonalVariablesToNewEntites(IEnumerable<U> dbEntities, ref List<U> entities) {
+			entities = entities
+						.Join(dbEntities, newEn => newEn.Id, oldEn => oldEn.Id, (newEn, oldEn) => new { newEn, oldEn })
+						.Select(both => {
+							var newEn = both.newEn;
+							var oldEn = both.oldEn;
+
+							if (newEn.PersonalScore == null && oldEn.PersonalScore != null)
+								newEn.PersonalScore = oldEn.PersonalScore;
+
+							if (newEn.PersonalReview == null && oldEn.PersonalReview != null)
+								newEn.PersonalReview = oldEn.PersonalReview;
+							else if (newEn.PersonalReview != null && oldEn.PersonalReview != null)
+								newEn.PersonalReview = $"{oldEn.PersonalReview}{Environment.NewLine}{Environment.NewLine}----- OLDER PERSONAL REVIEW -----{Environment.NewLine}{Environment.NewLine}{newEn.PersonalReview}";
+
+							if ((newEn.DateAdded == null && oldEn.DateAdded != null)
+								|| (newEn.DateAdded != null && newEn.DateAdded != null && newEn.DateAdded > oldEn.DateAdded))
+								newEn.DateAdded = oldEn.DateAdded;
+
+							if (typeof(U) == typeof(AnimeEntity)) {
+								var newAEn = newEn as AnimeEntity;
+								var oldAEn = oldEn as AnimeEntity;
+
+								if (oldAEn.ViewingStatus != null)
+									newAEn.ViewingStatus = oldAEn.ViewingStatus;
+
+								if (oldAEn.WatchPriority != null)
+									newAEn.WatchPriority = oldAEn.WatchPriority;
+
+								if (oldAEn.RewatchCount != null)
+									newAEn.RewatchCount = oldAEn.RewatchCount;
+
+								if (oldAEn.CurrentEpisode != null)
+									newAEn.CurrentEpisode = oldAEn.CurrentEpisode;
+
+								return newAEn as U;
+							} else {
+								var newMEn = newEn as MangaEntity;
+								var oldMEn = oldEn as MangaEntity;
+
+								if (oldMEn.ReadingStatus != null)
+									newMEn.ReadingStatus = oldMEn.ReadingStatus;
+
+								if (oldMEn.ReadPriority != null)
+									newMEn.ReadPriority = oldMEn.ReadPriority;
+
+								if (oldMEn.RereadCount != null)
+									newMEn.RereadCount = oldMEn.RereadCount;
+
+								if (oldMEn.CurrentChapter != null)
+									newMEn.CurrentChapter = oldMEn.CurrentChapter;
+
+								return newMEn as U;
+							}
+						}).ToList();
+		}
 	}
 }

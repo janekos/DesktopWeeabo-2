@@ -1,9 +1,9 @@
 ﻿using DesktopWeeabo2.Core.Enums;
 using System;
 
-namespace DesktopWeeabo2.Infrastructure.DomainServices {
+namespace DesktopWeeabo2.Infrastructure.Events {
 
-	public class ToastService {
+	public class ToastEvent {
 
 		public static event Action<string, ToastType> ToastMessageRecieved;
 

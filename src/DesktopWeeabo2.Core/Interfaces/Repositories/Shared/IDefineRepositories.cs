@@ -21,10 +21,11 @@ namespace DesktopWeeabo2.Core.Interfaces.Repositories.Shared {
 
 		Task<int> DeleteRange(IEnumerable<T> items);
 
-		Task<T> Get(int id);
+		T Get(int id);
+		IEnumerable<T> GetAll();
 
-		IEnumerable<T> Find(Func<T, bool> expression);
+		IEnumerable<T> Find(Func<T, bool> expression, bool isNoTracking = true);
 
-		IEnumerable<T> Find(Func<T, bool> expression, Func<T, object> orderBy, bool isDescending = false);
+		IEnumerable<T> Find(Func<T, bool> expression, Func<T, object> orderBy, bool isDescending = false, bool isNoTracking = true);
 	}
 }

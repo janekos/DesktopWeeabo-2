@@ -219,4 +219,55 @@
 	}
 }</value>
   </data>
+  <data name="GetEntriesByIds" xml:space="preserve">
+    <value>query ($ids: [Int], $page: Int) {
+	Page(page: $page, perPage: 50) {
+		pageInfo { 
+			total
+			hasNextPage
+		}
+		media(id_in: $ids, type: {typeToQuery}) {
+			id
+			idMal
+			title { 
+				english 
+				romaji
+				native
+			}
+			synonyms 
+			genres
+			type 
+			averageScore
+			format 
+			status 
+			description(asHtml: false) 
+			startDate{
+				year
+				month
+				day
+			}
+			endDate{
+				year
+				month
+				day
+			}
+			episodes 
+			duration
+			volumes
+			chapters
+			coverImage{ large }
+			isAdult
+			nextAiringEpisode {
+				airingAt
+				episode
+			}
+			siteUrl
+			externalLinks { 
+				url
+				site
+			}
+		}
+	}
+}</value>
+  </data>
 </root>

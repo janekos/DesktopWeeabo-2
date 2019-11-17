@@ -24,5 +24,11 @@ namespace DesktopWeeabo2.Infrastructure.API {
 				new JProperty("page", 1),
 				new JProperty("malIds", malIds)
 			).ToString(Formatting.None);
+
+		public static string APIGetByIdsVariables(int[] ids) =>
+			new JObject(
+				new JProperty("page", 1),
+				new JProperty("ids", ids)
+			).ToString(Formatting.None);
 	}
 }

@@ -11,16 +11,17 @@ namespace DesktopWeeabo2.Core.API {
 		private static readonly MediaTypeWithQualityHeaderValue jsonHeader = new MediaTypeWithQualityHeaderValue("application/json");
 		private static string AnilistSearchQuery = Resources.ResourceManager.GetString("AnilistSearchQuery");
 		private static string GetAnimeByMALIds = Resources.ResourceManager.GetString("GetAnimeByMALIds");
+		private static string GetEntriesByIds = Resources.ResourceManager.GetString("GetEntriesByIds");
 
 		static APIQueries (){
 			if (!client.DefaultRequestHeaders.Accept.Contains(jsonHeader))
 				client.DefaultRequestHeaders.Accept.Add(jsonHeader);
 		}
 
-		public static async Task<string> Search(string variableString, bool anime = true) =>
+		public static async Task<string> Search(string variableString, bool isAnime = true) =>
 			await ExecuteRequest(
 				new Dictionary<string, string> {
-					{ "query", anime ? AnilistSearchQuery.Replace("{mediaTypeToReplace}", "ANIME") : AnilistSearchQuery.Replace("{mediaTypeToReplace}", "MANGA")},
+					{ "query", AnilistSearchQuery.Replace("{mediaTypeToReplace}", isAnime ? "ANIME" : "MANGA") },
 					{ "variables", variableString }
 				}
 			);
@@ -29,6 +30,14 @@ namespace DesktopWeeabo2.Core.API {
 			await ExecuteRequest(
 				new Dictionary<string, string> {
 					{ "query", GetAnimeByMALIds},
+					{ "variables", variableString }
+				}
+			);
+
+		public static async Task<string> GetByIds(string variableString, bool anime = true) =>
+			await ExecuteRequest(
+				new Dictionary<string, string> {
+					{ "query", GetEntriesByIds.Replace("{typeToQuery}", anime ? "ANIME" : "MANGA") },
 					{ "variables", variableString }
 				}
 			);

@@ -5,25 +5,27 @@ using DesktopWeeabo2.Infrastructure.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
 
 	public abstract class BaseRepository<T> : IDefineRepositories<T> where T : BaseEntity {
-		private readonly EntriesContext _db;
+		protected readonly EntriesContext context;
 
 		public BaseRepository(EntriesContext db) {
-			_db = db;
+			context = db;
 		}
 
 		public async Task<int> Add(T item) {
-			_db.Set<T>().Add(item);
-			return await _db.SaveChangesAsync();
+			context.Set<T>().Add(item);
+			return await context.SaveChangesAsync();
 		}
 
 		public async Task<int> AddRange(IEnumerable<T> items) {
-			_db.Set<T>().AddRange(items);
-			return await _db.SaveChangesAsync();
+			var a = items.ToList();
+			context.Set<T>().AddRange(a);
+			return await context.SaveChangesAsync();
 		}
 
 		public async Task<int> UpdateRange(IEnumerable<T> dbItems, IEnumerable<T> items) {
@@ -37,7 +39,7 @@ namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
 		}
 
 		public async Task<int> Delete(int id) {
-			var item = await Get(id);
+			var item = Get(id);
 			if (item == null)
 				return 0;
 
@@ -45,25 +47,29 @@ namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
 		}
 
 		public async Task<int> Delete(T item) {
-			_db.Set<T>().Remove(item);
-			return await _db.SaveChangesAsync();
+			context.Set<T>().Remove(item);
+			return await context.SaveChangesAsync();
 		}
 
 		public async Task<int> DeleteRange(IEnumerable<T> items) {
-			_db.Set<T>().RemoveRange(items);
-			return await _db.SaveChangesAsync();
+			context.Set<T>().RemoveRange(items);
+			return await context.SaveChangesAsync();
 		}
 
-		public async Task<T> Get(int id) =>
-			 await _db.Set<T>().FindAsync((int) id);
+		public T Get(int id) =>
+			 context.Set<T>().Where(q => q.Id == id).FirstOrDefault();
 
-		public IEnumerable<T> Find(Func<T, bool> expression) {
-			return _db.Set<T>().Where(expression);
+		public IEnumerable<T> Find(Func<T, bool> expression, bool isNoTracking = true) {
+			if(isNoTracking) return context.Set<T>().AsNoTracking().Where(expression);
+			return context.Set<T>().Where(expression);
 		}
 
-		public IEnumerable<T> Find(Func<T, bool> expression, Func<T, object> orderBy, bool isDescending = false) =>
+		public IEnumerable<T> Find(Func<T, bool> expression, Func<T, object> orderBy, bool isDescending = false, bool isNoTracking = true) =>
 			isDescending
-				? _db.Set<T>().Where(expression).OrderByDescending(orderBy)
-				: _db.Set<T>().Where(expression).OrderBy(orderBy);
+				? Find(expression, isNoTracking).OrderByDescending(orderBy)
+				: Find(expression, isNoTracking).OrderBy(orderBy);
+
+		public IEnumerable<T> GetAll() =>
+			context.Set<T>();
 	}
 }

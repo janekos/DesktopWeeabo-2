@@ -19,7 +19,7 @@ namespace DesktopWeeabo2.Core.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -133,6 +133,50 @@ namespace DesktopWeeabo2.Core.Properties {
         internal static string GetAnimeByMALIds {
             get {
                 return ResourceManager.GetString("GetAnimeByMALIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to query ($ids: [Int], $page: Int) {
+        ///	Page(page: $page, perPage: 50) {
+        ///		pageInfo { 
+        ///			total
+        ///			hasNextPage
+        ///		}
+        ///		media(id_in: $ids, type: {typeToQuery}) {
+        ///			id
+        ///			idMal
+        ///			title { 
+        ///				english 
+        ///				romaji
+        ///				native
+        ///			}
+        ///			synonyms 
+        ///			genres
+        ///			type 
+        ///			averageScore
+        ///			format 
+        ///			status 
+        ///			description(asHtml: false) 
+        ///			startDate{
+        ///				year
+        ///				month
+        ///				day
+        ///			}
+        ///			endDate{
+        ///				year
+        ///				month
+        ///				day
+        ///			}
+        ///			episodes 
+        ///			duration
+        ///			volumes
+        ///			chapters
+        ///			coverImage{ la [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string GetEntriesByIds {
+            get {
+                return ResourceManager.GetString("GetEntriesByIds", resourceCulture);
             }
         }
     }

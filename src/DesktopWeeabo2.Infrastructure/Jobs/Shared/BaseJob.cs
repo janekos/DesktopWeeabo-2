@@ -1,6 +1,6 @@
 ﻿using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Interfaces.Jobs;
-using DesktopWeeabo2.Infrastructure.DomainServices;
+using DesktopWeeabo2.Infrastructure.Events;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
@@ -21,7 +21,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 		/// Args are to be defined by each implementor.
 		/// </summary>
 		/// <param name="args"></param>
-		public async void RunJob(params object[] args) {
+		public async Task RunJob(params object[] args) {
 			try {
 				await Task.Run(async () => {
 					PrepareJob(args);
@@ -42,10 +42,10 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 		protected virtual void StartJob() {
 			watch.Start();
 
-			JobService.StartJob(jobDescription, jobMaxProgress);
-			LogService.LogMessage(JobStartMessage);
+			JobEvent.StartJob(jobDescription, jobMaxProgress);
+			LogEvent.LogMessage(JobStartMessage);
 			if (!string.IsNullOrEmpty(jobTitle))
-				ToastService.ShowToast(JobStartMessage, ToastType.INFO);
+				ToastEvent.ShowToast(JobStartMessage, ToastType.INFO);
 		}
 
 		#pragma warning disable CS1998
@@ -54,17 +54,17 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 
 		protected virtual void EndJob(Exception ex = null) {
 			watch.Stop();
-			JobService.EndJob();
+			JobEvent.EndJob();
 
 			if (ex == null) {
-				LogService.LogMessage($"{JobSuccessMessage} Elapsed time: {watch.Elapsed}.");
+				LogEvent.LogMessage($"{JobSuccessMessage} Elapsed time: {watch.Elapsed}.");
 				if (!string.IsNullOrEmpty(jobTitle))
-					ToastService.ShowToast(JobSuccessMessage, ToastType.SUCCESS);
+					ToastEvent.ShowToast(JobSuccessMessage, ToastType.SUCCESS);
 			} else {
-				LogService.LogMessage($"{JobFailMessage} Elapsed time: {watch.Elapsed}.{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}");
+				LogEvent.LogMessage($"{JobFailMessage} Elapsed time: {watch.Elapsed}.{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}");
 
 				if (!string.IsNullOrEmpty(jobTitle))
-					ToastService.ShowToast($"{JobFailMessage} Reason: {ex.Message}.", ToastType.DANGER);
+					ToastEvent.ShowToast($"{JobFailMessage} Reason: {ex.Message}.", ToastType.DANGER);
 			}
 		}
 

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace DesktopWeeabo2.Infrastructure.DomainServices {
+namespace DesktopWeeabo2.Infrastructure.Events {
 
-	public class LogService {
+	public class LogEvent {
 		public static string LogContent { get; set; }
 
 		public static event Action<string> LogLineReceived;

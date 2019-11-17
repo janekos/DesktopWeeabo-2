@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DesktopWeeabo2.Infrastructure.DomainServices {
+namespace DesktopWeeabo2.Infrastructure.Events {
 
-	public class JobService {
+	public class JobEvent {
 		private static bool IsJobRunning = false;
 
 		public static event Action<string, int> JobStarted;

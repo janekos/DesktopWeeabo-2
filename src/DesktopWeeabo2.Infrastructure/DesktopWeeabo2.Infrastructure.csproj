@@ -72,11 +72,12 @@
     <Compile Include="API\MangaAPIEnumerator.cs" />
     <Compile Include="API\Shared\APIEnumerator.cs" />
     <Compile Include="Database\DbActions.cs" />
-    <Compile Include="DomainServices\JobService.cs" />
-    <Compile Include="DomainServices\LogService.cs" />
-    <Compile Include="DomainServices\ToastService.cs" />
+    <Compile Include="Events\JobEvent.cs" />
+    <Compile Include="Events\LogEvent.cs" />
+    <Compile Include="Events\ToastEvent.cs" />
     <Compile Include="Jobs\DWOneImportJob.cs" />
     <Compile Include="Jobs\Shared\BaseJob.cs" />
+    <Compile Include="Jobs\UpdateDbEntries.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Database\EntriesContext.cs" />
     <Compile Include="Repositories\AnimeRepository.cs" />
@@ -88,10 +89,8 @@
     </Compile>
     <Compile Include="Repositories\Shared\BaseRepository.cs" />
     <Compile Include="Services\AnimeService.cs" />
-    <Compile Include="DomainServices\IOService.cs" />
     <Compile Include="Services\MangaService.cs" />
     <Compile Include="Services\Shared\BaseService.cs" />
-    <Compile Include="Services\ServiceUtilities.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

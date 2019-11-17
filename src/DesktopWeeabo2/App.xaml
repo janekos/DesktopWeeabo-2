@@ -8,6 +8,7 @@
     <SolidColorBrush x:Key="btn_bg">Beige</SolidColorBrush>
     <SolidColorBrush x:Key="btn_bg_hover">Wheat</SolidColorBrush>
     <SolidColorBrush x:Key="btn_bg_selected">Gold</SolidColorBrush>
+    <SolidColorBrush x:Key="btn_bg_disabled">LightGray</SolidColorBrush>
 
     <!-- togglebutton -->
     <Style TargetType="ToggleButton">
@@ -82,6 +83,12 @@
           <Setter Property="Background"
                   Value="{StaticResource btn_bg_hover}" />
         </Trigger>
+        <Trigger Property="IsEnabled"
+                 Value="False">
+          <Setter Property="Background"
+                  Value="{StaticResource btn_bg_disabled}" />
+        </Trigger>
+
       </Style.Triggers>
     </Style>
   </Application.Resources>

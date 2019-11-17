@@ -3,7 +3,7 @@ using DesktopWeeabo2.Core.Interfaces.Services;
 using DesktopWeeabo2.Core.Models;
 using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Infrastructure.API;
-using DesktopWeeabo2.Infrastructure.DomainServices;
+using DesktopWeeabo2.Infrastructure.Events;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.ComponentModel;
@@ -205,9 +205,9 @@ namespace DesktopWeeabo2.ViewModels {
 						APICurrentPage = _animeAPIEnumerator.CurrentPage - 1;
 						TotalAPIPages = (int) Math.Ceiling(((decimal) _animeAPIEnumerator.TotalItems / 50));
 					}
-					catch (ArgumentNullException ex) { ToastService.ShowToast(ex.Message, ToastType.DANGER); }
-					catch (ArgumentOutOfRangeException ex) { ToastService.ShowToast(ex.Message, ToastType.DANGER); }
-					catch (HttpRequestException) { ToastService.ShowToast("The server isn't responding.", ToastType.DANGER); }
+					catch (ArgumentNullException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); }
+					catch (ArgumentOutOfRangeException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); }
+					catch (HttpRequestException) { ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER); }
 				});
 				LocalHelper = false;
 				IsContentLoading = false;
@@ -226,9 +226,9 @@ namespace DesktopWeeabo2.ViewModels {
 						var itemWorkResponse = await _animeService.AddOrUpdate(_SelectedItem);
 
 						if (itemWorkResponse == DBResponse.ADDED)
-							ToastService.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view!", ToastType.SUCCESS);
+							ToastEvent.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view!", ToastType.SUCCESS);
 						else if (itemWorkResponse == DBResponse.UPDATED)
-							ToastService.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", ToastType.SUCCESS);
+							ToastEvent.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", ToastType.SUCCESS);
 						else if (itemWorkResponse == DBResponse.ERROR)
 							throw new Exception("Repo returned ERROR");
 
@@ -239,7 +239,7 @@ namespace DesktopWeeabo2.ViewModels {
 							AddLocalItemsToView();
 						}
 					} catch (Exception ex) {
-						ToastService.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+						ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
 					}
 				});
 			})
@@ -251,7 +251,7 @@ namespace DesktopWeeabo2.ViewModels {
 					try {
 						var itemDeleteResponse = await _animeService.Delete(_SelectedItem.Id);
 						if (itemDeleteResponse == DBResponse.DELETED)
-							ToastService.ShowToast($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", ToastType.SUCCESS);
+							ToastEvent.ShowToast($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", ToastType.SUCCESS);
 						else
 							throw new Exception($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
 
@@ -263,7 +263,7 @@ namespace DesktopWeeabo2.ViewModels {
 							AddLocalItemsToView();
 						}
 					} catch (Exception ex) {
-						ToastService.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+						ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
 					}
 				});
 			})

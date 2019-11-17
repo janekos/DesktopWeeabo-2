@@ -1,5 +1,5 @@
 ﻿using DesktopWeeabo2.Core.Interfaces.Jobs;
-using DesktopWeeabo2.Infrastructure.DomainServices;
+using DesktopWeeabo2.Infrastructure.Events;
 using DesktopWeeabo2.Infrastructure.Jobs;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
@@ -8,24 +8,60 @@ using System.Windows.Forms;
 namespace DesktopWeeabo2.ViewModels {
 
 	public class SettingsViewModel : BaseViewModel {
-		private readonly IOService _ioService;
+
 		private readonly IRunJobs<DWOneImportJob> dwOneImportJob;
-		private bool AreUpdatesRunning = false;
+		private readonly IRunJobs<UpdateDbEntries> updateDbEntriesJob;
 
-		public SettingsViewModel(IOService ioService, IRunJobs<DWOneImportJob> dwOneImportJob) {
-			_ioService = ioService;
+		public SettingsViewModel(IRunJobs<DWOneImportJob> dwOneImportJob, IRunJobs<UpdateDbEntries> updateDbEntriesJob) {
 			this.dwOneImportJob = dwOneImportJob;
+			this.updateDbEntriesJob = updateDbEntriesJob;
 
-			LogService.LogLineReceived += LogLineReceivedFunc;
+			LogEvent.LogLineReceived += LogLineReceivedFunc;
 		}
 
 		~SettingsViewModel() {
-			LogService.LogLineReceived -= LogLineReceivedFunc;
+			LogEvent.LogLineReceived -= LogLineReceivedFunc;
 		}
 
-		public bool DoesAppBackUp { get; set; }
-		public bool IsLightMode { get; set; }
-		public bool DoesUpdateOnStartup { get; set; }
+		private bool _DoesAppBackUp { get; set; } = true;
+
+		public bool DoesAppBackUp {
+			get { return _DoesAppBackUp; }
+			set {
+				_DoesAppBackUp = value;
+				RaisePropertyChanged("DoesAppBackUp");
+			}
+		}
+
+		private bool _IsLightMode { get; set; } = false;
+
+		public bool IsLightMode {
+			get { return _IsLightMode; }
+			set {
+				_IsLightMode = value;
+				RaisePropertyChanged("IsLightMode");
+			}
+		}
+
+		private bool _DoesUpdateOnStartup { get; set; } = true;
+
+		public bool DoesUpdateOnStartup {
+			get { return _DoesUpdateOnStartup; }
+			set {
+				_DoesUpdateOnStartup = value;
+				RaisePropertyChanged("DoesUpdateOnStartup");
+			}
+		}
+
+		private bool _ShouldUpdateOnlyUnfinishedEntries { get; set; } = true;
+
+		public bool ShouldUpdateOnlyUnfinishedEntries {
+			get { return _ShouldUpdateOnlyUnfinishedEntries; }
+			set {
+				_ShouldUpdateOnlyUnfinishedEntries = value;
+				RaisePropertyChanged("ShouldUpdateOnlyUnfinishedEntries");
+			}
+		}
 
 		private string _PathToDW1Data { get; set; }
 
@@ -38,9 +74,9 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		public string Log {
-			get { return LogService.LogContent; }
+			get { return LogEvent.LogContent; }
 			set {
-				LogService.LogContent = value != null ? LogService.LogContent + $"{value}{Environment.NewLine}" : "";
+				LogEvent.LogContent = value != null ? LogEvent.LogContent + $"{value}{Environment.NewLine}" : "";
 				RaisePropertyChanged("Log");
 			}
 		}
@@ -48,7 +84,7 @@ namespace DesktopWeeabo2.ViewModels {
 		private void LogLineReceivedFunc(string message) => Log = message;
 
 		public DelegateCommand ClearLog => new DelegateCommand(new Action(() => {
-			LogService.LogMessage("a line");
+			LogEvent.LogMessage("a line");
 			//Log = null;
 		}));
 
@@ -74,17 +110,14 @@ namespace DesktopWeeabo2.ViewModels {
 				}
 		}));
 
-		public DelegateCommand ImportFromDW1 => new DelegateCommand(() => {
-			if (!string.IsNullOrEmpty(PathToDW1Data))
-				dwOneImportJob.RunJob(PathToDW1Data);
-				//_ioService.ImportDW1Data(PathToDW1Data);
+		public DelegateCommand ImportFromDW1 => new DelegateCommand(async () => {
+			if (!string.IsNullOrEmpty(PathToDW1Data)) {
+				await dwOneImportJob.RunJob(PathToDW1Data);
+			}
 		});
 
-		public DelegateCommand UpdateEntries => new DelegateCommand(() => {
-			if (!AreUpdatesRunning) {
-				AreUpdatesRunning = true;
-				_ioService.UpdateDbEntries();
-			}
+		public DelegateCommand UpdateEntries => new DelegateCommand(async () => {
+			await updateDbEntriesJob.RunJob(ShouldUpdateOnlyUnfinishedEntries);
 		});
 	}
 }

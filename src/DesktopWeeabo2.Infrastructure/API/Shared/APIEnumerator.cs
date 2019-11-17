@@ -79,6 +79,9 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 
 		public async Task<T[]> GetByMalIdSet(int[] malIds) =>
 			GetItems(await APIQueries.GetByMALIds(ApiUtils.APIGetByMalIdsVariables(malIds)));
+		
+		public async Task<T[]> GetByIdSet(int[] ids, bool isAnime = true) =>
+			GetItems(await APIQueries.GetByIds(ApiUtils.APIGetByIdsVariables(ids), isAnime));
 
 		public async Task<T[]> GetCurrentSearchSet() =>
 			GetItems(await APIQueries.Search(ApiUtils.APISearchVariables(_SearchString, CurrentPage, _SortBy, _Genres, _IsAdult), _Type));
@@ -89,6 +92,6 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 			TotalItems = 0;
 		}
 
-		protected virtual T[] GetItems(string result) => new T[0];
+		protected abstract T[] GetItems(string result);
 	}
 }

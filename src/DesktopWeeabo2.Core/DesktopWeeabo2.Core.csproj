@@ -74,15 +74,12 @@
     <Compile Include="Enums\SortLocation.cs" />
     <Compile Include="Enums\StatusView.cs" />
     <Compile Include="Enums\ToastType.cs" />
-    <Compile Include="Enums\UpdateMethod.cs" />
     <Compile Include="GlobalConfig.cs" />
-    <Compile Include="Interfaces\API\IHandleWebQueries.cs" />
     <Compile Include="Interfaces\Jobs\IRunJobs.cs" />
     <Compile Include="Interfaces\Repositories\IAnimeRepository.cs" />
     <Compile Include="Interfaces\Repositories\IMangaRepository.cs" />
     <Compile Include="Interfaces\Repositories\Shared\IDefineRepositories.cs" />
     <Compile Include="Interfaces\Services\IAnimeService.cs" />
-    <Compile Include="Interfaces\Services\IHandleIO.cs" />
     <Compile Include="Interfaces\Services\IMangaService.cs" />
     <Compile Include="Interfaces\Services\Shared\IDefineServices.cs" />
     <Compile Include="Models\AnimeModel.cs" />
