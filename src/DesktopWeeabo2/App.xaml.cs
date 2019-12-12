@@ -8,7 +8,6 @@ using DesktopWeeabo2.Infrastructure.Services;
 using DesktopWeeabo2.ViewModels;
 using System.Windows;
 using Unity;
-using Unity.Lifetime;
 
 namespace DesktopWeeabo2 {
 
@@ -16,17 +15,17 @@ namespace DesktopWeeabo2 {
 
 		private void Application_Startup(object sender, StartupEventArgs e) {
 			IUnityContainer container = new UnityContainer();
+			
+			//container.RegisterType<EntriesContext>(TypeLifetime.Scoped);
 
-			container.RegisterType<EntriesContext>(new TransientLifetimeManager());
+			container.RegisterType<IAnimeRepository, AnimeRepository>(TypeLifetime.Scoped);
+			container.RegisterType<IMangaRepository, MangaRepository>(TypeLifetime.Scoped);
 
-			container.RegisterType<IAnimeRepository, AnimeRepository>(new TransientLifetimeManager());
-			container.RegisterType<IMangaRepository, MangaRepository>(new TransientLifetimeManager());
+			container.RegisterType<IAnimeService, AnimeService>(TypeLifetime.Scoped);
+			container.RegisterType<IMangaService, MangaService>(TypeLifetime.Scoped);
 
-			container.RegisterType<IAnimeService, AnimeService>(new TransientLifetimeManager());
-			container.RegisterType<IMangaService, MangaService>(new TransientLifetimeManager());
-
-			container.RegisterType<IRunJobs<DWOneImportJob>, DWOneImportJob>(new TransientLifetimeManager());
-			container.RegisterType<IRunJobs<UpdateDbEntries>, UpdateDbEntries>(new TransientLifetimeManager());
+			container.RegisterType<IRunJobs<DWOneImportJob>, DWOneImportJob>(TypeLifetime.Scoped);
+			container.RegisterType<IRunJobs<UpdateDbEntries>, UpdateDbEntries>(TypeLifetime.Scoped);
 
 			container.RegisterSingleton<MainWindowViewModel>();
 			container.RegisterSingleton<AnimeViewModel>();

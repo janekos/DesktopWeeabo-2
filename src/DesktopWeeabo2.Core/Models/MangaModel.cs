@@ -1,6 +1,5 @@
 ﻿using DesktopWeeabo2.Core.API.Models;
 using DesktopWeeabo2.Core.API.Models.JsonTypes;
-using DesktopWeeabo2.Core.Entities;
 using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Models.Shared;
 using Newtonsoft.Json;
@@ -40,39 +39,6 @@ namespace DesktopWeeabo2.Core.Models {
 				Type = apiModel.Type.ToEnum<ContentType>(),
 				Format = apiModel.Format.ToEnum<ContentFormat>(),
 				Status = apiModel.Status.ToEnum<ContentStatus>()
-			};
-		}
-
-		public static implicit operator MangaModel(MangaEntity entity) {
-			var title = new Complex.Title {
-				TitleEnglish = entity.TitleEnglish,
-				TitleNative = entity.TitleNative,
-				TitleRomaji = entity.TitleRomaji
-			};
-
-			return new MangaModel() {
-				Title = title,
-				Id = entity.Id,
-				IdMal = entity.IdMal,
-				Genres = entity.Genres.Split('|'),
-				IsAdult = entity.IsAdult,
-				Volumes = entity.Volumes,
-				Synonyms = entity.Synonyms.Split('|'),
-				Chapters = entity.Chapters,
-				DateAdded = entity.DateAdded,
-				CoverImage = entity.CoverImage,
-				Type = (ContentType) entity.Type,
-				Description = entity.Description,
-				RereadCount = entity.RereadCount,
-				AverageScore = entity.AverageScore,
-				ReadPriority = entity.ReadPriority,
-				ExternalLinks = JsonConvert.DeserializeObject<List<ExternalLink>>(entity.ExternalLinks),
-				PersonalScore = entity.PersonalScore,
-				ReadingStatus = entity.ReadingStatus,
-				Format = (ContentFormat) entity.Format,
-				Status = (ContentStatus) entity.Status,
-				PersonalReview = entity.PersonalReview,
-				CurrentChapter = entity.CurrentChapter
 			};
 		}
 	}

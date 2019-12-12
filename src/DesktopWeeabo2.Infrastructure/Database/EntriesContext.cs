@@ -1,31 +1,42 @@
 ﻿using DesktopWeeabo2.Core;
-using DesktopWeeabo2.Core.Entities;
-using System.Data.Entity;
-using System.Data.Entity.Core.Common;
-using System.Data.SQLite;
-using System.Data.SQLite.EF6;
+using DesktopWeeabo2.Core.Models;
+using LiteDB;
+using System.IO;
 
 namespace DesktopWeeabo2.Infrastructure.Database {
 
-	// amen
-	// https://stackoverflow.com/questions/31780749/unable-to-determine-the-provider-name-for-provider-factory-of-type-system-data
-	public class SQLiteConfiguration : DbConfiguration {
+	public class EntriesContext {
 
-		public SQLiteConfiguration() {
-			SetProviderFactory("System.Data.SQLite", SQLiteFactory.Instance);
-			SetProviderFactory("System.Data.SQLite.EF6", SQLiteProviderFactory.Instance);
-			SetProviderServices("System.Data.SQLite", (DbProviderServices) SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
-		}
-	}
+		private readonly LiteDatabase db;
 
-	public class EntriesContext : DbContext {
-
-		public EntriesContext() : base(new SQLiteConnection() { ConnectionString = $"Data Source={GlobalConfig.AppDir}\\entries.db" }, true) {
-			DbConfiguration.SetConfiguration(new SQLiteConfiguration());
-			System.Data.Entity.Database.SetInitializer<EntriesContext>(null);
+		public EntriesContext() {
+			db = new LiteDatabase($"{GlobalConfig.AppDir}\\entries.db");
 		}
 
-		public DbSet<AnimeEntity> AnimeItems { get; set; }
-		public DbSet<MangaEntity> MangaItems { get; set; }
+		public LiteCollection<AnimeModel> AnimeItems {
+			get {
+				try {
+					var returnable = db.GetCollection<AnimeModel>("Animes");
+					returnable.EnsureIndex(ae => ae.Id);
+
+					return returnable;
+				} catch (DirectoryNotFoundException) {
+					return null;
+				}
+			}
+		}
+
+		public LiteCollection<MangaModel> MangaItems {
+			get {
+				try {
+					var returnable = db.GetCollection<MangaModel>("Mangas");
+					returnable.EnsureIndex(me => me.Id);
+
+					return returnable;
+				} catch (DirectoryNotFoundException) {
+					return null;
+				}
+			}
+		}
 	}
 }

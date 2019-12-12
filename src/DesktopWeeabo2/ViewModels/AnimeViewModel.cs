@@ -67,9 +67,9 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		public AnimeViewModel(IAnimeService animeService, AnimeAPIEnumerator animeAPIEnumerator) : base() {
+		public AnimeViewModel(IAnimeService animeService) : base() {
 			_animeService = animeService;
-			_animeAPIEnumerator = animeAPIEnumerator;
+			_animeAPIEnumerator = new AnimeAPIEnumerator();
 
 			BindingOperations.EnableCollectionSynchronization(AnimeItems, _CollectionLock);
 		}
@@ -173,42 +173,38 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public DelegateCommand AddOnlineItemsToView => new DelegateCommand(
 			new Action(async () => {
-				if (LocalHelper)
-					return;
+				if (LocalHelper) return;
+
 				LocalHelper = true;
 				IsContentLoading = true;
-				await Task.Run(async () => {
-					_animeAPIEnumerator.SearchString = SearchText;
-					_animeAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
-					_animeAPIEnumerator.IsAdult = IsAdult;
-					_animeAPIEnumerator.Genres = SearchModel.GenresList.Where(item => item.IsSelected).Select(item => item.Name).ToArray();
-					try {
-						var onlineItems = await _animeAPIEnumerator.GetCurrentSearchSet();
-						var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
+				_animeAPIEnumerator.SearchString = SearchText;
+				_animeAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
+				_animeAPIEnumerator.IsAdult = IsAdult;
+				_animeAPIEnumerator.Genres = SearchModel.GenresList.Where(item => item.IsSelected).Select(item => item.Name).ToArray();
+				try {
+					var onlineItems = await _animeAPIEnumerator.GetCurrentSearchSet();
+					var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
 
-						foreach (AnimeModel localItem in _animeService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id))) {
-							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItem.Id);
-							currentItem.DateAdded = localItem.DateAdded;
-							currentItem.RewatchCount = localItem.RewatchCount;
-							currentItem.PersonalScore = localItem.PersonalScore;
-							currentItem.ViewingStatus = localItem.ViewingStatus;
-							currentItem.WatchPriority = localItem.WatchPriority;
-							currentItem.PersonalReview = localItem.PersonalReview;
-							currentItem.CurrentEpisode = localItem.CurrentEpisode;
-						}
-
-						AnimeItems.AddRange(onlineItems);
-						TotalItems = AnimeItems.Count;
-
-						APIHasNextPage = _animeAPIEnumerator.HasNextPage;
-						TotalAPIItems = $" / {_animeAPIEnumerator.TotalItems}";
-						APICurrentPage = _animeAPIEnumerator.CurrentPage - 1;
-						TotalAPIPages = (int) Math.Ceiling(((decimal) _animeAPIEnumerator.TotalItems / 50));
+					foreach (AnimeModel localItem in _animeService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id))) {
+						var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItem.Id);
+						currentItem.DateAdded = localItem.DateAdded;
+						currentItem.RewatchCount = localItem.RewatchCount;
+						currentItem.PersonalScore = localItem.PersonalScore;
+						currentItem.ViewingStatus = localItem.ViewingStatus;
+						currentItem.WatchPriority = localItem.WatchPriority;
+						currentItem.PersonalReview = localItem.PersonalReview;
+						currentItem.CurrentEpisode = localItem.CurrentEpisode;
 					}
-					catch (ArgumentNullException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); }
-					catch (ArgumentOutOfRangeException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); }
-					catch (HttpRequestException) { ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER); }
-				});
+
+					AnimeItems.AddRange(onlineItems);
+					TotalItems = AnimeItems.Count;
+
+					APIHasNextPage = _animeAPIEnumerator.HasNextPage;
+					TotalAPIItems = $" / {_animeAPIEnumerator.TotalItems}";
+					APICurrentPage = _animeAPIEnumerator.CurrentPage - 1;
+					TotalAPIPages = (int) Math.Ceiling(((decimal) _animeAPIEnumerator.TotalItems / 50));
+				} catch (ArgumentNullException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (ArgumentOutOfRangeException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (HttpRequestException) { ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER); }
+				
 				LocalHelper = false;
 				IsContentLoading = false;
 			})
@@ -218,54 +214,51 @@ namespace DesktopWeeabo2.ViewModels {
 			new Action<object>((e) => {
 				if (e.ToString().Equals("PersonalEditStart"))
 					return;
-				Task.Run(async () => {
-					try {
-						SelectedItemViewingStatus = PressedTransferButton.Length > 0 ? PressedTransferButton : SelectedItemViewingStatus;
-						if (_SelectedItem.DateAdded == null)
-							_SelectedItem.DateAdded = DateTime.Now;
-						var itemWorkResponse = await _animeService.AddOrUpdate(_SelectedItem);
 
-						if (itemWorkResponse == DBResponse.ADDED)
-							ToastEvent.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view!", ToastType.SUCCESS);
-						else if (itemWorkResponse == DBResponse.UPDATED)
-							ToastEvent.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", ToastType.SUCCESS);
-						else if (itemWorkResponse == DBResponse.ERROR)
-							throw new Exception("Repo returned ERROR");
+				try {
+					SelectedItemViewingStatus = PressedTransferButton.Length > 0 ? PressedTransferButton : SelectedItemViewingStatus;
+					if (_SelectedItem.DateAdded == null)
+						_SelectedItem.DateAdded = DateTime.Now;
+					var itemWorkResponse = _animeService.AddOrUpdate(_SelectedItem);
 
-						if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
-							RenewView(true);
-						} else {
-							RenewView();
-							AddLocalItemsToView();
-						}
-					} catch (Exception ex) {
-						ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+					if (itemWorkResponse == DBResponse.ADDED)
+						ToastEvent.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view!", ToastType.SUCCESS);
+					else if (itemWorkResponse == DBResponse.UPDATED)
+						ToastEvent.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", ToastType.SUCCESS);
+					else if (itemWorkResponse == DBResponse.ERROR)
+						throw new Exception("Repo returned ERROR");
+
+					if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
+						RenewView(true);
+					} else {
+						RenewView();
+						AddLocalItemsToView();
 					}
-				});
+				} catch (Exception ex) {
+					ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+				}
 			})
 		);
 
 		public DelegateCommand DeleteItemFromDb => new DelegateCommand(
-			new Action(async () => {
-				await Task.Run(async () => {
-					try {
-						var itemDeleteResponse = await _animeService.Delete(_SelectedItem.Id);
-						if (itemDeleteResponse == DBResponse.DELETED)
-							ToastEvent.ShowToast($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", ToastType.SUCCESS);
-						else
-							throw new Exception($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
+			new Action(() => {
+				try {
+					var itemDeleteResponse = _animeService.Delete(_SelectedItem.Id);
+					if (itemDeleteResponse == DBResponse.DELETED)
+						ToastEvent.ShowToast($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", ToastType.SUCCESS);
+					else
+						throw new Exception($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
 
-						if (CurrentView == StatusView.ONLINE) {
-							SelectedItemViewingStatus = null;
-							RenewView(true);
-						} else {
-							RenewView();
-							AddLocalItemsToView();
-						}
-					} catch (Exception ex) {
-						ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+					if (CurrentView == StatusView.ONLINE) {
+						SelectedItemViewingStatus = null;
+						RenewView(true);
+					} else {
+						RenewView();
+						AddLocalItemsToView();
 					}
-				});
+				} catch (Exception ex) {
+					ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+				}
 			})
 		);
 	}

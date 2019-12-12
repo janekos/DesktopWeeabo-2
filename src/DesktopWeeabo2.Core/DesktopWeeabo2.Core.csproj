@@ -62,9 +62,6 @@
     <Compile Include="API\Models\Shared\BaseApiModel.cs" />
     <Compile Include="API\Models\JsonTypes\Title.cs" />
     <Compile Include="API\Models\Shared\ResultWrappers.cs" />
-    <Compile Include="Entities\AnimeEntity.cs" />
-    <Compile Include="Entities\MangaEntity.cs" />
-    <Compile Include="Entities\Shared\BaseEntity.cs" />
     <Compile Include="Enums\ContentFormat.cs" />
     <Compile Include="Enums\ContentStatus.cs" />
     <Compile Include="Enums\ContentType.cs" />

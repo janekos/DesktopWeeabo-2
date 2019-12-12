@@ -1,75 +1,62 @@
-﻿using DesktopWeeabo2.Core.Entities.Shared;
-using DesktopWeeabo2.Core.Enums;
-using DesktopWeeabo2.Core.Interfaces.Repositories.Shared;
-using DesktopWeeabo2.Infrastructure.Database;
+﻿using DesktopWeeabo2.Core.Interfaces.Repositories.Shared;
+using DesktopWeeabo2.Core.Models;
+using DesktopWeeabo2.Core.Models.Shared;
+using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
 
-	public abstract class BaseRepository<T> : IDefineRepositories<T> where T : BaseEntity {
-		protected readonly EntriesContext context;
+	public abstract class BaseRepository<T> : IDefineRepositories<T> where T : BaseModel {
+		protected readonly LiteCollection<T> collection;
 
-		public BaseRepository(EntriesContext db) {
-			context = db;
+		protected BaseRepository(LiteCollection<T> collection) {
+			this.collection = collection;
 		}
 
-		public async Task<int> Add(T item) {
-			context.Set<T>().Add(item);
-			return await context.SaveChangesAsync();
-		}
+		public int Add(T item) =>
+			collection.Insert(item);
 
-		public async Task<int> AddRange(IEnumerable<T> items) {
-			var a = items.ToList();
-			context.Set<T>().AddRange(a);
-			return await context.SaveChangesAsync();
-		}
+		public int AddRange(IEnumerable<T> items) =>
+			collection.InsertBulk(items);		
 
-		public async Task<int> UpdateRange(IEnumerable<T> dbItems, IEnumerable<T> items) {
-			await DeleteRange(dbItems);
-			return await AddRange(items);
-		}
+		public int UpdateRange(IEnumerable<T> items) =>
+			collection.Update(items);
 
-		public async Task<int> Update(T dbItem, T item) {
-			await Delete(dbItem);
-			return await Add(item);
-		}
+		public int Update(T item) =>
+			collection.Update(item) ? 1 : 0;
 
-		public async Task<int> Delete(int id) {
-			var item = Get(id);
-			if (item == null)
-				return 0;
+		public int Upsert(T item) =>
+			collection.Upsert(item) ? 1 : 0;
 
-			return await Delete(item);
-		}
+		public int UpsertRange(IEnumerable<T> items) =>
+			collection.Upsert(items);
 
-		public async Task<int> Delete(T item) {
-			context.Set<T>().Remove(item);
-			return await context.SaveChangesAsync();
-		}
+		public int Delete(int id) =>
+			collection.Delete(id) ? 1 : 0;
 
-		public async Task<int> DeleteRange(IEnumerable<T> items) {
-			context.Set<T>().RemoveRange(items);
-			return await context.SaveChangesAsync();
+		public int Delete(T item) =>
+			Delete(item.Id);
+
+		public int DeleteRange(IEnumerable<T> items) {
+			var ids = items.Select(item => item.Id);
+			return collection.Delete(q => ids.Contains(q.Id));
 		}
 
 		public T Get(int id) =>
-			 context.Set<T>().Where(q => q.Id == id).FirstOrDefault();
+			 collection.FindById(id);
 
-		public IEnumerable<T> Find(Func<T, bool> expression, bool isNoTracking = true) {
-			if(isNoTracking) return context.Set<T>().AsNoTracking().Where(expression);
-			return context.Set<T>().Where(expression);
-		}
+		public IEnumerable<T> Find(Expression<Func<T, bool>> expression) =>
+			collection.Find(expression);
 
-		public IEnumerable<T> Find(Func<T, bool> expression, Func<T, object> orderBy, bool isDescending = false, bool isNoTracking = true) =>
+		public IEnumerable<T> Find(Expression<Func<T, bool>> expression, Func<T, object> orderBy, bool isDescending = false) =>
 			isDescending
-				? Find(expression, isNoTracking).OrderByDescending(orderBy)
-				: Find(expression, isNoTracking).OrderBy(orderBy);
+				? Find(expression) .OrderByDescending(orderBy)
+				: Find(expression).OrderBy(orderBy);
 
 		public IEnumerable<T> GetAll() =>
-			context.Set<T>();
+			collection.FindAll();
 	}
 }

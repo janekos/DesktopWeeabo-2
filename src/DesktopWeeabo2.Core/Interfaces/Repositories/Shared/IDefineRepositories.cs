@@ -1,31 +1,35 @@
-﻿using DesktopWeeabo2.Core.Entities.Shared;
+﻿using DesktopWeeabo2.Core.Models.Shared;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace DesktopWeeabo2.Core.Interfaces.Repositories.Shared {
 
-	public interface IDefineRepositories<T> where T : BaseEntity {
+	public interface IDefineRepositories<T> where T : BaseModel {
 
-		Task<int> Add(T item);
+		int Add(T item);
 
-		Task<int> AddRange(IEnumerable<T> items);
+		int AddRange(IEnumerable<T> items);
 
-		Task<int> Update(T dbItem, T item);
+		int Update(T item);
 
-		Task<int> UpdateRange(IEnumerable<T> dbItems, IEnumerable<T> items);
+		int UpdateRange(IEnumerable<T> items);
 
-		Task<int> Delete(int id);
+		int Upsert(T item);
 
-		Task<int> Delete(T item);
+		int UpsertRange(IEnumerable<T> items);
 
-		Task<int> DeleteRange(IEnumerable<T> items);
+		int Delete(int id);
+
+		int Delete(T item);
+
+		int DeleteRange(IEnumerable<T> items);
 
 		T Get(int id);
 		IEnumerable<T> GetAll();
 
-		IEnumerable<T> Find(Func<T, bool> expression, bool isNoTracking = true);
+		IEnumerable<T> Find(Expression<Func<T, bool>> expression);
 
-		IEnumerable<T> Find(Func<T, bool> expression, Func<T, object> orderBy, bool isDescending = false, bool isNoTracking = true);
+		IEnumerable<T> Find(Expression<Func<T, bool>> expression, Func<T, object> orderBy, bool isDescending = false);
 	}
 }

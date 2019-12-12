@@ -67,9 +67,9 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
-		public MangaViewModel(IMangaService mangaService, MangaAPIEnumerator mangaAPIEnumerator) : base() {
+		public MangaViewModel(IMangaService mangaService) : base() {
 			_mangaService = mangaService;
-			_mangaAPIEnumerator = mangaAPIEnumerator;
+			_mangaAPIEnumerator = new MangaAPIEnumerator();
 
 			BindingOperations.EnableCollectionSynchronization(MangaItems, _CollectionLock);
 		}
@@ -175,35 +175,35 @@ namespace DesktopWeeabo2.ViewModels {
 					return;
 				LocalHelper = true;
 				IsContentLoading = true;
-				await Task.Run(async () => {
-					_mangaAPIEnumerator.SearchString = SearchText;
-					_mangaAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
-					_mangaAPIEnumerator.IsAdult = IsAdult;
-					_mangaAPIEnumerator.Genres = SearchModel.GenresList.Where(item => item.IsSelected).Select(item => item.Name).ToArray();
-					try {
-						var onlineItems = await _mangaAPIEnumerator.GetCurrentSearchSet();
-						var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
 
-						foreach (MangaModel localItem in _mangaService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id))) {
-							var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItem.Id);
-							currentItem.DateAdded = localItem.DateAdded;
-							currentItem.RereadCount = localItem.RereadCount;
-							currentItem.ReadPriority = localItem.ReadPriority;
-							currentItem.PersonalScore = localItem.PersonalScore;
-							currentItem.ReadingStatus = localItem.ReadingStatus;
-							currentItem.PersonalReview = localItem.PersonalReview;
-							currentItem.CurrentChapter = localItem.CurrentChapter;
-						}
+				_mangaAPIEnumerator.SearchString = SearchText;
+				_mangaAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
+				_mangaAPIEnumerator.IsAdult = IsAdult;
+				_mangaAPIEnumerator.Genres = SearchModel.GenresList.Where(item => item.IsSelected).Select(item => item.Name).ToArray();
+				try {
+					var onlineItems = await _mangaAPIEnumerator.GetCurrentSearchSet();
+					var onlineItemsIds = onlineItems.Select(onlineItem => onlineItem.Id);
 
-						MangaItems.AddRange(onlineItems);
-						TotalItems = MangaItems.Count;
+					foreach (MangaModel localItem in _mangaService.GetCustom(localItem => onlineItemsIds.Contains(localItem.Id))) {
+						var currentItem = onlineItems.FirstOrDefault(onlineItem => onlineItem.Id == localItem.Id);
+						currentItem.DateAdded = localItem.DateAdded;
+						currentItem.RereadCount = localItem.RereadCount;
+						currentItem.ReadPriority = localItem.ReadPriority;
+						currentItem.PersonalScore = localItem.PersonalScore;
+						currentItem.ReadingStatus = localItem.ReadingStatus;
+						currentItem.PersonalReview = localItem.PersonalReview;
+						currentItem.CurrentChapter = localItem.CurrentChapter;
+					}
 
-						APIHasNextPage = _mangaAPIEnumerator.HasNextPage;
-						TotalAPIItems = $" / {_mangaAPIEnumerator.TotalItems}";
-						APICurrentPage = _mangaAPIEnumerator.CurrentPage - 1;
-						TotalAPIPages = (int) Math.Ceiling(((decimal) _mangaAPIEnumerator.TotalItems / 50));
-					} catch (ArgumentNullException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (ArgumentOutOfRangeException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (HttpRequestException) { ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER); }
-				});
+					MangaItems.AddRange(onlineItems);
+					TotalItems = MangaItems.Count;
+
+					APIHasNextPage = _mangaAPIEnumerator.HasNextPage;
+					TotalAPIItems = $" / {_mangaAPIEnumerator.TotalItems}";
+					APICurrentPage = _mangaAPIEnumerator.CurrentPage - 1;
+					TotalAPIPages = (int) Math.Ceiling(((decimal) _mangaAPIEnumerator.TotalItems / 50));
+				} catch (ArgumentNullException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (ArgumentOutOfRangeException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (HttpRequestException) { ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER); }
+
 				LocalHelper = false;
 				IsContentLoading = false;
 			})
@@ -213,54 +213,51 @@ namespace DesktopWeeabo2.ViewModels {
 			new Action<object>((e) => {
 				if (e.ToString().Equals("PersonalEditStart"))
 					return;
-				Task.Run(async () => {
-					try {
-						SelectedItemReadingStatus = PressedTransferButton.Length > 0 ? PressedTransferButton : SelectedItemReadingStatus;
-						if (_SelectedItem.DateAdded == null)
-							_SelectedItem.DateAdded = DateTime.Now;
-						var itemWorkResponse = await _mangaService.AddOrUpdate(_SelectedItem);
 
-						if (itemWorkResponse == DBResponse.ADDED)
-							ToastEvent.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{SelectedItemReadingStatus}' view!", ToastType.SUCCESS);
-						else if (itemWorkResponse == DBResponse.UPDATED)
-							ToastEvent.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", ToastType.SUCCESS);
-						else if (itemWorkResponse == DBResponse.ERROR)
-							throw new Exception("Repo returned ERROR");
+				try {
+					SelectedItemReadingStatus = PressedTransferButton.Length > 0 ? PressedTransferButton : SelectedItemReadingStatus;
+					if (_SelectedItem.DateAdded == null)
+						_SelectedItem.DateAdded = DateTime.Now;
+					var itemWorkResponse = _mangaService.AddOrUpdate(_SelectedItem);
 
-						if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
-							RenewView(true);
-						} else {
-							RenewView();
-							AddLocalItemsToView();
-						}
-					} catch (Exception ex) {
-						ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+					if (itemWorkResponse == DBResponse.ADDED)
+						ToastEvent.ShowToast($"Succesfully saved '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{SelectedItemReadingStatus}' view!", ToastType.SUCCESS);
+					else if (itemWorkResponse == DBResponse.UPDATED)
+						ToastEvent.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", ToastType.SUCCESS);
+					else if (itemWorkResponse == DBResponse.ERROR)
+						throw new Exception("Repo returned ERROR");
+
+					if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
+						RenewView(true);
+					} else {
+						RenewView();
+						AddLocalItemsToView();
 					}
-				});
+				} catch (Exception ex) {
+					ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+				}
 			})
 		);
 
 		public DelegateCommand DeleteItemFromDb => new DelegateCommand(
-			new Action(async () => {
-				await Task.Run(async () => {
-					try {
-						var itemDeleteResponse = await _mangaService.Delete(_SelectedItem.Id);
-						if (itemDeleteResponse == DBResponse.DELETED)
-							ToastEvent.ShowToast($"Manga '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{SelectedItemReadingStatus}' view was deleted succesfully!", ToastType.SUCCESS);
-						else
-							throw new Exception($"Manga '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{SelectedItemReadingStatus}' view.");
+			new Action(() => {
+				try {
+					var itemDeleteResponse = _mangaService.Delete(_SelectedItem.Id);
+					if (itemDeleteResponse == DBResponse.DELETED)
+						ToastEvent.ShowToast($"Manga '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{SelectedItemReadingStatus}' view was deleted succesfully!", ToastType.SUCCESS);
+					else
+						throw new Exception($"Manga '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{SelectedItemReadingStatus}' view.");
 
-						if (CurrentView == StatusView.ONLINE) {
-							SelectedItemReadingStatus = null;
-							RenewView(true);
-						} else {
-							RenewView();
-							AddLocalItemsToView();
-						}
-					} catch (Exception ex) {
-						ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+					if (CurrentView == StatusView.ONLINE) {
+						SelectedItemReadingStatus = null;
+						RenewView(true);
+					} else {
+						RenewView();
+						AddLocalItemsToView();
 					}
-				});
+				} catch (Exception ex) {
+					ToastEvent.ShowToast($"Something went wrong: {ex.Message}.", ToastType.DANGER);
+				}
 			})
 		);
 	}

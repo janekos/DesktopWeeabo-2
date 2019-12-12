@@ -1,6 +1,4 @@
-﻿using DesktopWeeabo2.Core.Entities;
-using DesktopWeeabo2.Core.Entities.Shared;
-using DesktopWeeabo2.Core.Enums;
+﻿using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Interfaces.Repositories.Shared;
 using DesktopWeeabo2.Core.Interfaces.Services.Shared;
 using DesktopWeeabo2.Core.Models;
@@ -8,55 +6,52 @@ using DesktopWeeabo2.Core.Models.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
 
 namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 
-	public abstract class BaseService<T, U> : IDefineServices<T, U> where T : BaseModel where U : BaseEntity {
-		private readonly IDefineRepositories<U> repo;
+	public abstract class BaseService<T> : IDefineServices<T> where T : BaseModel {
+		private readonly IDefineRepositories<T> repo;
 
-		public BaseService(IDefineRepositories<U> repo) {
+		public BaseService(IDefineRepositories<T> repo) {
 			this.repo = repo;
 		}
 
-		public async Task<DBResponse> AddOrUpdate(T model) {
-			var entity = repo.Get(model.Id);
-
-			if (entity == null) {
-				await repo.Add((U) Cast(model));
+		public DBResponse AddOrUpdate(T model) {
+			if (repo.Update(model) == 0) {
+				repo.Add(model);
 				return DBResponse.ADDED;
 			} else {
-				await repo.Update(entity, (U) Cast(model));
 				return DBResponse.UPDATED;
 			}
 		}
 
-		public async Task<DBResponse> AddOrUpdateRange(IEnumerable<T> entities, Action<object> onActionCallback = null) {
+		public DBResponse AddOrUpdateRange(IEnumerable<T> entities, Action<object> onActionCallback = null) {
 			var allIds = entities.Select(e => e.Id).ToList();
 			var existingIds = repo.Find(e => allIds.Contains(e.Id)).Select(e => e.Id).ToList();
 
 			if (existingIds.Count() > 0) {
 				// update existing entites
-				IEnumerable<U> dbEntities = repo.Find(e => existingIds.Contains(e.Id), isNoTracking: false);
-				List<U> entitiesToUpdate = entities.Where(e => existingIds.Contains(e.Id)).Select(e => (U) Cast(e)).ToList();
+				var dbEntities = repo.Find(e => existingIds.Contains(e.Id));
+				var entitiesToUpdate = entities.Where(e => existingIds.Contains(e.Id)).ToList();
 
 				CopyPersonalVariablesToNewEntites(dbEntities, ref entitiesToUpdate);
-				
+
 				onActionCallback(entitiesToUpdate.Count());
-				await repo.UpdateRange(dbEntities, entitiesToUpdate);
+				repo.UpdateRange(entitiesToUpdate);
 
 				// add new entites
-				var entitiesToAdd = entities.Where(e => !existingIds.Contains(e.Id)).Select(e => (U) Cast(e));
+				var entitiesToAdd = entities.Where(e => !existingIds.Contains(e.Id));
 				onActionCallback(entitiesToAdd.Count());
-				await repo.AddRange(entitiesToAdd);
+				repo.AddRange(entitiesToAdd);
 
-				return DBResponse.UPDATED; 
+				return DBResponse.UPDATED;
 			}
 
 			if (entities.Count() > 0) {
 
 				onActionCallback(entities.Count());
-				await repo.AddRange(entities.Select(e => (U) Cast(e)));
+				repo.AddRange(entities);
 
 				return DBResponse.ADDED;
 			}
@@ -64,40 +59,50 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 			return DBResponse.NOCHANGES;
 		}
 
-		public async Task<DBResponse> Delete(int id) {
-			var rowsChanged = await repo.Delete(id);
-			return rowsChanged > 0 ? DBResponse.DELETED : DBResponse.NOCHANGES;
-		}
+		public DBResponse Delete(int id) =>
+			repo.Delete(id) > 0
+				? DBResponse.DELETED
+				: DBResponse.NOCHANGES;
 
 		public IEnumerable<T> GetBySearchModelAndCurrentView(SearchModel search, string currentView) {
 			IEnumerable<string> selectedGenres = search.GenresList.Where(genre => genre.IsSelected).Select(genre => genre.Name);
 
 			return repo.Find(
-				expression: item => IsAdultCondition(search, item) && ContainsGenre(selectedGenres, item) && ContainsSearchTextCondition(search, item) && IsCorrectView(currentView, item),
+				expression: item => IsAdultCondition(search, item)
+							&& ContainsGenre(selectedGenres, item)
+							&& ContainsSearchTextCondition(search, item)
+							&& IsCorrectView(currentView, item),
 				orderBy: item => item.GetType().GetProperty(search.SelectedSort.LocalValue).GetValue(item),
 				isDescending: search.IsDescending
-			).Select(e => (T) Cast(e));
+			);
 		}
 
-		public IEnumerable<T> GetCustom(Func<U, bool> condition) =>
-			repo.Find(condition, item => item.Id).Select(e => (T) Cast(e));
+		public IEnumerable<T> GetCustom(Expression<Func<T, bool>> condition) =>
+			repo.Find(condition, item => item.Id);
 
 		public IEnumerable<T> GetAll() =>
-			repo.GetAll().Select(e => (T) Cast(e));
+			repo.GetAll();
 
-		protected abstract bool IsAdultCondition(SearchModel search, U item);
+		protected bool IsAdultCondition(SearchModel search, T item) =>
+			!search.IsAdult
+				? !item.IsAdult ?? true
+				: true;
 
-		protected abstract bool ContainsSearchTextCondition(SearchModel search, U item);
+		protected bool ContainsSearchTextCondition(SearchModel search, T item) =>
+			!string.IsNullOrWhiteSpace(search.SearchText)
+				? ((item.Title.English?.ToLower().Contains(search.SearchText.ToLower()) ?? false)
+					|| (item.Title.Native?.ToLower().Contains(search.SearchText.ToLower()) ?? false)
+					|| (item.Title.Romaji?.ToLower().Contains(search.SearchText.ToLower()) ?? false))
+				: true;
 
-		protected abstract bool ContainsGenre(IEnumerable<string> selectedGenres, U item);
+		protected bool ContainsGenre(IEnumerable<string> selectedGenres, T item) =>
+			selectedGenres.Count() > 0
+				? !selectedGenres.Except(item.Genres).Any()
+				: true;
 
-		protected abstract bool IsCorrectView(string currentView, U item);
+		protected abstract bool IsCorrectView(string currentView, T item);
 
-		protected abstract U Cast(T model);
-
-		protected abstract T Cast(U model);
-
-		private void CopyPersonalVariablesToNewEntites(IEnumerable<U> dbEntities, ref List<U> entities) {
+		private void CopyPersonalVariablesToNewEntites(IEnumerable<T> dbEntities, ref List<T> entities) {
 			entities = entities
 						.Join(dbEntities, newEn => newEn.Id, oldEn => oldEn.Id, (newEn, oldEn) => new { newEn, oldEn })
 						.Select(both => {
@@ -116,9 +121,9 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 								|| (newEn.DateAdded != null && newEn.DateAdded != null && newEn.DateAdded > oldEn.DateAdded))
 								newEn.DateAdded = oldEn.DateAdded;
 
-							if (typeof(U) == typeof(AnimeEntity)) {
-								var newAEn = newEn as AnimeEntity;
-								var oldAEn = oldEn as AnimeEntity;
+							if (typeof(T) == typeof(AnimeModel)) {
+								var newAEn = newEn as AnimeModel;
+								var oldAEn = oldEn as AnimeModel;
 
 								if (oldAEn.ViewingStatus != null)
 									newAEn.ViewingStatus = oldAEn.ViewingStatus;
@@ -132,10 +137,10 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 								if (oldAEn.CurrentEpisode != null)
 									newAEn.CurrentEpisode = oldAEn.CurrentEpisode;
 
-								return newAEn as U;
+								return newAEn as T;
 							} else {
-								var newMEn = newEn as MangaEntity;
-								var oldMEn = oldEn as MangaEntity;
+								var newMEn = newEn as MangaModel;
+								var oldMEn = oldEn as MangaModel;
 
 								if (oldMEn.ReadingStatus != null)
 									newMEn.ReadingStatus = oldMEn.ReadingStatus;
@@ -149,7 +154,7 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 								if (oldMEn.CurrentChapter != null)
 									newMEn.CurrentChapter = oldMEn.CurrentChapter;
 
-								return newMEn as U;
+								return newMEn as T;
 							}
 						}).ToList();
 		}

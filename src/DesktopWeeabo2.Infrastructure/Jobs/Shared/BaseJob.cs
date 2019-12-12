@@ -61,7 +61,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 				if (!string.IsNullOrEmpty(jobTitle))
 					ToastEvent.ShowToast(JobSuccessMessage, ToastType.SUCCESS);
 			} else {
-				LogEvent.LogMessage($"{JobFailMessage} Elapsed time: {watch.Elapsed}.{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}");
+				LogEvent.LogError(ex, $"{JobFailMessage} Elapsed time: {watch.Elapsed}.");
 
 				if (!string.IsNullOrEmpty(jobTitle))
 					ToastEvent.ShowToast($"{JobFailMessage} Reason: {ex.Message}.", ToastType.DANGER);

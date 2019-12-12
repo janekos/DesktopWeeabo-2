@@ -76,7 +76,7 @@ namespace DesktopWeeabo2.ViewModels {
 		public string Log {
 			get { return LogEvent.LogContent; }
 			set {
-				LogEvent.LogContent = value != null ? LogEvent.LogContent + $"{value}{Environment.NewLine}" : "";
+				LogEvent.SetLogContent(value != null ? LogEvent.LogContent + $"{value}{Environment.NewLine}" : "");
 				RaisePropertyChanged("Log");
 			}
 		}
@@ -84,8 +84,7 @@ namespace DesktopWeeabo2.ViewModels {
 		private void LogLineReceivedFunc(string message) => Log = message;
 
 		public DelegateCommand ClearLog => new DelegateCommand(new Action(() => {
-			LogEvent.LogMessage("a line");
-			//Log = null;
+			LogEvent.SetLogContent(string.Empty);
 		}));
 
 		public DelegateCommand ShowFileSelectorDialog => new DelegateCommand(new Action(() => {

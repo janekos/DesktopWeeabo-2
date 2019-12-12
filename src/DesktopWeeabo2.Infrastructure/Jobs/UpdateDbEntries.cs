@@ -67,9 +67,11 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 
 				JobEvent.NotifyJobProgressChange(0, "Updating animes", true);
 
-				await animeService.AddOrUpdateRange(updatedAnimeEntries, (progress) => {
+				animeService.AddOrUpdateRange(updatedAnimeEntries, (progress) => {
 					JobEvent.NotifyJobProgressChange((int) progress, isIncremental: true);
 				});
+
+				await Task.Delay(100);
 			}
 
 			if (mangas.Count() > 0) {
@@ -96,7 +98,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 
 				JobEvent.NotifyJobProgressChange(0, "Updating mangas", true);
 
-				await mangaService.AddOrUpdateRange(updatedMangaEntries, (progress) => {
+				mangaService.AddOrUpdateRange(updatedMangaEntries, (progress) => {
 					JobEvent.NotifyJobProgressChange((int) progress, isIncremental: true);
 				});
 			}

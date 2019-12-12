@@ -109,7 +109,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 
 			JobEvent.NotifyJobProgressChange(0, "Saving results", true);
 
-			await _animeService.AddOrUpdateRange(persistableEntries, (progress) => {
+			_animeService.AddOrUpdateRange(persistableEntries, (progress) => {
 				JobEvent.NotifyJobProgressChange((int)progress, isIncremental: true);
 			});
 		}
