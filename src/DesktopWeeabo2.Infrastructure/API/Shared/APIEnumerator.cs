@@ -79,7 +79,7 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 
 		public async Task<T[]> GetByMalIdSet(int[] malIds) =>
 			GetItems(await APIQueries.GetByMALIds(ApiUtils.APIGetByMalIdsVariables(malIds)));
-		
+
 		public async Task<T[]> GetByIdSet(int[] ids, bool isAnime = true) =>
 			GetItems(await APIQueries.GetByIds(ApiUtils.APIGetByIdsVariables(ids), isAnime));
 

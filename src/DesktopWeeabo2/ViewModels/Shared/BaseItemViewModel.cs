@@ -1,7 +1,6 @@
 ﻿using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Models;
 using DesktopWeeabo2.Helpers;
-using DesktopWeeabo2.Infrastructure.Events;
 using System;
 using System.ComponentModel;
 
@@ -52,7 +51,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 			get { return SearchModel.SearchText; }
 			set {
 				if (SearchModel.SearchText != value) {
-					SearchModel.SearchText = (value as string).ToLower();
+					SearchModel.SearchText = value.ToLower();
 					RaisePropertyChanged("SearchText");
 					RaisePropertyChanged("SearchChanged");
 				}
@@ -147,10 +146,10 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 
 		public string PressedTransferButton {
 			get { return _PressedTransferButton; }
-			set { if (_PressedTransferButton != value) { _PressedTransferButton = value as string; RaisePropertyChanged("PressedTransferButton"); } }
+			set { if (_PressedTransferButton != value) { _PressedTransferButton = value; RaisePropertyChanged("PressedTransferButton"); } }
 		}
 
-		public BaseItemViewModel() {
+		protected BaseItemViewModel() {
 			PropertyChanged += Property_Changed;
 		}
 
@@ -163,7 +162,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 
 		protected abstract void Property_Changed(object sender, PropertyChangedEventArgs e);
 
-		protected abstract void RenewView(bool isOnline = false);
+		protected abstract void RenewView(bool isActionOnline = false);
 
 		protected abstract void AddLocalItemsToView();
 	}

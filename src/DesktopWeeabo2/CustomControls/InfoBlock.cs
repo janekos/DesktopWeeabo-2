@@ -19,10 +19,8 @@ namespace DesktopWeeabo2.CustomControls {
 
 		private static void OnTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			var pattern = (string) d.GetValue(PatternProperty);
-			if (pattern != null && e.NewValue != null) {
-				if (!new Regex(pattern).IsMatch(e.NewValue.ToString()))
-					d.SetValue(DynamicItemProperty, e.OldValue ?? null);
-			}
+			if (pattern != null && e.NewValue != null && !new Regex(pattern).IsMatch(e.NewValue.ToString()))
+				d.SetValue(DynamicItemProperty, e.OldValue);
 		}
 
 		public string Pattern {
@@ -38,6 +36,13 @@ namespace DesktopWeeabo2.CustomControls {
 		}
 
 		public static readonly DependencyProperty StaticTextProperty = DependencyProperty.Register("StaticText", typeof(string), typeof(InfoBlock), new PropertyMetadata(null));
+
+		public string DynamicTextEnding {
+			get { return (string) GetValue(DynamicTextEndingProperty); }
+			set { SetValue(DynamicTextEndingProperty, value); }
+		}
+
+		public static readonly DependencyProperty DynamicTextEndingProperty = DependencyProperty.Register("DynamicTextEnding", typeof(string), typeof(InfoBlock), new PropertyMetadata(null));
 
 		public string PlaceHolder {
 			get { return (string) GetValue(PlaceHolderProperty); }

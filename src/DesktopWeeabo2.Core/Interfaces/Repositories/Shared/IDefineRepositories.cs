@@ -26,6 +26,7 @@ namespace DesktopWeeabo2.Core.Interfaces.Repositories.Shared {
 		int DeleteRange(IEnumerable<T> items);
 
 		T Get(int id);
+
 		IEnumerable<T> GetAll();
 
 		IEnumerable<T> Find(Expression<Func<T, bool>> expression);

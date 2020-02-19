@@ -62,6 +62,7 @@
     <Compile Include="API\Models\Shared\BaseApiModel.cs" />
     <Compile Include="API\Models\JsonTypes\Title.cs" />
     <Compile Include="API\Models\Shared\ResultWrappers.cs" />
+    <Compile Include="Enums\CanvasRoutine.cs" />
     <Compile Include="Enums\ContentFormat.cs" />
     <Compile Include="Enums\ContentStatus.cs" />
     <Compile Include="Enums\ContentType.cs" />
@@ -71,8 +72,8 @@
     <Compile Include="Enums\SortLocation.cs" />
     <Compile Include="Enums\StatusView.cs" />
     <Compile Include="Enums\ToastType.cs" />
-    <Compile Include="GlobalConfig.cs" />
     <Compile Include="Interfaces\Jobs\IRunJobs.cs" />
+    <Compile Include="Interfaces\Misc\IDefineCanvasRoutines.cs" />
     <Compile Include="Interfaces\Repositories\IAnimeRepository.cs" />
     <Compile Include="Interfaces\Repositories\IMangaRepository.cs" />
     <Compile Include="Interfaces\Repositories\Shared\IDefineRepositories.cs" />
@@ -91,6 +92,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Config\ConfigurationManager.cs" />
+    <Compile Include="Config\Config.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

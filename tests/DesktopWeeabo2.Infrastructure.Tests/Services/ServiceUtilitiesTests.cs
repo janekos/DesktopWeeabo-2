@@ -1,7 +1,6 @@
 namespace DesktopWeeabo2.Infrastructure.Tests.Services {
 
 	public class ServiceUtilitiesTests {
-
 		//private readonly List<AnimeEntity> oldAnimeEntities = new List<AnimeEntity>() {
 		//	new AnimeEntity {
 		//		Id = 1,

@@ -1,16 +1,16 @@
-﻿using DesktopWeeabo2.Core;
+﻿using DesktopWeeabo2.Core.Config;
 using DesktopWeeabo2.Core.Models;
 using LiteDB;
+using System;
 using System.IO;
 
 namespace DesktopWeeabo2.Infrastructure.Database {
 
-	public class EntriesContext {
-
+	public class EntriesContext : IDisposable {
 		private readonly LiteDatabase db;
 
 		public EntriesContext() {
-			db = new LiteDatabase($"{GlobalConfig.AppDir}\\entries.db");
+			db = new LiteDatabase($"{ConfigurationManager.Config.AppDir}\\entries.db");
 		}
 
 		public LiteCollection<AnimeModel> AnimeItems {
@@ -38,5 +38,22 @@ namespace DesktopWeeabo2.Infrastructure.Database {
 				}
 			}
 		}
+
+		#region IDisposable Support
+		private bool disposedValue = false; // To detect redundant calls
+
+		protected virtual void Dispose(bool disposing) {
+			if (!disposedValue) {
+				if (disposing) {
+					db.Dispose();
+				}
+
+				disposedValue = true;
+			}
+		}
+		public void Dispose() {
+			Dispose(true);
+		}
+		#endregion
 	}
 }

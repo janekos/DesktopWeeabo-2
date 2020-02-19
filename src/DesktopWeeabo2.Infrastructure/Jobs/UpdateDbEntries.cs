@@ -1,17 +1,17 @@
-﻿using DesktopWeeabo2.Core.Enums;
+﻿using DesktopWeeabo2.Core.Config;
+using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Interfaces.Services;
 using DesktopWeeabo2.Core.Models;
 using DesktopWeeabo2.Infrastructure.API;
 using DesktopWeeabo2.Infrastructure.Events;
 using DesktopWeeabo2.Infrastructure.Jobs.Shared;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Infrastructure.Jobs {
+
 	public class UpdateDbEntries : BaseJob<UpdateDbEntries> {
 		private readonly int EntriesPerRequest = 50;
 		private readonly IAnimeService animeService;
@@ -25,25 +25,34 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 			this.mangaService = mangaService;
 		}
 
-		protected override void PrepareJob(object[] args) {
-			var updateOnlyUnfinishedEntries = args.Length != 0 && args[0] != null && args[0].GetType() == typeof(bool) && (bool) args[0] == true;
-
-			if (updateOnlyUnfinishedEntries) {
-				animes = animeService.GetCustom(e => e.Status != (int)ContentStatus.FINISHED);
-				mangas = mangaService.GetCustom(e => e.Status != (int)ContentStatus.FINISHED);
+		protected override bool PrepareAndCheckIfCanRun(object[] args) {
+			if (ConfigurationManager.Config.ShouldUpdateOnlyUnfinishedEntries) {
+				animes = animeService.GetCustom(e => e.Status != ContentStatus.FINISHED);
+				mangas = mangaService.GetCustom(e => e.Status != ContentStatus.FINISHED);
 			} else {
 				animes = animeService.GetAll();
 				mangas = mangaService.GetAll();
 			}
 
+			if (!animes.Any() && !mangas.Any()) {
+				ToastEvent.ShowToast(
+					ConfigurationManager.Config.ShouldUpdateOnlyUnfinishedEntries
+						? "Update didn't start - No unfinished animes or mangas to update."
+						: "Update didn't start - No animes or mangas to update.",
+					ToastType.WARNING);
+				
+				return false;
+			}
+
+			jobTitle = "Animes and mangas update";
 			jobMaxProgress = (animes.Count() + mangas.Count()) * 2;
 			jobDescription = "Updating saved animes and mangas with latest info from anilst";
-			jobTitle = "Animes and mangas update";
+
+			return true;
 		}
 
 		protected override async Task ExecuteJob() {
-			
-			if (animes.Count() > 0) {
+			if (animes.Any()) {
 				ConcurrentBag<AnimeModel> updatedAnimeEntries = new ConcurrentBag<AnimeModel>();
 				AnimeAPIEnumerator animeApi = new AnimeAPIEnumerator();
 				List<Task> animeRequests = new List<Task>();
@@ -55,7 +64,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 					animeRequests.Add(
 						Task.Run(async () => {
 							var requestResult = await animeApi.GetByIdSet(currEntries.Select(e => e.Id).ToArray());
-							
+
 							foreach (AnimeModel entry in requestResult) {
 								updatedAnimeEntries.Add(entry);
 								JobEvent.NotifyJobProgressChange(1, isIncremental: true);
@@ -74,7 +83,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 				await Task.Delay(100);
 			}
 
-			if (mangas.Count() > 0) {
+			if (mangas.Any()) {
 				ConcurrentBag<MangaModel> updatedMangaEntries = new ConcurrentBag<MangaModel>();
 				MangaAPIEnumerator mangaApi = new MangaAPIEnumerator();
 				List<Task> mangaRequests = new List<Task>();

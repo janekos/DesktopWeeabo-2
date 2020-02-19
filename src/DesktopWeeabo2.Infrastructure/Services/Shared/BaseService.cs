@@ -13,13 +13,13 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 	public abstract class BaseService<T> : IDefineServices<T> where T : BaseModel {
 		private readonly IDefineRepositories<T> repo;
 
-		public BaseService(IDefineRepositories<T> repo) {
+		protected BaseService(IDefineRepositories<T> repo) {
 			this.repo = repo;
 		}
 
-		public DBResponse AddOrUpdate(T model) {
-			if (repo.Update(model) == 0) {
-				repo.Add(model);
+		public DBResponse AddOrUpdate(T entity) {
+			if (repo.Update(entity) == 0) {
+				repo.Add(entity);
 				return DBResponse.ADDED;
 			} else {
 				return DBResponse.UPDATED;
@@ -30,14 +30,14 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 			var allIds = entities.Select(e => e.Id).ToList();
 			var existingIds = repo.Find(e => allIds.Contains(e.Id)).Select(e => e.Id).ToList();
 
-			if (existingIds.Count() > 0) {
+			if (existingIds.Any()) {
 				// update existing entites
 				var dbEntities = repo.Find(e => existingIds.Contains(e.Id));
 				var entitiesToUpdate = entities.Where(e => existingIds.Contains(e.Id)).ToList();
 
 				CopyPersonalVariablesToNewEntites(dbEntities, ref entitiesToUpdate);
 
-				onActionCallback(entitiesToUpdate.Count());
+				onActionCallback(entitiesToUpdate.Count);
 				repo.UpdateRange(entitiesToUpdate);
 
 				// add new entites
@@ -48,8 +48,7 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 				return DBResponse.UPDATED;
 			}
 
-			if (entities.Count() > 0) {
-
+			if (entities.Any()) {
 				onActionCallback(entities.Count());
 				repo.AddRange(entities);
 
@@ -83,22 +82,15 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 		public IEnumerable<T> GetAll() =>
 			repo.GetAll();
 
-		protected bool IsAdultCondition(SearchModel search, T item) =>
-			!search.IsAdult
-				? !item.IsAdult ?? true
-				: true;
+		protected bool IsAdultCondition(SearchModel search, T item) => search.IsAdult || (!item.IsAdult ?? true);
 
 		protected bool ContainsSearchTextCondition(SearchModel search, T item) =>
-			!string.IsNullOrWhiteSpace(search.SearchText)
-				? ((item.Title.English?.ToLower().Contains(search.SearchText.ToLower()) ?? false)
-					|| (item.Title.Native?.ToLower().Contains(search.SearchText.ToLower()) ?? false)
-					|| (item.Title.Romaji?.ToLower().Contains(search.SearchText.ToLower()) ?? false))
-				: true;
+			string.IsNullOrWhiteSpace(search.SearchText)
+			|| (item.Title.English?.ToLower().Contains(search.SearchText.ToLower()) ?? false)
+			|| (item.Title.Native?.ToLower().Contains(search.SearchText.ToLower()) ?? false)
+			|| (item.Title.Romaji?.ToLower().Contains(search.SearchText.ToLower()) ?? false);
 
-		protected bool ContainsGenre(IEnumerable<string> selectedGenres, T item) =>
-			selectedGenres.Count() > 0
-				? !selectedGenres.Except(item.Genres).Any()
-				: true;
+		protected bool ContainsGenre(IEnumerable<string> selectedGenres, T item) => !selectedGenres.Any() || !selectedGenres.Except(item.Genres).Any();
 
 		protected abstract bool IsCorrectView(string currentView, T item);
 
@@ -118,7 +110,7 @@ namespace DesktopWeeabo2.Infrastructure.Services.Shared {
 								newEn.PersonalReview = $"{oldEn.PersonalReview}{Environment.NewLine}{Environment.NewLine}----- OLDER PERSONAL REVIEW -----{Environment.NewLine}{Environment.NewLine}{newEn.PersonalReview}";
 
 							if ((newEn.DateAdded == null && oldEn.DateAdded != null)
-								|| (newEn.DateAdded != null && newEn.DateAdded != null && newEn.DateAdded > oldEn.DateAdded))
+								|| (newEn.DateAdded != null && oldEn.DateAdded != null && newEn.DateAdded > oldEn.DateAdded))
 								newEn.DateAdded = oldEn.DateAdded;
 
 							if (typeof(T) == typeof(AnimeModel)) {

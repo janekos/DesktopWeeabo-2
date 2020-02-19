@@ -1,20 +1,33 @@
-﻿using DesktopWeeabo2.Core.Interfaces.Jobs;
+﻿using DesktopWeeabo2.Core.Config;
+using DesktopWeeabo2.Core.Enums;
+using DesktopWeeabo2.Core.Interfaces.Jobs;
+using DesktopWeeabo2.Core.Interfaces.Misc;
+using DesktopWeeabo2.Core.Interfaces.Services;
 using DesktopWeeabo2.Infrastructure.Events;
 using DesktopWeeabo2.Infrastructure.Jobs;
 using DesktopWeeabo2.ViewModels.Shared;
+using LiveCharts.Wpf.Charts.Base;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DesktopWeeabo2.ViewModels {
 
 	public class SettingsViewModel : BaseViewModel {
+		private readonly int PAGES_PER_CHAPTER = 19;
 
+		private readonly IAnimeService animeService;
+		private readonly IMangaService mangaService;
 		private readonly IRunJobs<DWOneImportJob> dwOneImportJob;
 		private readonly IRunJobs<UpdateDbEntries> updateDbEntriesJob;
+		private readonly IDefineCanvasRoutines<Chart> canvasRoutines;
 
-		public SettingsViewModel(IRunJobs<DWOneImportJob> dwOneImportJob, IRunJobs<UpdateDbEntries> updateDbEntriesJob) {
+		public SettingsViewModel(IAnimeService animeService, IMangaService mangaService, IRunJobs<DWOneImportJob> dwOneImportJob, IRunJobs<UpdateDbEntries> updateDbEntriesJob, IDefineCanvasRoutines<Chart> canvasRoutines) {
+			this.animeService = animeService;
+			this.mangaService = mangaService;
 			this.dwOneImportJob = dwOneImportJob;
 			this.updateDbEntriesJob = updateDbEntriesJob;
+			this.canvasRoutines = canvasRoutines;
 
 			LogEvent.LogLineReceived += LogLineReceivedFunc;
 		}
@@ -23,53 +36,63 @@ namespace DesktopWeeabo2.ViewModels {
 			LogEvent.LogLineReceived -= LogLineReceivedFunc;
 		}
 
-		private bool _DoesAppBackUp { get; set; } = true;
-
 		public bool DoesAppBackUp {
-			get { return _DoesAppBackUp; }
+			get { return ConfigurationManager.Config.DoesAppBackUp; }
 			set {
-				_DoesAppBackUp = value;
-				RaisePropertyChanged("DoesAppBackUp");
+				ConfigurationManager.Config.DoesAppBackUp = value;
+				RaisePropertyChanged(nameof(DoesAppBackUp));
 			}
 		}
 
-		private bool _IsLightMode { get; set; } = false;
-
-		public bool IsLightMode {
-			get { return _IsLightMode; }
+		public bool IsDarkMode {
+			get { return ConfigurationManager.Config.IsDarkMode; }
 			set {
-				_IsLightMode = value;
-				RaisePropertyChanged("IsLightMode");
+				ConfigurationManager.Config.IsDarkMode = value;
+				RaisePropertyChanged(nameof(IsDarkMode));
 			}
 		}
-
-		private bool _DoesUpdateOnStartup { get; set; } = true;
 
 		public bool DoesUpdateOnStartup {
-			get { return _DoesUpdateOnStartup; }
+			get { return ConfigurationManager.Config.DoesUpdateOnStartup; }
 			set {
-				_DoesUpdateOnStartup = value;
-				RaisePropertyChanged("DoesUpdateOnStartup");
+				ConfigurationManager.Config.DoesUpdateOnStartup = value;
+				RaisePropertyChanged(nameof(DoesUpdateOnStartup));
 			}
 		}
-
-		private bool _ShouldUpdateOnlyUnfinishedEntries { get; set; } = true;
 
 		public bool ShouldUpdateOnlyUnfinishedEntries {
-			get { return _ShouldUpdateOnlyUnfinishedEntries; }
+			get { return ConfigurationManager.Config.ShouldUpdateOnlyUnfinishedEntries; }
 			set {
-				_ShouldUpdateOnlyUnfinishedEntries = value;
-				RaisePropertyChanged("ShouldUpdateOnlyUnfinishedEntries");
+				ConfigurationManager.Config.ShouldUpdateOnlyUnfinishedEntries = value;
+				RaisePropertyChanged(nameof(ShouldUpdateOnlyUnfinishedEntries));
+			}
+		}
+		
+		public int MangaReadingSpeed {
+			get { return ConfigurationManager.Config.MangaReadingSpeed; }
+			set {
+				ConfigurationManager.Config.MangaReadingSpeed = value;
+				RaisePropertyChanged(nameof(MangaReadingSpeed));
 			}
 		}
 
-		private string _PathToDW1Data { get; set; }
+		private StatisticsViewModel statistics { get; set; } = new StatisticsViewModel();
+
+		public StatisticsViewModel Statistics {
+			get { return statistics; }
+			set {
+				statistics = value;
+				RaisePropertyChanged(nameof(Statistics));
+			}
+		}
+
+		private string pathToDW1Data { get; set; }
 
 		public string PathToDW1Data {
-			get { return _PathToDW1Data; }
+			get { return pathToDW1Data; }
 			set {
-				_PathToDW1Data = value;
-				RaisePropertyChanged("PathToDW1Data");
+				pathToDW1Data = value;
+				RaisePropertyChanged(nameof(PathToDW1Data));
 			}
 		}
 
@@ -77,11 +100,11 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return LogEvent.LogContent; }
 			set {
 				LogEvent.SetLogContent(value != null ? LogEvent.LogContent + $"{value}{Environment.NewLine}" : "");
-				RaisePropertyChanged("Log");
+				RaisePropertyChanged(nameof(Log));
 			}
 		}
 
-		private void LogLineReceivedFunc(string message) => Log = message;
+		private void LogLineReceivedFunc(object sender, LogLineReceivedEventArgs args) => Log = args.Message;
 
 		public DelegateCommand ClearLog => new DelegateCommand(new Action(() => {
 			LogEvent.SetLogContent(string.Empty);
@@ -116,7 +139,23 @@ namespace DesktopWeeabo2.ViewModels {
 		});
 
 		public DelegateCommand UpdateEntries => new DelegateCommand(async () => {
-			await updateDbEntriesJob.RunJob(ShouldUpdateOnlyUnfinishedEntries);
+			await updateDbEntriesJob.RunJob();
 		});
+
+		public DelegateCommand CalculateStatistics => new DelegateCommand(new Action(() => {
+			Statistics = new StatisticsViewModel {
+				Chart = canvasRoutines.GetRoutineData(CanvasRoutine.MEDIA_CONSUMED_PER_MONTH),
+				HoursSpentWatchingAnimes = animeService.GetCustom(a => a.ViewingStatus.Equals(StatusView.VIEWED)).Sum(a => (a.Episodes * a.Duration) / 60).ToString(),
+				HoursNeededToWatchRemainingAnimes = animeService.GetCustom(a => a.ViewingStatus.Equals(StatusView.TOWATCH)).Sum(a => (a.Episodes * a.Duration) / 60).ToString(),
+				AnimesDropped = animeService.GetCustom(a => a.ViewingStatus.Equals(StatusView.DROPPEDANIME)).Count().ToString(),
+				AnimesToWatch = animeService.GetCustom(a => a.ViewingStatus.Equals(StatusView.TOWATCH)).Count().ToString(),
+				AnimesViewed = animeService.GetCustom(a => a.ViewingStatus.Equals(StatusView.VIEWED)).Count().ToString(),
+				HoursSpentReadingMangas = mangaService.GetCustom(a => a.ReadingStatus.Equals(StatusView.READ)).Sum(a => (PAGES_PER_CHAPTER * a.Chapters * a.Volumes) / ConfigurationManager.Config.MangaReadingSpeed).ToString(),
+				HoursNeededToReadRemainingMangas = mangaService.GetCustom(a => a.ReadingStatus.Equals(StatusView.TOREAD)).Sum(m => (PAGES_PER_CHAPTER * m.Chapters * m.Volumes) / ConfigurationManager.Config.MangaReadingSpeed).ToString(),
+				MangasDropped = mangaService.GetCustom(m => m.ReadingStatus.Equals(StatusView.DROPPEDMANGA)).Count().ToString(),
+				MangasRed = mangaService.GetCustom(m => m.ReadingStatus.Equals(StatusView.READ)).Count().ToString(),
+				MangasToRead = mangaService.GetCustom(m => m.ReadingStatus.Equals(StatusView.TOREAD)).Count().ToString(),			
+			};
+		}));
 	}
 }

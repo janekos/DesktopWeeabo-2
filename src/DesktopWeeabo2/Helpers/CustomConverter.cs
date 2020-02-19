@@ -16,7 +16,7 @@ namespace DesktopWeeabo2.Helpers {
 
 				case "isValueEmpty":
 					if (value != null) {
-						if (value.GetType() == typeof(DateTime))
+						if (value is DateTime)
 							return ((DateTime) value).Equals(DateTime.MinValue) ? Visibility.Collapsed : Visibility.Visible;
 						return value.ToString().Length == 0 ? Visibility.Collapsed : Visibility.Visible;
 					}
@@ -39,7 +39,7 @@ namespace DesktopWeeabo2.Helpers {
 
 				case "formatInfoBlockDynamicItem":
 					if (value != null) {
-						if (value.GetType() == typeof(DateTime))
+						if (value is DateTime)
 							return ((DateTime) value).ToString("dd MMM yyyy");
 						return value;
 					}

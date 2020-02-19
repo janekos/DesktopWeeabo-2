@@ -42,10 +42,12 @@
   </Style>
   <!--infoblock-->
   <Style TargetType="{x:Type local:InfoBlock}">
+    <Setter Property="FontSize"
+            Value="14" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:InfoBlock}">
-          <TextBlock TextBlock.FontSize="14"
+          <TextBlock FontSize="{TemplateBinding FontSize}"
                      Margin="10,0,0,0">
             <TextBlock.Style>
               <Style TargetType="TextBlock">
@@ -61,7 +63,9 @@
                         <Run FontWeight="DemiBold"
                              Text="{TemplateBinding StaticText}" />
                         <Run Name="TextValue"
-                             Text="{Binding DynamicItem, Converter={StaticResource CustomConverter}, ConverterParameter=formatInfoBlockDynamicItem, RelativeSource={RelativeSource TemplatedParent}}" /></TextBlock>
+                             Text="{Binding DynamicItem, Converter={StaticResource CustomConverter}, ConverterParameter=formatInfoBlockDynamicItem, RelativeSource={RelativeSource TemplatedParent}}" />
+                        <Run Text="{TemplateBinding DynamicTextEnding}" />
+          </TextBlock>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -552,7 +556,7 @@
                                 Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                       </DataTrigger>
                       <DataTrigger Binding="{Binding PressedTransferButton, RelativeSource={RelativeSource TemplatedParent}}"
-                                   Value="{x:Static enum:StatusView.RED}">
+                                   Value="{x:Static enum:StatusView.READ}">
                         <Setter Property="ContentTemplate"
                                 Value="{StaticResource WatchedOrDroppedOrRedConfirmer}" />
                       </DataTrigger>

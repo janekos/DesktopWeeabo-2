@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:help="clr-namespace:DesktopWeeabo2.Helpers"
+             xmlns:enum="clr-namespace:DesktopWeeabo2.Core.Enums;assembly=DesktopWeeabo2.Core"
              xmlns:cc="clr-namespace:DesktopWeeabo2.CustomControls"
              xmlns:local="clr-namespace:DesktopWeeabo2.Views"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
   <UserControl.Resources>
+    <help:CustomConverter x:Key="CustomConverter" />
     <Style TargetType="Separator">
       <Setter Property="Margin"
               Value="0,10,0,10" />
@@ -82,7 +85,7 @@
           <CheckBox Margin="0,0,0,8"
                     IsChecked="{Binding DoesAppBackUp}">Backups enabled</CheckBox>
           <CheckBox Grid.Row="1"
-                    IsChecked="{Binding IsLightMode}">Dark mode</CheckBox>
+                    IsChecked="{Binding IsDarkMode}">Dark mode</CheckBox>
         </Grid>
         <Border Style="{StaticResource HeaderBorder}">
           <TextBlock Style="{StaticResource Header}">Import from DesktopWeeabo 1</TextBlock>
@@ -127,9 +130,102 @@
                   Content="Update right now"
                   Command="{Binding UpdateEntries}" />
         </Grid>
+        <Border Style="{StaticResource HeaderBorder}">
+          <TextBlock Style="{StaticResource Header}">Miscellaneous</TextBlock>
+        </Border>
+        <Grid Style="{StaticResource PadderGrid}">
+          <Grid.RowDefinitions>
+            <RowDefinition />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <TextBlock Text="Manga reading speed (pages per hour):" />
+          <TextBox Grid.Column="1"
+                   Text="{Binding MangaReadingSpeed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                   Width="50" />
+        </Grid>
       </StackPanel>
     </TabItem>
-    <TabItem Header="Statistics">Coming soon...</TabItem>
+    <TabItem Header="Statistics">
+      <Grid HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal"
+                    Height="25px"
+                    VerticalAlignment="Top">
+          <Button Content="Calculate"
+                  Command="{Binding CalculateStatistics}" />
+        </StackPanel>
+        <Grid Grid.Row="1"
+              Margin="0,0,0,10">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <StackPanel>
+            <TextBlock FontSize="26"
+                       Text="Animes" />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.HoursSpentWatchingAnimes}"
+                          StaticText="Hours spent watching anime: " />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.HoursNeededToWatchRemainingAnimes}"
+                          StaticText="Hours needed to watch remaining animes: " />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.AnimesViewed}"
+                          StaticText="Animes viewed: " />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.AnimesToWatch}"
+                          StaticText="Animes to watch: " />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.AnimesDropped}"
+                          StaticText="Animes dropped: " />
+          </StackPanel>
+          <StackPanel Grid.Column="1">
+            <TextBlock FontSize="26"
+                       Text="Mangas" />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.HoursSpentReadingMangas}"
+                          StaticText="Hours spent reading manga:" />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.HoursNeededToReadRemainingMangas}"
+                          StaticText="Hours needed to read remaining mangas" />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.MangasRed}"
+                          StaticText="Mangas read: " />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.MangasToRead}"
+                          StaticText="Mangas to read: " />
+            <cc:InfoBlock FontSize="18"
+                          DynamicItem="{Binding Statistics.MangasDropped}"
+                          StaticText="Mangas dropped: " />
+          </StackPanel>
+        </Grid>
+        <Separator Grid.Row="2" />
+        <TextBlock Grid.Row="3"
+                   FontSize="26"
+                   HorizontalAlignment="Center">Animes viewed / Mangas read per month</TextBlock>
+        <ScrollViewer Grid.Row="4"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Hidden">
+          <ContentPresenter Content="{Binding Statistics.Chart}" />
+        </ScrollViewer>
+        <TextBlock Grid.Row="4"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Visibility="{Binding Statistics.Chart, Converter={StaticResource CustomConverter}, ConverterParameter=isValueNull}">
+          Chart not generated
+        </TextBlock>
+      </Grid>
+    </TabItem>
     <TabItem Header="Logs">
       <Grid VerticalAlignment="Stretch">
         <Grid.RowDefinitions>

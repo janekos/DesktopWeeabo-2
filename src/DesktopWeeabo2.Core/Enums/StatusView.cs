@@ -4,7 +4,7 @@
 		public const string ONLINE = "Online";
 		public const string TOWATCH = "Towatch";
 		public const string TOREAD = "Toread";
-		public const string RED = "Red";
+		public const string READ = "Read";
 		public const string READING = "Reading";
 		public const string VIEWED = "Viewed";
 		public const string WATCHING = "Watching";

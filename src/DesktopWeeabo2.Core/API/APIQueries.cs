@@ -13,7 +13,7 @@ namespace DesktopWeeabo2.Core.API {
 		private static string GetAnimeByMALIds = Resources.ResourceManager.GetString("GetAnimeByMALIds");
 		private static string GetEntriesByIds = Resources.ResourceManager.GetString("GetEntriesByIds");
 
-		static APIQueries (){
+		static APIQueries() {
 			if (!client.DefaultRequestHeaders.Accept.Contains(jsonHeader))
 				client.DefaultRequestHeaders.Accept.Add(jsonHeader);
 		}
@@ -42,7 +42,7 @@ namespace DesktopWeeabo2.Core.API {
 				}
 			);
 
-		public static async Task<string> ExecuteRequest(Dictionary<string, string> variables) {			
+		public static async Task<string> ExecuteRequest(Dictionary<string, string> variables) {
 			HttpResponseMessage response = await client.PostAsync("https://graphql.anilist.co", new FormUrlEncodedContent(variables));
 			return await response.Content.ReadAsStringAsync();
 		}

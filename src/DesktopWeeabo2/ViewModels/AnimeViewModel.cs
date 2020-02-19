@@ -33,7 +33,7 @@ namespace DesktopWeeabo2.ViewModels {
 						SelectedItemPersonalScore = _SelectedItem.PersonalScore;
 						SelectedItemViewingStatus = _SelectedItem.ViewingStatus;
 					}
-					RaisePropertyChanged("SelectedItem");
+					RaisePropertyChanged(nameof(SelectedItem));
 				}
 			}
 		}
@@ -45,7 +45,7 @@ namespace DesktopWeeabo2.ViewModels {
 			set {
 				if (_SelectedItem.PersonalReview != value)
 					_SelectedItem.PersonalReview = value;
-				RaisePropertyChanged("SelectedItemPersonalReview");
+				RaisePropertyChanged(nameof(SelectedItemPersonalReview));
 			}
 		}
 
@@ -54,7 +54,7 @@ namespace DesktopWeeabo2.ViewModels {
 			set {
 				if (_SelectedItem.PersonalScore != value)
 					_SelectedItem.PersonalScore = value;
-				RaisePropertyChanged("SelectedItemPersonalScore");
+				RaisePropertyChanged(nameof(SelectedItemPersonalScore));
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace DesktopWeeabo2.ViewModels {
 			set {
 				if (_SelectedItem != null && _SelectedItem?.ViewingStatus != value)
 					_SelectedItem.ViewingStatus = value;
-				RaisePropertyChanged("SelectedItemViewingStatus");
+				RaisePropertyChanged(nameof(SelectedItemViewingStatus));
 			}
 		}
 
@@ -108,15 +108,17 @@ namespace DesktopWeeabo2.ViewModels {
 
 		protected override void AddLocalItemsToView() {
 			Task.Run(() => {
-				if (LocalHelper)
-					return;
+				if (LocalHelper) return;
+
 				LocalHelper = true;
 				IsContentLoading = true;
+
 				lock (_CollectionLock) {
 					var items = _animeService.GetBySearchModelAndCurrentView(SearchModel, CurrentView);
 					AnimeItems.AddRange(items);
 					TotalItems = AnimeItems.Count;
-				};
+				}
+				
 				LocalHelper = false;
 				IsContentLoading = false;
 			});
@@ -204,7 +206,7 @@ namespace DesktopWeeabo2.ViewModels {
 					APICurrentPage = _animeAPIEnumerator.CurrentPage - 1;
 					TotalAPIPages = (int) Math.Ceiling(((decimal) _animeAPIEnumerator.TotalItems / 50));
 				} catch (ArgumentNullException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (ArgumentOutOfRangeException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (HttpRequestException) { ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER); }
-				
+
 				LocalHelper = false;
 				IsContentLoading = false;
 			})
@@ -226,7 +228,7 @@ namespace DesktopWeeabo2.ViewModels {
 					else if (itemWorkResponse == DBResponse.UPDATED)
 						ToastEvent.ShowToast($"Succesfully updated '{_SelectedItem.Title.GetFirstNonNullTitle()}'!", ToastType.SUCCESS);
 					else if (itemWorkResponse == DBResponse.ERROR)
-						throw new Exception("Repo returned ERROR");
+						throw new InvalidOperationException("Repo returned ERROR");
 
 					if (CurrentView == StatusView.ONLINE || e.ToString().Equals("PersonalEditComplete")) {
 						RenewView(true);
@@ -247,7 +249,7 @@ namespace DesktopWeeabo2.ViewModels {
 					if (itemDeleteResponse == DBResponse.DELETED)
 						ToastEvent.ShowToast($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' in '{_SelectedItem.ViewingStatus}' view was deleted succesfully!", ToastType.SUCCESS);
 					else
-						throw new Exception($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
+						throw new ArgumentException($"Anime '{_SelectedItem.Title.GetFirstNonNullTitle()}' doesn't exist in '{_SelectedItem.ViewingStatus}' view.");
 
 					if (CurrentView == StatusView.ONLINE) {
 						SelectedItemViewingStatus = null;

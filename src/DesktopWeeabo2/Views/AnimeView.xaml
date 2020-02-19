@@ -196,14 +196,14 @@
             <StackPanel Name="Titles"
                         Margin="10,0,10,0">
               <cc:MultiInfoBlockWrapper>
-                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleEnglish}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.English}"
                                         StaticText="English: " />
-                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleRomaji}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.Romaji}"
                                         StaticText="Romaji: " />
-                <cc:SelectableInfoBlock DynamicItem="{Binding Title.TitleNative}"
+                <cc:SelectableInfoBlock DynamicItem="{Binding Title.Native}"
                                         StaticText="Native: " />
               </cc:MultiInfoBlockWrapper>
-              <cc:SelectableInfoBlock DynamicItem="{Binding Synonyms}"
+              <cc:SelectableInfoBlock DynamicItem="{Binding SynonymString}"
                                       TextAlignment="Center"
                                       IsVertical="True"
                                       HasBorder="True"
@@ -256,7 +256,10 @@
                 <cc:InfoBlock DynamicItem="{Binding Episodes}"
                               StaticText="Number of episodes: " />
                 <cc:InfoBlock DynamicItem="{Binding Duration}"
-                              StaticText="Episode duration: " />
+                              StaticText="Episode duration: " DynamicTextEnding="m" />
+                <cc:InfoBlock DynamicItem="{Binding ApproximateViewingTime}"
+                              StaticText="Approx. viewing time: "
+                              DynamicTextEnding="h"/>
                 <cc:InfoBlock DynamicItem="{Binding StartDate}"
                               StaticText="Start date: " />
                 <cc:InfoBlock DynamicItem="{Binding EndDate}"
@@ -266,7 +269,7 @@
                 <cc:InfoBlock DynamicItem="{Binding NextAiringEpisode.AiringAt}"
                               StaticText="Next airing: " />
               </cc:MultiInfoBlockWrapper>
-              <cc:SelectableInfoBlock DynamicItem="{Binding Genres}"
+              <cc:SelectableInfoBlock DynamicItem="{Binding GenreString}"
                                       IsVertical="True"
                                       HasBorder="True"
                                       TextAlignment="Center"

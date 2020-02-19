@@ -1,5 +1,4 @@
 ﻿using DesktopWeeabo2.Core.Interfaces.Repositories.Shared;
-using DesktopWeeabo2.Core.Models;
 using DesktopWeeabo2.Core.Models.Shared;
 using LiteDB;
 using System;
@@ -10,17 +9,16 @@ using System.Linq.Expressions;
 namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
 
 	public abstract class BaseRepository<T> : IDefineRepositories<T> where T : BaseModel {
-		protected readonly LiteCollection<T> collection;
+		protected virtual LiteCollection<T> collection { get; }
 
-		protected BaseRepository(LiteCollection<T> collection) {
-			this.collection = collection;
+		protected BaseRepository() {
 		}
 
 		public int Add(T item) =>
 			collection.Insert(item);
 
 		public int AddRange(IEnumerable<T> items) =>
-			collection.InsertBulk(items);		
+			collection.InsertBulk(items);
 
 		public int UpdateRange(IEnumerable<T> items) =>
 			collection.Update(items);
@@ -53,7 +51,7 @@ namespace DesktopWeeabo2.Infrastructure.Repositories.Shared {
 
 		public IEnumerable<T> Find(Expression<Func<T, bool>> expression, Func<T, object> orderBy, bool isDescending = false) =>
 			isDescending
-				? Find(expression) .OrderByDescending(orderBy)
+				? Find(expression).OrderByDescending(orderBy)
 				: Find(expression).OrderBy(orderBy);
 
 		public IEnumerable<T> GetAll() =>

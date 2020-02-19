@@ -1,11 +1,14 @@
-﻿using DesktopWeeabo2.Core.Enums;
-using DesktopWeeabo2.Data;
-using DesktopWeeabo2.Infrastructure.Database;
+﻿using DesktopWeeabo2.Core.Config;
+using DesktopWeeabo2.Core.Enums;
+using DesktopWeeabo2.Core.Interfaces.Jobs;
+using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Infrastructure.Events;
+using DesktopWeeabo2.Infrastructure.Jobs;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
@@ -36,7 +39,7 @@ namespace DesktopWeeabo2.ViewModels {
 			set {
 				if (value != _IsLoading) {
 					_IsLoading = value;
-					RaisePropertyChanged("IsLoading");
+					RaisePropertyChanged(nameof(IsLoading));
 				}
 			}
 		}
@@ -48,7 +51,7 @@ namespace DesktopWeeabo2.ViewModels {
 			set {
 				if (_CurrentGlobalView != value) {
 					_CurrentGlobalView = value;
-					RaisePropertyChanged("CurrentGlobalView");
+					RaisePropertyChanged(nameof(CurrentGlobalView));
 				}
 			}
 		}
@@ -59,7 +62,7 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return _ViewModelsView; }
 			set {
 				_ViewModelsView = value;
-				RaisePropertyChanged("ViewModelsView");
+				RaisePropertyChanged(nameof(ViewModelsView));
 			}
 		}
 
@@ -69,7 +72,7 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return _ViewModels; }
 			set {
 				_ViewModels = value;
-				RaisePropertyChanged("ViewModels");
+				RaisePropertyChanged(nameof(ViewModels));
 			}
 		}
 
@@ -82,7 +85,7 @@ namespace DesktopWeeabo2.ViewModels {
 			set {
 				if (value != _IsJobRunning) {
 					_IsJobRunning = value;
-					RaisePropertyChanged("IsJobRunning");
+					RaisePropertyChanged(nameof(IsJobRunning));
 				}
 			}
 		}
@@ -93,7 +96,7 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return _JobDescription; }
 			set {
 				_JobDescription = value;
-				RaisePropertyChanged("JobDescription");
+				RaisePropertyChanged(nameof(JobDescription));
 			}
 		}
 
@@ -103,7 +106,7 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return _JobProgressMaximum; }
 			set {
 				_JobProgressMaximum = value;
-				RaisePropertyChanged("JobProgressMaximum");
+				RaisePropertyChanged(nameof(JobProgressMaximum));
 			}
 		}
 
@@ -113,17 +116,17 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return _JobProgressCurrent; }
 			set {
 				_JobProgressCurrent = value;
-				RaisePropertyChanged("JobProgressCurrent");
+				RaisePropertyChanged(nameof(JobProgressCurrent));
 			}
 		}
 
-		private string _JobStage= "";
+		private string _JobStage = "";
 
 		public string JobStage {
 			get { return _JobStage; }
 			set {
 				_JobStage = value;
-				RaisePropertyChanged("JobStage");
+				RaisePropertyChanged(nameof(JobStage));
 			}
 		}
 
@@ -137,7 +140,7 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return _ConsentBoxVisibility; }
 			set {
 				_ConsentBoxVisibility = value;
-				RaisePropertyChanged("ConsentBoxVisibility");
+				RaisePropertyChanged(nameof(ConsentBoxVisibility));
 			}
 		}
 
@@ -151,7 +154,7 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return _ToastMessage; }
 			set {
 				_ToastMessage = value;
-				RaisePropertyChanged("ToastMessage");
+				RaisePropertyChanged(nameof(ToastMessage));
 			}
 		}
 
@@ -161,7 +164,7 @@ namespace DesktopWeeabo2.ViewModels {
 			get { return _ToastMessageType; }
 			set {
 				_ToastMessageType = value;
-				RaisePropertyChanged("ToastMessageType");
+				RaisePropertyChanged(nameof(ToastMessageType));
 			}
 		}
 
@@ -171,10 +174,13 @@ namespace DesktopWeeabo2.ViewModels {
 		public readonly MangaViewModel _mangaViewModel;
 		public readonly SettingsViewModel _settingsViewModel;
 
-		public MainWindowViewModel(AnimeViewModel animeViewModel, MangaViewModel mangaViewModel, SettingsViewModel settingsViewModel) {
+		private readonly IRunJobs<UpdateDbEntries> _updateDbEntries;
+
+		public MainWindowViewModel(AnimeViewModel animeViewModel, MangaViewModel mangaViewModel, SettingsViewModel settingsViewModel, IRunJobs<UpdateDbEntries> updateDbEntries) {
 			_animeViewModel = animeViewModel;
 			_mangaViewModel = mangaViewModel;
 			_settingsViewModel = settingsViewModel;
+			_updateDbEntries = updateDbEntries;
 
 			ViewModels = new ObservableCollection<BaseViewModel>(){
 				_animeViewModel,
@@ -183,39 +189,44 @@ namespace DesktopWeeabo2.ViewModels {
 			};
 			ViewModelsView = CollectionViewSource.GetDefaultView(ViewModels);
 
-			if (InitAppData.CheckRootDir())
+			if (AppInitHelpers.CheckRootDir())
 				InitApp();
 			else
 				ConsentBoxVisibility = Visibility.Visible;
 
-			ToastEvent.ToastMessageRecieved += (message, messageType) => {
-				ToastMessage = message;
-				ToastMessageType = messageType;
+			ToastEvent.ToastMessageRecieved += (sender, args) => {
+				ToastMessage = args.Message;
+				ToastMessageType = args.MessageType;
 			};
 
-			JobEvent.JobStarted += (description, progressMax) => {
+			JobEvent.JobStarted += (sender, args) => {
 				IsJobRunning = true;
-				JobDescription = description;
-				JobProgressMaximum = progressMax;
+				JobDescription = args.JobDescription;
+				JobProgressMaximum = args.JobLength;
 			};
 
-			JobEvent.JobProgressChanged += (progress, stage, isIncremental) => {
-				JobProgressCurrent = isIncremental
-					? (JobProgressCurrent + progress)
-					: progress;
-				
-				
-				if (stage != null)
-					JobStage = stage;
+			JobEvent.JobProgressChanged += (sender, args) => {
+				JobProgressCurrent = args.IsIncremental
+					? (JobProgressCurrent + args.Progress)
+					: args.Progress;
+
+				if (args.StageDescriptor != null)
+					JobStage = args.StageDescriptor;
 			};
-			
-			JobEvent.JobEnded += () => IsJobRunning = false;
+
+			JobEvent.JobEnded += (sender) => {
+				JobProgressCurrent = 0;
+				IsJobRunning = false;
+			};
 		}
 
-		private async void InitApp() {
-			InitAppData.Init();
-			await DbActions.WakeDB();
+		private void InitApp() {
+			AppInitHelpers.Init();
 			IsLoading = false;
+
+			if (ConfigurationManager.Config.DoesUpdateOnStartup) {
+				_updateDbEntries.RunJob();
+			}
 		}
 
 		public DelegateCommand GiveConsent => new DelegateCommand(
@@ -232,8 +243,6 @@ namespace DesktopWeeabo2.ViewModels {
 		public DelegateCommand ChangeView => new DelegateCommand(
 		new Action<object>(
 		(e) => {
-			LogEvent.LogMessage($"Changed view to: {e}");
-
 			if (ViewModelsView != null) {
 				CurrentGlobalView = (GlobalView) e;
 				switch (e) {

@@ -1,10 +1,7 @@
 ﻿using DesktopWeeabo2.Core.API.Models;
-using DesktopWeeabo2.Core.API.Models.JsonTypes;
 using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Models.Shared;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace DesktopWeeabo2.Core.Models {
 

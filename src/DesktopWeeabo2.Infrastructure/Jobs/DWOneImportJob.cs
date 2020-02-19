@@ -1,5 +1,4 @@
 ﻿using DesktopWeeabo2.Core.Enums;
-using DesktopWeeabo2.Core.Interfaces.Repositories;
 using DesktopWeeabo2.Core.Interfaces.Services;
 using DesktopWeeabo2.Core.Models;
 using DesktopWeeabo2.Infrastructure.API;
@@ -13,6 +12,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace DesktopWeeabo2.Infrastructure.Jobs {
+
 	public class DWOneImportJob : BaseJob<DWOneImportJob> {
 		private IEnumerable<XElement> entries;
 
@@ -27,21 +27,24 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 		/// args[0] = (string) path to mainentries.xml
 		/// </summary>
 		/// <param name="args"></param>
-		protected override void PrepareJob(object[] args) {
-			if (args.Length == 0 || args[0] == null || args[0].GetType() != typeof(string))
-				throw new ArgumentNullException("Path to MainEntries.xml wasn't provided or is incorrect.");
-
+		protected override bool PrepareAndCheckIfCanRun(object[] args) {
+			jobTitle = "DW 1 Entry import";
+			
+			if (args.Length == 0 || args[0] == null || !(args[0] is string))
+				throw new ArgumentNullException(nameof(args), "Path to MainEntries.xml wasn't provided or is incorrect.");
+			
 			entries = XElement.Load((string) args[0]).Elements();
 			jobMaxProgress = entries.Count() * 2;
 			jobDescription = "Importing anime entries from DesktopWeeabo 1";
-			jobTitle = "DW 1 Entry import";
+
+			return true;
 		}
 
 		protected override async Task ExecuteJob() {
 			List<Task> requests = new List<Task>();
 			AnimeAPIEnumerator api = new AnimeAPIEnumerator();
 			ConcurrentBag<AnimeModel> persistableEntries = new ConcurrentBag<AnimeModel>();
-			
+
 			JobEvent.NotifyJobProgressChange(0, "Querying API");
 
 			for (int i = 0; i < entries.Count(); i = i + EntriesPerRequest) {
@@ -51,7 +54,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 						var requestResult = await api.GetByMalIdSet(currEntries.Select(entry => int.Parse(entry.Element("id").Value)).ToArray());
 
 						foreach (AnimeModel entry in requestResult) {
-							var currEntry = currEntries.Where(e => e.Element("id").Value == entry.IdMal.ToString()).FirstOrDefault();
+							var currEntry = currEntries.FirstOrDefault(e => e.Element("id").Value == entry.IdMal.ToString());
 
 							entry.DateAdded = DateTime.Now;
 
@@ -71,7 +74,6 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 									break;
 
 								default:
-								case "To Watch":
 									viewingStatus = StatusView.TOWATCH;
 									break;
 							}
@@ -110,7 +112,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 			JobEvent.NotifyJobProgressChange(0, "Saving results", true);
 
 			_animeService.AddOrUpdateRange(persistableEntries, (progress) => {
-				JobEvent.NotifyJobProgressChange((int)progress, isIncremental: true);
+				JobEvent.NotifyJobProgressChange((int) progress, isIncremental: true);
 			});
 		}
 	}

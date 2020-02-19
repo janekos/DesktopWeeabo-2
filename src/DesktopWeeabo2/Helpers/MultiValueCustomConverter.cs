@@ -91,7 +91,7 @@ namespace DesktopWeeabo2.Helpers {
 								return (SortLocation) values[0] != SortLocation.MANGA;
 
 							case StatusView.TOREAD:
-							case StatusView.RED:
+							case StatusView.READ:
 							case StatusView.READING:
 							case StatusView.DROPPEDMANGA:
 								return (SortLocation) values[0] != SortLocation.ANIME;

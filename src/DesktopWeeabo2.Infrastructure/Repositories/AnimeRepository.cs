@@ -7,7 +7,12 @@ using LiteDB;
 namespace DesktopWeeabo2.Infrastructure.Repositories {
 
 	public class AnimeRepository : BaseRepository<AnimeModel>, IAnimeRepository {
-		public AnimeRepository(EntriesContext context)
-			: base(context.AnimeItems) { }
+		private readonly EntriesContext context;
+
+		public AnimeRepository(EntriesContext context) {
+			this.context = context;
+		}
+
+		protected override LiteCollection<AnimeModel> collection { get => context.AnimeItems; }
 	}
 }

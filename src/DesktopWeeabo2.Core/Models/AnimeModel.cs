@@ -1,10 +1,7 @@
 ﻿using DesktopWeeabo2.Core.API.Models;
-using DesktopWeeabo2.Core.API.Models.JsonTypes;
 using DesktopWeeabo2.Core.Enums;
 using DesktopWeeabo2.Core.Models.Shared;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace DesktopWeeabo2.Core.Models {
 
@@ -59,6 +56,14 @@ namespace DesktopWeeabo2.Core.Models {
 				Format = apiModel.Format.ToEnum<ContentFormat>(),
 				Status = apiModel.Status.ToEnum<ContentStatus>()
 			};
+		}
+
+		public int? ApproximateViewingTime {
+			get {
+				return Episodes == null || Duration == null
+					? null
+					: Episodes * Duration / 60;
+			}
 		}
 	}
 }

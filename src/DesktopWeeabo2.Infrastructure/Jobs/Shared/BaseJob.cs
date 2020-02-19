@@ -14,8 +14,8 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 		protected int jobMaxProgress = 0;
 		protected string jobTitle = string.Empty;
 		protected string jobDescription = string.Empty;
-		private Stopwatch watch = new Stopwatch();
-		private SafeHandle handle = new SafeFileHandle(IntPtr.Zero, true);
+		private readonly Stopwatch watch = new Stopwatch();
+		private readonly SafeHandle handle = new SafeFileHandle(IntPtr.Zero, true);
 
 		/// <summary>
 		/// Args are to be defined by each implementor.
@@ -24,37 +24,40 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 		public async Task RunJob(params object[] args) {
 			try {
 				await Task.Run(async () => {
-					PrepareJob(args);
-					StartJob();
-					await ExecuteJob();
-					EndJob();				
+					if (PrepareAndCheckIfCanRun(args)) {
+						await StartJob();
+						await ExecuteJob();
+						await EndJob();
+					}
 				});
 			} catch (Exception ex) {
-				EndJob(ex);
+				await EndJob(ex);
 			}
 
 			Dispose();
 		}
 
-		protected virtual void PrepareJob(object[] args) =>
+		protected virtual bool PrepareAndCheckIfCanRun(object[] args) =>
 			throw new InvalidOperationException("Job not prepared.");
 
-		protected virtual void StartJob() {
+		protected async virtual Task StartJob() {
 			watch.Start();
 
-			JobEvent.StartJob(jobDescription, jobMaxProgress);
+			await JobEvent.StartJob(jobDescription, jobMaxProgress);
 			LogEvent.LogMessage(JobStartMessage);
 			if (!string.IsNullOrEmpty(jobTitle))
 				ToastEvent.ShowToast(JobStartMessage, ToastType.INFO);
 		}
 
-		#pragma warning disable CS1998
-		protected abstract Task ExecuteJob();
-		#pragma warning restore CS1998
+#pragma warning disable CS1998
 
-		protected virtual void EndJob(Exception ex = null) {
+		protected abstract Task ExecuteJob();
+
+#pragma warning restore CS1998
+
+		protected async virtual Task EndJob(Exception ex = null) {
 			watch.Stop();
-			JobEvent.EndJob();
+			await JobEvent.EndJob();
 
 			if (ex == null) {
 				LogEvent.LogMessage($"{JobSuccessMessage} Elapsed time: {watch.Elapsed}.");

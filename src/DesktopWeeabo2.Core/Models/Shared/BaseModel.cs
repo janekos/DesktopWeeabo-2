@@ -39,6 +39,17 @@ namespace DesktopWeeabo2.Core.Models.Shared {
 
 		public DateTime? DateAdded { get; set; }
 
+		public string GenreString { get {
+				return string.Join(", ", Genres);
+			}
+		}
+
+		public string SynonymString {
+			get {
+				return string.Join(", ", Synonyms);
+			}
+		}
+
 		public string FirstWorkingTitle {
 			get {
 				string title = Title.GetFirstNonNullTitle();
