@@ -10,7 +10,7 @@ namespace DesktopWeeabo2.Infrastructure.Database {
 		private readonly LiteDatabase db;
 
 		public EntriesContext() {
-			db = new LiteDatabase($"{ConfigurationManager.Config.AppDir}\\entries.db");
+			db = new LiteDatabase(ConfigurationManager.Config.DatabaseFilePath);
 		}
 
 		public LiteCollection<AnimeModel> AnimeItems {

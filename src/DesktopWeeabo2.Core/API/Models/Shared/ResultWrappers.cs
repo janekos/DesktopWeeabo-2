@@ -30,5 +30,8 @@ namespace DesktopWeeabo2.Core.API.Models.Shared {
 
 		[JsonProperty("total")]
 		public int? Total { get; set; }
+
+		[JsonProperty("lastPage")]
+		public int? LastPage { get; set; }
 	}
 }

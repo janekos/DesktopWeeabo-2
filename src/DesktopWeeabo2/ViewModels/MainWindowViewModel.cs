@@ -1,14 +1,13 @@
 ﻿using DesktopWeeabo2.Core.Config;
 using DesktopWeeabo2.Core.Enums;
+using DesktopWeeabo2.Core.Helpers;
 using DesktopWeeabo2.Core.Interfaces.Jobs;
-using DesktopWeeabo2.Helpers;
 using DesktopWeeabo2.Infrastructure.Events;
 using DesktopWeeabo2.Infrastructure.Jobs;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
@@ -189,7 +188,7 @@ namespace DesktopWeeabo2.ViewModels {
 			};
 			ViewModelsView = CollectionViewSource.GetDefaultView(ViewModels);
 
-			if (AppInitHelpers.CheckRootDir())
+			if (AppHelpers.CheckRootDir())
 				InitApp();
 			else
 				ConsentBoxVisibility = Visibility.Visible;
@@ -221,7 +220,7 @@ namespace DesktopWeeabo2.ViewModels {
 		}
 
 		private void InitApp() {
-			AppInitHelpers.Init();
+			AppHelpers.Init();
 			IsLoading = false;
 
 			if (ConfigurationManager.Config.DoesUpdateOnStartup) {

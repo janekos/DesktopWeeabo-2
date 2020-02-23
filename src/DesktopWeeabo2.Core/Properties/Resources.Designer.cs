@@ -63,8 +63,9 @@ namespace DesktopWeeabo2.Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to query ($id: Int, $page: Int, $search: String, $sort: [MediaSort], $genres: [String], $isAdult: Boolean) {
         ///	Page(page: $page, perPage: 50) {
-        ///		pageInfo { 
+        ///		pageInfo {
         ///			total
+        ///			lastPage
         ///			hasNextPage
         ///		}
         ///		media(id: $id, type: {mediaTypeToReplace}, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {
@@ -82,9 +83,7 @@ namespace DesktopWeeabo2.Core.Properties {
         ///			format 
         ///			status 
         ///			description(asHtml: false) 
-        ///			startDate{
-        ///				year
-        ///	 [rest of string was truncated]&quot;;.
+        ///			startDate{        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AnilistSearchQuery {
             get {

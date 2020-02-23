@@ -16,7 +16,7 @@ namespace DesktopWeeabo2.ViewModels {
 
 	public class MangaViewModel : BaseItemViewModel {
 		private readonly IMangaService _mangaService;
-		private readonly MangaAPIEnumerator _mangaAPIEnumerator;
+		private readonly MangaApiEnumerator _mangaAPIEnumerator;
 
 		private bool LocalHelper = false;
 		public ObservableRangeCollection<MangaModel> MangaItems { get; set; } = new ObservableRangeCollection<MangaModel>();
@@ -69,7 +69,7 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public MangaViewModel(IMangaService mangaService) : base() {
 			_mangaService = mangaService;
-			_mangaAPIEnumerator = new MangaAPIEnumerator();
+			_mangaAPIEnumerator = new MangaApiEnumerator();
 
 			BindingOperations.EnableCollectionSynchronization(MangaItems, _CollectionLock);
 		}
@@ -97,7 +97,6 @@ namespace DesktopWeeabo2.ViewModels {
 				TotalItems = 0;
 				SelectedItem = null;
 				TotalAPIItems = "";
-				APIHasNextPage = false;
 				APICurrentPage = 1;
 				TotalAPIPages = 1;
 				_mangaAPIEnumerator.CurrentPage = 1;
@@ -198,11 +197,16 @@ namespace DesktopWeeabo2.ViewModels {
 					MangaItems.AddRange(onlineItems);
 					TotalItems = MangaItems.Count;
 
-					APIHasNextPage = _mangaAPIEnumerator.HasNextPage;
 					TotalAPIItems = $" / {_mangaAPIEnumerator.TotalItems}";
 					APICurrentPage = _mangaAPIEnumerator.CurrentPage - 1;
 					TotalAPIPages = (int) Math.Ceiling(((decimal) _mangaAPIEnumerator.TotalItems / 50));
-				} catch (ArgumentNullException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (ArgumentOutOfRangeException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (HttpRequestException) { ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER); }
+				} catch (ArgumentNullException ex) {
+					ToastEvent.ShowToast(ex.Message, ToastType.DANGER);
+				} catch (ArgumentOutOfRangeException ex) {
+					ToastEvent.ShowToast(ex.Message, ToastType.DANGER);
+				} catch (HttpRequestException) {
+					ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER);
+				}
 
 				LocalHelper = false;
 				IsContentLoading = false;

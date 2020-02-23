@@ -11,6 +11,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 
 	public abstract class BaseJob<T> : IRunJobs<T>, IDisposable {
 		private bool disposed = false;
+		protected bool isSilent = false;
 		protected int jobMaxProgress = 0;
 		protected string jobTitle = string.Empty;
 		protected string jobDescription = string.Empty;
@@ -25,9 +26,9 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 			try {
 				await Task.Run(async () => {
 					if (PrepareAndCheckIfCanRun(args)) {
-						await StartJob();
+						if(!isSilent) await StartJob();
 						await ExecuteJob();
-						await EndJob();
+						if (!isSilent) await EndJob();
 					}
 				});
 			} catch (Exception ex) {
@@ -37,8 +38,6 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 			Dispose();
 		}
 
-		protected virtual bool PrepareAndCheckIfCanRun(object[] args) =>
-			throw new InvalidOperationException("Job not prepared.");
 
 		protected async virtual Task StartJob() {
 			watch.Start();
@@ -49,10 +48,9 @@ namespace DesktopWeeabo2.Infrastructure.Jobs.Shared {
 				ToastEvent.ShowToast(JobStartMessage, ToastType.INFO);
 		}
 
+		protected abstract bool PrepareAndCheckIfCanRun(object[] args);
 #pragma warning disable CS1998
-
 		protected abstract Task ExecuteJob();
-
 #pragma warning restore CS1998
 
 		protected async virtual Task EndJob(Exception ex = null) {

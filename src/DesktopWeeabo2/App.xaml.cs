@@ -1,5 +1,4 @@
-﻿using DesktopWeeabo2.Core.Config;
-using DesktopWeeabo2.Core.Interfaces.Jobs;
+﻿using DesktopWeeabo2.Core.Interfaces.Jobs;
 using DesktopWeeabo2.Core.Interfaces.Misc;
 using DesktopWeeabo2.Core.Interfaces.Repositories;
 using DesktopWeeabo2.Core.Interfaces.Services;
@@ -15,9 +14,10 @@ using Unity;
 namespace DesktopWeeabo2 {
 
 	public partial class App : Application {
-
+		IUnityContainer container;
+		
 		private void Application_Startup(object sender, StartupEventArgs e) {
-			IUnityContainer container = new UnityContainer();
+			container = new UnityContainer();
 			
 			container.RegisterType<IAnimeRepository, AnimeRepository>(TypeLifetime.Scoped);
 			container.RegisterType<IMangaRepository, MangaRepository>(TypeLifetime.Scoped);
@@ -29,6 +29,7 @@ namespace DesktopWeeabo2 {
 
 			container.RegisterType<IRunJobs<DWOneImportJob>, DWOneImportJob>(TypeLifetime.Scoped);
 			container.RegisterType<IRunJobs<UpdateDbEntries>, UpdateDbEntries>(TypeLifetime.Scoped);
+			container.RegisterType<IRunJobs<BackupEntriesJob>, BackupEntriesJob>(TypeLifetime.Scoped);
 
 			container.RegisterSingleton<MainWindowViewModel>();
 			container.RegisterSingleton<AnimeViewModel>();
@@ -36,11 +37,6 @@ namespace DesktopWeeabo2 {
 			container.RegisterSingleton<SettingsViewModel>();
 
 			container.Resolve<MainWindow>().Show();
-		}
-
-		private void Application_Exit(object sender, ExitEventArgs e) {
-			if (AppInitHelpers.CheckRootDir())
-				ConfigurationManager.SaveConfig();
 		}
 	}
 }

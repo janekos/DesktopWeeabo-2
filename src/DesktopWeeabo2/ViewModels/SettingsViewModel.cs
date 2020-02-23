@@ -76,6 +76,14 @@ namespace DesktopWeeabo2.ViewModels {
 			}
 		}
 
+		public int BackupFrequency {
+			get { return ConfigurationManager.Config.BackupFrequency; }
+			set {
+				ConfigurationManager.Config.BackupFrequency = value;
+				RaisePropertyChanged(nameof(BackupFrequency));
+			}
+		}
+
 		private StatisticsViewModel statistics { get; set; } = new StatisticsViewModel();
 
 		public StatisticsViewModel Statistics {

@@ -17,7 +17,8 @@
         Width="1024"
         Height="800"
         MinWidth="1024"
-        MinHeight="800">
+        MinHeight="800"
+        Closing="MainWIndow_Closing">
   <Window.Resources>
     <DataTemplate DataType="{x:Type ViewModels:AnimeViewModel}">
       <Views:AnimeView />

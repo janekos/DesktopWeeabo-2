@@ -71,14 +71,7 @@ namespace DesktopWeeabo2.ViewModels.Shared {
 		#endregion search model
 
 		#region api vars
-
-		protected bool _APIHasNextPage { get; set; } = false;
-
-		public bool APIHasNextPage {
-			get { return _APIHasNextPage; }
-			set { if (_APIHasNextPage != value) { _APIHasNextPage = value; RaisePropertyChanged("APIHasNextPage"); } }
-		}
-
+		
 		protected int _APICurrentPage { get; set; } = 1;
 
 		public int APICurrentPage {

@@ -8,13 +8,13 @@ using System.Collections.Generic;
 
 namespace DesktopWeeabo2.Infrastructure.API {
 
-	public class AnimeAPIEnumerator : APIEnumerator<AnimeModel> {
+	public class AnimeApiEnumerator : ApiEnumerator<AnimeModel> {
 
-		public AnimeAPIEnumerator() {
-			Type = true;
+		public AnimeApiEnumerator() {
+			IsAnimeType = true;
 		}
 
-		protected override AnimeModel[] GetItems(string result) {
+		protected override AnimeModel[] GetItems(string result, bool autoIncrementPage = true) {
 			var apiResult = JsonConvert.DeserializeObject<ApiReturnValue<AnimeApiModel>>(result);
 
 			if (apiResult.Data == null)
@@ -22,9 +22,10 @@ namespace DesktopWeeabo2.Infrastructure.API {
 
 			HasNextPage = apiResult.Data.Page?.PageInfo?.HasNextPage ?? false;
 			TotalItems = apiResult.Data.Page?.PageInfo?.Total ?? 0;
+			LastPage = apiResult.Data.Page?.PageInfo?.LastPage ?? 0;
 
-			if (HasNextPage)
-				CurrentPage = CurrentPage + 1;
+			if (autoIncrementPage && HasNextPage)
+				CurrentPage += 1;
 
 			var returnable = apiResult.Data.Page.Media;
 

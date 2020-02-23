@@ -120,8 +120,9 @@
   <data name="AnilistSearchQuery" xml:space="preserve">
     <value>query ($id: Int, $page: Int, $search: String, $sort: [MediaSort], $genres: [String], $isAdult: Boolean) {
 	Page(page: $page, perPage: 50) {
-		pageInfo { 
+		pageInfo {
 			total
+			lastPage
 			hasNextPage
 		}
 		media(id: $id, type: {mediaTypeToReplace}, search: $search, sort: $sort, genre_in: $genres, isAdult: $isAdult) {

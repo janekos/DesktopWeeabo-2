@@ -114,7 +114,6 @@
     <Compile Include="CustomControls\SelectableButton.cs" />
     <Compile Include="CustomControls\Toast.cs" />
     <Compile Include="CustomControls\WrapPanelItem.cs" />
-    <Compile Include="Helpers\AppInitHelpers.cs" />
     <Compile Include="Helpers\CanvasRoutines.cs" />
     <Compile Include="Helpers\MultiValueCustomConverter.cs" />
     <Compile Include="Helpers\CustomConverter.cs" />

@@ -131,22 +131,37 @@
               </ItemsPanelTemplate>
             </ListView.ItemsPanel>
           </ListView>
-          <Button Grid.Row="1"
-                  HorizontalAlignment="Stretch"
-                  Visibility="{Binding APIHasNextPage, Converter={StaticResource CustomConverter}, ConverterParameter=isValueTrue}"
-                  IsEnabled="{Binding IsContentLoading, Converter={StaticResource CustomConverter}, ConverterParameter=reverseBoolean}"
-                  VerticalAlignment="Bottom"
-                  FontSize="20"
-                  Command="{Binding AddOnlineItemsToView}">
-            <Button.Content>
-              <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Load more: " />
-                <TextBlock Text="{Binding APICurrentPage, UpdateSourceTrigger=PropertyChanged}" />
-                <TextBlock Text=" / " />
-                <TextBlock Text="{Binding TotalAPIPages, UpdateSourceTrigger=PropertyChanged}" />
-              </StackPanel>
-            </Button.Content>
-          </Button>
+          <Grid Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                Height="30">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+              <Button Height="22"
+                      Width="35">&lt;&lt;</Button>
+              <Button Height="22"
+                      Width="25">&lt;</Button>
+              <TextBlock VerticalAlignment="Center"
+                         Margin="10,0,3,0">
+                <Run>Page</Run>
+              </TextBlock>
+              <ComboBox Height="22"
+                        MinWidth="50">
+                <ComboBoxItem Content="1" />
+                <ComboBoxItem Content="2" />
+                <ComboBoxItem Content="3" />
+                <ComboBoxItem Content="4" />
+              </ComboBox>
+              <TextBlock VerticalAlignment="Center"
+                         Margin="3,0,10,0">
+                <Run>of</Run>
+                <Run>500</Run>
+              </TextBlock>
+              <Button Height="22"
+                      Width="25">&gt;</Button>
+              <Button Height="22"
+                      Width="35">&gt;&gt;</Button>
+            </StackPanel>
+          </Grid>
         </Grid>
       </Border>
       <Border Grid.Column="0"

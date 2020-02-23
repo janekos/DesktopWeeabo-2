@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Infrastructure.API.Shared {
 
-	public abstract class APIEnumerator<T> where T : BaseModel {
+	public abstract class ApiEnumerator<T> where T : BaseModel {
 		protected int _CurrentPage = 1;
+		protected int _LastPage = 1;
 		protected string _SearchString;
 		protected bool _Type;
 		protected bool _IsAdult;
@@ -34,7 +35,16 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 			}
 		}
 
-		public bool Type {
+		public int LastPage {
+			get { return _LastPage; }
+			set {
+				if (_LastPage != value) {
+					_LastPage = value;
+				}
+			}
+		}
+
+		public bool IsAnimeType {
 			get { return _Type; }
 			set {
 				if (_Type != value) {
@@ -74,17 +84,14 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 			}
 		}
 
-		public APIEnumerator() {
-		}
-
 		public async Task<T[]> GetByMalIdSet(int[] malIds) =>
-			GetItems(await APIQueries.GetByMALIds(ApiUtils.APIGetByMalIdsVariables(malIds)));
+			GetItems(await ApiQueries.GetByMALIds(ApiUtils.APIGetByMalIdsVariables(malIds)));
 
 		public async Task<T[]> GetByIdSet(int[] ids, bool isAnime = true) =>
-			GetItems(await APIQueries.GetByIds(ApiUtils.APIGetByIdsVariables(ids), isAnime));
+			GetItems(await ApiQueries.GetByIds(ApiUtils.APIGetByIdsVariables(ids), isAnime));
 
 		public async Task<T[]> GetCurrentSearchSet() =>
-			GetItems(await APIQueries.Search(ApiUtils.APISearchVariables(_SearchString, CurrentPage, _SortBy, _Genres, _IsAdult), _Type));
+			GetItems(await ApiQueries.Search(ApiUtils.APISearchVariables(_SearchString, CurrentPage, _SortBy, _Genres, _IsAdult), _Type), false);
 
 		protected void ResetQueryVars() {
 			CurrentPage = 1;
@@ -92,6 +99,6 @@ namespace DesktopWeeabo2.Infrastructure.API.Shared {
 			TotalItems = 0;
 		}
 
-		protected abstract T[] GetItems(string result);
+		protected abstract T[] GetItems(string result, bool autoIncrementPage = true);
 	}
 }

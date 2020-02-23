@@ -42,7 +42,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 
 		protected override async Task ExecuteJob() {
 			List<Task> requests = new List<Task>();
-			AnimeAPIEnumerator api = new AnimeAPIEnumerator();
+			AnimeApiEnumerator api = new AnimeApiEnumerator();
 			ConcurrentBag<AnimeModel> persistableEntries = new ConcurrentBag<AnimeModel>();
 
 			JobEvent.NotifyJobProgressChange(0, "Querying API");

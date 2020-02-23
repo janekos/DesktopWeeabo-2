@@ -51,17 +51,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\APIQueries.cs" />
+    <Compile Include="API\ApiQueries.cs" />
     <Compile Include="API\Models\AnimeApiModel.cs" />
     <Compile Include="API\Models\JsonTypes\CoverImage.cs" />
     <Compile Include="API\Models\JsonTypes\Date.cs" />
     <Compile Include="API\Models\JsonTypes\ExternalLinks.cs" />
     <Compile Include="API\Models\JsonTypes\NextAiringEpisode.cs" />
-    <Compile Include="API\Models\JsonTypes\PageInfo.cs" />
     <Compile Include="API\Models\MangaApiModel.cs" />
     <Compile Include="API\Models\Shared\BaseApiModel.cs" />
     <Compile Include="API\Models\JsonTypes\Title.cs" />
     <Compile Include="API\Models\Shared\ResultWrappers.cs" />
+    <Compile Include="Enums\BackupFrequency.cs" />
     <Compile Include="Enums\CanvasRoutine.cs" />
     <Compile Include="Enums\ContentFormat.cs" />
     <Compile Include="Enums\ContentStatus.cs" />
@@ -72,6 +72,7 @@
     <Compile Include="Enums\SortLocation.cs" />
     <Compile Include="Enums\StatusView.cs" />
     <Compile Include="Enums\ToastType.cs" />
+    <Compile Include="Helpers\AppHelpers.cs" />
     <Compile Include="Interfaces\Jobs\IRunJobs.cs" />
     <Compile Include="Interfaces\Misc\IDefineCanvasRoutines.cs" />
     <Compile Include="Interfaces\Repositories\IAnimeRepository.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="Config\Config.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

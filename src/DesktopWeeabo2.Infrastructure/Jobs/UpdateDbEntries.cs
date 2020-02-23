@@ -54,7 +54,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 		protected override async Task ExecuteJob() {
 			if (animes.Any()) {
 				ConcurrentBag<AnimeModel> updatedAnimeEntries = new ConcurrentBag<AnimeModel>();
-				AnimeAPIEnumerator animeApi = new AnimeAPIEnumerator();
+				AnimeApiEnumerator animeApi = new AnimeApiEnumerator();
 				List<Task> animeRequests = new List<Task>();
 
 				JobEvent.NotifyJobProgressChange(0, "Querying animes");
@@ -85,7 +85,7 @@ namespace DesktopWeeabo2.Infrastructure.Jobs {
 
 			if (mangas.Any()) {
 				ConcurrentBag<MangaModel> updatedMangaEntries = new ConcurrentBag<MangaModel>();
-				MangaAPIEnumerator mangaApi = new MangaAPIEnumerator();
+				MangaApiEnumerator mangaApi = new MangaApiEnumerator();
 				List<Task> mangaRequests = new List<Task>();
 
 				JobEvent.NotifyJobProgressChange(0, "Querying mangas", true);

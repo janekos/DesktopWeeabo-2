@@ -82,8 +82,16 @@
             <RowDefinition />
             <RowDefinition />
           </Grid.RowDefinitions>
-          <CheckBox Margin="0,0,0,8"
-                    IsChecked="{Binding DoesAppBackUp}">Backups enabled</CheckBox>
+          <StackPanel Orientation="Horizontal">
+            <CheckBox Margin="0,0,0,8"
+                      IsChecked="{Binding DoesAppBackUp}">Backups are done once a</CheckBox>
+            <ComboBox SelectedIndex="{Binding BackupFrequency}" FontSize="14" HorizontalAlignment="Center" Margin="5,-10,0,0" Height="25">
+              <ComboBoxItem Content="Day" />
+              <ComboBoxItem Content="Week" />
+              <ComboBoxItem Content="Month" />
+              <ComboBoxItem Content="Year" />
+            </ComboBox>
+          </StackPanel>
           <CheckBox Grid.Row="1"
                     IsChecked="{Binding IsDarkMode}">Dark mode</CheckBox>
         </Grid>

@@ -1,9 +1,8 @@
 ﻿using DesktopWeeabo2.Core.Config;
 using System.IO;
 
-namespace DesktopWeeabo2.Helpers {
-
-	public static class AppInitHelpers {
+namespace DesktopWeeabo2.Core.Helpers {
+	public static class AppHelpers {
 
 		public static void Init() {
 			CheckFiles();
@@ -13,10 +12,10 @@ namespace DesktopWeeabo2.Helpers {
 			Directory.Exists(ConfigurationManager.Config.AppDir);
 
 		private static void CheckFiles() {
-			if (!CheckRootDir()) 
+			if (!CheckRootDir())
 				Directory.CreateDirectory(ConfigurationManager.Config.AppDir);
 
-			if (!File.Exists(ConfigurationManager.Config.AppDir + "\\config.json"))
+			if (!File.Exists(ConfigurationManager.Config.ConfigFilePath))
 				ConfigurationManager.SaveConfig();
 			else
 				ConfigurationManager.LoadConfig();

@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace DesktopWeeabo2.Core.API {
 
-	public static class APIQueries {
+	public static class ApiQueries {
 		private static readonly HttpClient client = new HttpClient();
 		private static readonly MediaTypeWithQualityHeaderValue jsonHeader = new MediaTypeWithQualityHeaderValue("application/json");
 		private static string AnilistSearchQuery = Resources.ResourceManager.GetString("AnilistSearchQuery");
 		private static string GetAnimeByMALIds = Resources.ResourceManager.GetString("GetAnimeByMALIds");
 		private static string GetEntriesByIds = Resources.ResourceManager.GetString("GetEntriesByIds");
 
-		static APIQueries() {
+		static ApiQueries() {
 			if (!client.DefaultRequestHeaders.Accept.Contains(jsonHeader))
 				client.DefaultRequestHeaders.Accept.Add(jsonHeader);
 		}

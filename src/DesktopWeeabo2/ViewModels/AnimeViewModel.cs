@@ -16,7 +16,7 @@ namespace DesktopWeeabo2.ViewModels {
 
 	public class AnimeViewModel : BaseItemViewModel {
 		private readonly IAnimeService _animeService;
-		private readonly AnimeAPIEnumerator _animeAPIEnumerator;
+		private readonly AnimeApiEnumerator _animeAPIEnumerator;
 
 		private bool LocalHelper = false;
 		public ObservableRangeCollection<AnimeModel> AnimeItems { get; set; } = new ObservableRangeCollection<AnimeModel>();
@@ -69,7 +69,7 @@ namespace DesktopWeeabo2.ViewModels {
 
 		public AnimeViewModel(IAnimeService animeService) : base() {
 			_animeService = animeService;
-			_animeAPIEnumerator = new AnimeAPIEnumerator();
+			_animeAPIEnumerator = new AnimeApiEnumerator();
 
 			BindingOperations.EnableCollectionSynchronization(AnimeItems, _CollectionLock);
 		}
@@ -97,7 +97,6 @@ namespace DesktopWeeabo2.ViewModels {
 				TotalItems = 0;
 				SelectedItem = null;
 				TotalAPIItems = "";
-				APIHasNextPage = false;
 				APICurrentPage = 1;
 				TotalAPIPages = 1;
 				_animeAPIEnumerator.CurrentPage = 1;
@@ -118,7 +117,7 @@ namespace DesktopWeeabo2.ViewModels {
 					AnimeItems.AddRange(items);
 					TotalItems = AnimeItems.Count;
 				}
-				
+
 				LocalHelper = false;
 				IsContentLoading = false;
 			});
@@ -179,6 +178,7 @@ namespace DesktopWeeabo2.ViewModels {
 
 				LocalHelper = true;
 				IsContentLoading = true;
+
 				_animeAPIEnumerator.SearchString = SearchText;
 				_animeAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
 				_animeAPIEnumerator.IsAdult = IsAdult;
@@ -201,11 +201,16 @@ namespace DesktopWeeabo2.ViewModels {
 					AnimeItems.AddRange(onlineItems);
 					TotalItems = AnimeItems.Count;
 
-					APIHasNextPage = _animeAPIEnumerator.HasNextPage;
 					TotalAPIItems = $" / {_animeAPIEnumerator.TotalItems}";
 					APICurrentPage = _animeAPIEnumerator.CurrentPage - 1;
 					TotalAPIPages = (int) Math.Ceiling(((decimal) _animeAPIEnumerator.TotalItems / 50));
-				} catch (ArgumentNullException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (ArgumentOutOfRangeException ex) { ToastEvent.ShowToast(ex.Message, ToastType.DANGER); } catch (HttpRequestException) { ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER); }
+				} catch (ArgumentNullException ex) {
+					ToastEvent.ShowToast(ex.Message, ToastType.DANGER);
+				} catch (ArgumentOutOfRangeException ex) {
+					ToastEvent.ShowToast(ex.Message, ToastType.DANGER);
+				} catch (HttpRequestException) {
+					ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER);
+				}
 
 				LocalHelper = false;
 				IsContentLoading = false;
