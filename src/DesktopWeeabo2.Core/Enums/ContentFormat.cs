@@ -10,6 +10,7 @@
 		MUSIC,
 		MANGA,
 		NOVEL,
-		ONE_SHOT
+		ONE_SHOT,
+		UNSPECIFIED
 	}
 }

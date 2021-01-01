@@ -46,15 +46,15 @@ namespace DesktopWeeabo2.Core.Models {
 				Episodes = apiModel.Episodes,
 				Duration = apiModel.Duration,
 				Description = apiModel.Description,
-				EndDate = apiModel.EndDate.GetDate(),
+				EndDate = apiModel.EndDate?.GetDate(),
 				AverageScore = apiModel.AverageScore,
 				NextAiringEpisode = nextAiringEpisode,
 				CoverImage = apiModel.CoverImage.Large,
 				ExternalLinks = apiModel.ExternalLinks,
-				StartDate = apiModel.StartDate.GetDate(),
-				Type = apiModel.Type.ToEnum<ContentType>(),
-				Format = apiModel.Format.ToEnum<ContentFormat>(),
-				Status = apiModel.Status.ToEnum<ContentStatus>()
+				StartDate = apiModel.StartDate?.GetDate(),
+				Type = apiModel.Type?.ToEnum<ContentType>() ?? ContentType.UNSPECIFIED,
+				Format = apiModel.Format?.ToEnum<ContentFormat>() ?? ContentFormat.UNSPECIFIED,
+				Status = apiModel.Status?.ToEnum<ContentStatus>() ?? ContentStatus.UNSPECIFIED
 			};
 		}
 

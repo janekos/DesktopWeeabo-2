@@ -18,7 +18,7 @@ namespace DesktopWeeabo2.ViewModels {
 		private readonly IMangaService _mangaService;
 		private readonly MangaApiEnumerator _mangaAPIEnumerator;
 
-		private bool LocalHelper = false;
+		private bool LocalStateHelper = false;
 		public ObservableRangeCollection<MangaModel> MangaItems { get; set; } = new ObservableRangeCollection<MangaModel>();
 
 		private MangaModel _SelectedItem = null;
@@ -85,7 +85,14 @@ namespace DesktopWeeabo2.ViewModels {
 							AddLocalItemsToView();
 					}
 					break;
-
+				case "SelectedPageIndex":
+					if (!LocalStateHelper) {
+						if (_CurrentView.Equals(StatusView.ONLINE))
+							AddOnlineItemsToView.Execute(PaginationCommandType.OTHER);
+						else
+							AddLocalItemsToView();
+					}
+					break;
 				default:
 					break;
 			}
@@ -94,10 +101,7 @@ namespace DesktopWeeabo2.ViewModels {
 		protected override void RenewView(bool isActionOnline = false) {
 			if (!isActionOnline) {
 				MangaItems.Clear();
-				TotalItems = 0;
 				SelectedItem = null;
-				TotalAPIItems = "";
-				APICurrentPage = 1;
 				TotalAPIPages = 1;
 				_mangaAPIEnumerator.CurrentPage = 1;
 			}
@@ -107,15 +111,14 @@ namespace DesktopWeeabo2.ViewModels {
 
 		protected async override void AddLocalItemsToView() {
 			await Task.Run(() => {
-				if (LocalHelper)
+				if (LocalStateHelper)
 					return;
-				LocalHelper = true;
+				LocalStateHelper = true;
 				IsContentLoading = true;
 				lock (_CollectionLock) {
 					MangaItems.AddRange(_mangaService.GetBySearchModelAndCurrentView(SearchModel, CurrentView));
-					TotalItems = MangaItems.Count;
 				};
-				LocalHelper = false;
+				LocalStateHelper = false;
 				IsContentLoading = false;
 			});
 		}
@@ -169,11 +172,31 @@ namespace DesktopWeeabo2.ViewModels {
 		);
 
 		public DelegateCommand AddOnlineItemsToView => new DelegateCommand(
-			new Action(async () => {
-				if (LocalHelper)
+			new Action<object>(async (paginationType) => {
+				if (LocalStateHelper)
 					return;
-				LocalHelper = true;
+				LocalStateHelper = true;
 				IsContentLoading = true;
+
+				var castPaginationType = (PaginationCommandType) paginationType;
+
+				switch (castPaginationType) {
+					case PaginationCommandType.FIRST:
+						_mangaAPIEnumerator.CurrentPage = 1;
+						break;
+					case PaginationCommandType.LAST:
+						_mangaAPIEnumerator.CurrentPage = _mangaAPIEnumerator.LastPage;
+						break;
+					case PaginationCommandType.NEXT:
+						_mangaAPIEnumerator.CurrentPage += 1;
+						break;
+					case PaginationCommandType.PREVIOUS:
+						_mangaAPIEnumerator.CurrentPage -= 1;
+						break;
+					case PaginationCommandType.OTHER:
+						_mangaAPIEnumerator.CurrentPage = SelectedPageIndex + 1;
+						break;
+				}
 
 				_mangaAPIEnumerator.SearchString = SearchText;
 				_mangaAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
@@ -194,11 +217,15 @@ namespace DesktopWeeabo2.ViewModels {
 						currentItem.CurrentChapter = localItem.CurrentChapter;
 					}
 
+					MangaItems.Clear();
 					MangaItems.AddRange(onlineItems);
-					TotalItems = MangaItems.Count;
 
-					TotalAPIItems = $" / {_mangaAPIEnumerator.TotalItems}";
-					APICurrentPage = _mangaAPIEnumerator.CurrentPage - 1;
+					LastItemsPage = _mangaAPIEnumerator.LastPage;
+					ItemPageList = Enumerable.Range(1, LastItemsPage).ToList();
+
+					if (castPaginationType != PaginationCommandType.OTHER)
+						SelectedPageIndex = _mangaAPIEnumerator.CurrentPage - 1;
+
 					TotalAPIPages = (int) Math.Ceiling(((decimal) _mangaAPIEnumerator.TotalItems / 50));
 				} catch (ArgumentNullException ex) {
 					ToastEvent.ShowToast(ex.Message, ToastType.DANGER);
@@ -208,7 +235,7 @@ namespace DesktopWeeabo2.ViewModels {
 					ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER);
 				}
 
-				LocalHelper = false;
+				LocalStateHelper = false;
 				IsContentLoading = false;
 			})
 		);

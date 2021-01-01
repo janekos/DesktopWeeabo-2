@@ -36,16 +36,16 @@ namespace DesktopWeeabo2.Infrastructure.API {
 
 		private void AdjustResult(IEnumerable<AnimeApiModel> apiModelList) {
 			foreach (AnimeApiModel model in apiModelList) {
-				// add mal and anilist links to externallink list
-				model.ExternalLinks.AddRange(new Core.API.Models.JsonTypes.ExternalLink[] {
-					new Core.API.Models.JsonTypes.ExternalLink {
+				if (model.IdMal != null) {
+					model.ExternalLinks.Add(new Core.API.Models.JsonTypes.ExternalLink {
 						Url = $"https://myanimelist.net/{model.Type.ToLower()}/{model.IdMal}",
 						Site = "MAL"
-					},
-					new Core.API.Models.JsonTypes.ExternalLink {
-						Url = model.siteUrl,
-						Site = "Anilist"
-					}
+					});
+				}
+
+				model.ExternalLinks.Add(new Core.API.Models.JsonTypes.ExternalLink {
+					Url = model.siteUrl,
+					Site = "Anilist"
 				});
 			}
 		}

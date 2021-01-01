@@ -24,35 +24,40 @@ namespace DesktopWeeabo2.Helpers {
 			switch (parameters[0]) {
 				case "mainBoxText":
 					if (values[0] != null && values[1] != null && values[2] != null && values[3] != null) {
-						if ((bool) values[3])
-							return "Loading";
-						if ((string) values[2] == StatusView.ONLINE && (int) values[0] == 0)
-							return (((string) values[1]).Length == 0) ? "Try searching for something or press the 'Search' button" : $"No result for {values[1]}";
+						var totalItems = (int) values[0];
+						var searchText = (string) values[1];
+						var currentView = (string) values[2];
+						var isContentLoading = (bool) values[3];
+
+
+						if (isContentLoading) return "Loading";
+						
+						if (currentView == StatusView.ONLINE && totalItems == 0)
+							return (searchText.Length == 0)
+								? "Try searching for something or press the 'Search' button"
+								: $"No result for {searchText}";
 
 						string currView;
-						switch ((string) values[2]) {
+						switch (currentView) {
 							case StatusView.TOWATCH:
 								currView = "To watch";
 								break;
-
 							case StatusView.TOREAD:
 								currView = "To read";
 								break;
-
 							case StatusView.DROPPEDANIME:
 							case StatusView.DROPPEDMANGA:
 								currView = "Dropped";
 								break;
-
 							default:
-								currView = (string) values[2];
+								currView = currentView;
 								break;
 						}
 
-						if ((int) values[0] == 0 && ((string) values[1]).Length != 0)
-							return $"No result for {values[1]} in '{currView}' view";
-						;
-						if ((int) values[0] == 0)
+						if (totalItems == 0 && searchText.Length != 0)
+							return $"No result for {searchText} in '{currView}' view";
+
+						if (totalItems == 0)
 							return $"No items in '{currView}' view";
 					}
 					return null;

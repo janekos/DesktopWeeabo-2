@@ -2,6 +2,7 @@
 
 	public enum ContentType {
 		ANIME,
-		MANGA
+		MANGA,
+		UNSPECIFIED
 	}
 }

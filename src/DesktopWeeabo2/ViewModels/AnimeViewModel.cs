@@ -6,6 +6,7 @@ using DesktopWeeabo2.Infrastructure.API;
 using DesktopWeeabo2.Infrastructure.Events;
 using DesktopWeeabo2.ViewModels.Shared;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
@@ -18,7 +19,7 @@ namespace DesktopWeeabo2.ViewModels {
 		private readonly IAnimeService _animeService;
 		private readonly AnimeApiEnumerator _animeAPIEnumerator;
 
-		private bool LocalHelper = false;
+		private bool LocalStateHelper = false;
 		public ObservableRangeCollection<AnimeModel> AnimeItems { get; set; } = new ObservableRangeCollection<AnimeModel>();
 
 		private AnimeModel _SelectedItem = null;
@@ -80,12 +81,19 @@ namespace DesktopWeeabo2.ViewModels {
 					if (!DontTriggerSearchChanged) {
 						RenewView();
 						if (_CurrentView.Equals(StatusView.ONLINE))
-							AddOnlineItemsToView.Execute(null);
+							AddOnlineItemsToView.Execute(PaginationCommandType.FIRST);
 						else
 							AddLocalItemsToView();
 					}
 					break;
-
+				case "SelectedPageIndex":
+					if (!LocalStateHelper) {
+						if(_CurrentView.Equals(StatusView.ONLINE))
+							AddOnlineItemsToView.Execute(PaginationCommandType.OTHER);
+						else
+							AddLocalItemsToView();
+					}
+					break;
 				default:
 					break;
 			}
@@ -96,8 +104,6 @@ namespace DesktopWeeabo2.ViewModels {
 				AnimeItems.Clear();
 				TotalItems = 0;
 				SelectedItem = null;
-				TotalAPIItems = "";
-				APICurrentPage = 1;
 				TotalAPIPages = 1;
 				_animeAPIEnumerator.CurrentPage = 1;
 			}
@@ -107,9 +113,9 @@ namespace DesktopWeeabo2.ViewModels {
 
 		protected override void AddLocalItemsToView() {
 			Task.Run(() => {
-				if (LocalHelper) return;
+				if (LocalStateHelper) return;
 
-				LocalHelper = true;
+				LocalStateHelper = true;
 				IsContentLoading = true;
 
 				lock (_CollectionLock) {
@@ -118,7 +124,7 @@ namespace DesktopWeeabo2.ViewModels {
 					TotalItems = AnimeItems.Count;
 				}
 
-				LocalHelper = false;
+				LocalStateHelper = false;
 				IsContentLoading = false;
 			});
 		}
@@ -126,7 +132,7 @@ namespace DesktopWeeabo2.ViewModels {
 		public DelegateCommand TriggerSearch => new DelegateCommand(new Action(() => {
 			RenewView();
 			if (CurrentView.Equals(StatusView.ONLINE))
-				AddOnlineItemsToView.Execute(null);
+				AddOnlineItemsToView.Execute(PaginationCommandType.FIRST);
 			else
 				AddLocalItemsToView();
 		}));
@@ -167,17 +173,37 @@ namespace DesktopWeeabo2.ViewModels {
 				if (!e.Equals(StatusView.ONLINE)) {
 					AddLocalItemsToView();
 				} else if (e.Equals(StatusView.ONLINE) && SearchText.Length > 0) {
-					AddOnlineItemsToView.Execute(null);
+					AddOnlineItemsToView.Execute(PaginationCommandType.FIRST);
 				}
 			})
 		);
 
 		public DelegateCommand AddOnlineItemsToView => new DelegateCommand(
-			new Action(async () => {
-				if (LocalHelper) return;
+			new Action<object>(async (paginationType) => {
+				if (LocalStateHelper) return;
 
-				LocalHelper = true;
+				LocalStateHelper = true;
 				IsContentLoading = true;
+
+				var castPaginationType = (PaginationCommandType) paginationType;
+
+				switch(castPaginationType) {
+					case PaginationCommandType.FIRST:
+						_animeAPIEnumerator.CurrentPage = 1;
+						break;
+					case PaginationCommandType.LAST:
+						_animeAPIEnumerator.CurrentPage = _animeAPIEnumerator.LastPage;
+						break;
+					case PaginationCommandType.NEXT:
+						_animeAPIEnumerator.CurrentPage += 1;
+						break;
+					case PaginationCommandType.PREVIOUS:
+						_animeAPIEnumerator.CurrentPage -= 1;
+						break;
+					case PaginationCommandType.OTHER:
+						_animeAPIEnumerator.CurrentPage = SelectedPageIndex + 1;
+						break;
+				}
 
 				_animeAPIEnumerator.SearchString = SearchText;
 				_animeAPIEnumerator.SortBy = IsDescending ? $"{SelectedSort.APIValue}_DESC" : SelectedSort.APIValue;
@@ -198,21 +224,26 @@ namespace DesktopWeeabo2.ViewModels {
 						currentItem.CurrentEpisode = localItem.CurrentEpisode;
 					}
 
+					AnimeItems.Clear();
 					AnimeItems.AddRange(onlineItems);
+					
 					TotalItems = AnimeItems.Count;
+					LastItemsPage = _animeAPIEnumerator.LastPage;
+					ItemPageList = Enumerable.Range(1, LastItemsPage).ToList();
 
-					TotalAPIItems = $" / {_animeAPIEnumerator.TotalItems}";
-					APICurrentPage = _animeAPIEnumerator.CurrentPage - 1;
+					if(castPaginationType != PaginationCommandType.OTHER)
+						SelectedPageIndex = _animeAPIEnumerator.CurrentPage - 1;
+
 					TotalAPIPages = (int) Math.Ceiling(((decimal) _animeAPIEnumerator.TotalItems / 50));
 				} catch (ArgumentNullException ex) {
 					ToastEvent.ShowToast(ex.Message, ToastType.DANGER);
 				} catch (ArgumentOutOfRangeException ex) {
 					ToastEvent.ShowToast(ex.Message, ToastType.DANGER);
 				} catch (HttpRequestException) {
-					ToastEvent.ShowToast("The server isn't responding.", ToastType.DANGER);
+					ToastEvent.ShowToast("Anilist API is not responding.", ToastType.DANGER);
 				}
 
-				LocalHelper = false;
+				LocalStateHelper = false;
 				IsContentLoading = false;
 			})
 		);

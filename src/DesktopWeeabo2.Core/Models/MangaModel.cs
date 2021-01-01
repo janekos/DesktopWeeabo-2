@@ -33,9 +33,9 @@ namespace DesktopWeeabo2.Core.Models {
 				AverageScore = apiModel.AverageScore,
 				CoverImage = apiModel.CoverImage.Large,
 				ExternalLinks = apiModel.ExternalLinks,
-				Type = apiModel.Type.ToEnum<ContentType>(),
-				Format = apiModel.Format.ToEnum<ContentFormat>(),
-				Status = apiModel.Status.ToEnum<ContentStatus>()
+				Type = apiModel.Type?.ToEnum<ContentType>() ?? ContentType.UNSPECIFIED,
+				Format = apiModel.Format?.ToEnum<ContentFormat>() ?? ContentFormat.UNSPECIFIED,
+				Status = apiModel.Status?.ToEnum<ContentStatus>() ?? ContentStatus.UNSPECIFIED
 			};
 		}
 	}

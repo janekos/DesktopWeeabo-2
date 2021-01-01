@@ -69,6 +69,7 @@
     <Compile Include="Enums\DBResponse.cs" />
     <Compile Include="Enums\EnumExtensions.cs" />
     <Compile Include="Enums\GlobalView.cs" />
+    <Compile Include="Enums\PaginationCommandType.cs" />
     <Compile Include="Enums\SortLocation.cs" />
     <Compile Include="Enums\StatusView.cs" />
     <Compile Include="Enums\ToastType.cs" />

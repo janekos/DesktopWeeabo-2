@@ -56,14 +56,6 @@
       <Button Content="Advanced"
               Command="{Binding TriggerAdvancedWasClicked}" />
     </StackPanel>
-
-    <TextBlock HorizontalAlignment="Right"
-               TextWrapping="Wrap"
-               VerticalAlignment="Top"
-               MinWidth="10"
-               FontSize="20">
-            <Run Text="{Binding Path=TotalItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-            <Run Text="{Binding Path=TotalAPIItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" /></TextBlock>
     <Grid Margin="0,36,0,0">
       <Grid.ColumnDefinitions>
         <ColumnDefinition MinWidth="300"
@@ -129,25 +121,42 @@
               </ItemsPanelTemplate>
             </ListView.ItemsPanel>
           </ListView>
-          <Grid Grid.Row="1" HorizontalAlignment="Stretch" Height="30">
+          <Grid Grid.Row="1"
+                HorizontalAlignment="Stretch"
+                Height="30"
+                Visibility="{Binding APIHasNextPage, Converter={StaticResource CustomConverter}, ConverterParameter=isValueTrue}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-              <Button Height="22" Width="35">&lt;&lt;</Button>
-              <Button Height="22" Width="25">&lt;</Button>
+              <Button Command="{Binding AddOnlineItemsToView}"
+                      CommandParameter="{x:Static enum:PaginationCommandType.FIRST}"
+                      Height="22"
+                      Width="35"
+                      Content="&lt;&lt;" />
+              <Button Command="{Binding AddOnlineItemsToView}"
+                      CommandParameter="{x:Static enum:PaginationCommandType.PREVIOUS}"
+                      Height="22"
+                      Width="25"
+                      Content="&lt;" />
               <TextBlock VerticalAlignment="Center" Margin="10,0,3,0">
                 <Run>Page</Run>
               </TextBlock>
-              <ComboBox Height="22" MinWidth="50">
-                <ComboBoxItem Content="1" />
-                <ComboBoxItem Content="2" />
-                <ComboBoxItem Content="3" />
-                <ComboBoxItem Content="4" />
-              </ComboBox>
+              <ComboBox Height="22"
+                        MinWidth="50" 
+                        ItemsSource="{Binding ItemPageList}"
+                        SelectedIndex="{Binding SelectedPageIndex}"/>
               <TextBlock VerticalAlignment="Center" Margin="3,0,10,0">
                 <Run>of</Run>
-                <Run>500</Run>
+                <Run Text="{Binding LastItemsPage}" />
               </TextBlock>
-              <Button Height="22" Width="25">&gt;</Button>
-              <Button Height="22" Width="35">&gt;&gt;</Button>
+              <Button Command="{Binding AddOnlineItemsToView}"
+                      CommandParameter="{x:Static enum:PaginationCommandType.NEXT}"
+                      Height="22"
+                      Width="25"
+                      Content="&gt;" />
+              <Button Command="{Binding AddOnlineItemsToView}"
+                      CommandParameter="{x:Static enum:PaginationCommandType.LAST}"
+                      Height="22"
+                      Width="35"
+                      Content="&gt;&gt;" />
             </StackPanel>
           </Grid>
           <!--<Button Grid.Row="1"

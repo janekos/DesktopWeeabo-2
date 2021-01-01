@@ -58,14 +58,6 @@
       <Button Content="Advanced"
               Command="{Binding TriggerAdvancedWasClicked}" />
     </StackPanel>
-
-    <TextBlock HorizontalAlignment="Right"
-               TextWrapping="Wrap"
-               VerticalAlignment="Top"
-               MinWidth="10"
-               FontSize="20">
-            <Run Text="{Binding Path=TotalItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
-            <Run Text="{Binding Path=TotalAPIItems, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" /></TextBlock>
     <Grid Margin="0,36,0,0">
       <Grid.ColumnDefinitions>
         <ColumnDefinition MinWidth="300"

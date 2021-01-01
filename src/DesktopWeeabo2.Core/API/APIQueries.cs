@@ -44,6 +44,7 @@ namespace DesktopWeeabo2.Core.API {
 
 		public static async Task<string> ExecuteRequest(Dictionary<string, string> variables) {
 			HttpResponseMessage response = await client.PostAsync("https://graphql.anilist.co", new FormUrlEncodedContent(variables));
+			response.EnsureSuccessStatusCode();
 			return await response.Content.ReadAsStringAsync();
 		}
 	}
